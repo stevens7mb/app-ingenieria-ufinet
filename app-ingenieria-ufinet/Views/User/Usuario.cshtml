@@ -1,0 +1,540 @@
+﻿@{
+    Layout = "_Layout";
+}
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/forms/select/select2.min.css">
+<link href="~/css/jquery.loadingmodal.css" rel="stylesheet" />
+
+<!-- Zero configuration table -->
+<section id="basic-datatable">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Usuarios</h4>
+                    <button type="button" id="addUser" name="addUser" class="btn btn-outline-success" data-toggle="modal" data-target="#modalAgregarUsuario">
+                        Agregar Usuario
+                    </button>
+                </div>
+                <div class="card-content">
+                    <div class="card-body card-dashboard">
+                        <div class="table-responsive col-md-12">
+                            <table class="table zero-configuration" id="usersTable">
+                                <thead>
+                                    <tr>
+                                        <th>Usuario</th>
+                                        <th>Nombre</th>
+                                        <th>Sucursal</th>
+                                        <th>Roles</th>
+                                        <th>Activo</th>
+                                        <th>Accion</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--/ Zero configuration table -->
+
+
+<!-- Modal Agregar Usuario -->
+<div class="modal fade text-left" id="modalAgregarUsuario" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel33"> Agregar un Usuario </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="ResetModal()" id="closeModalAgregarUsuario">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="form-user" name="form-user" method="post">
+                <div class="modal-body">
+                    <label>Usuario: </label>
+                    <div class="form-group">
+                        <input type="text" id="Usuario" name="Usuario" placeholder="Identificador de Usuario" class="form-control">
+                    </div>
+                    <label>Password: </label>
+                    <div class="form-group">
+                        <input type="password" id="Contraseña" name="Contraseña" placeholder="Password" class="form-control">
+                    </div>
+                    <label>Nombre: </label>
+                    <div class="form-group">
+                        <input type="text" id="Nombre" name="Nombre" placeholder="Nombre" class="form-control">
+                    </div>
+                    <label>Email: </label>
+                    <div class="form-group">
+                        <input type="text" id="Correo" name="Correo" placeholder="Correo" class="form-control">
+                    </div>
+                    <label>Sucursal: </label>
+                    <div class="form-group col-md-12">
+                        <select class="select2 form-control col-md-12" style="width: 100%" id="selectSucursales" name="selectSucursales">
+                            <option value="">Seleccione</option>
+                        </select>
+                    </div>
+                    <label>Roles: </label>
+                    <div class="form-group col-md-12">
+                        <select class="select2 form-control col-md-12" style="width: 100%" multiple="multiple" id="selectRoles" name="selectRoles">
+                        </select>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" id="btnGuardarUsuario">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Modal Agregar Usuario Fin -->
+
+<!-- Modal Editar Usuario -->
+<div class="modal fade text-left" id="modalEditarUsuario" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel33"> Editar Usuario </h4>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" onclick="ResetModalEditar()" id="closeModalEditarUsuario">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="form-user-edit" name="form-user-edit" method="post">
+                <div class="modal-body">
+                    <label>Usuario: </label>
+                    <div class="form-group">
+                        <input type="text" id="Usuarioe" name="Usuarioe" placeholder="Identificador de Usuario" class="form-control" disabled>
+                    </div>
+                    <label>Password: </label>
+                    <div class="form-group">
+                        <input type="password" id="Contraseñae" name="Contraseñae" placeholder="Password" class="form-control">
+                    </div>
+                    <label>Nombre: </label>
+                    <div class="form-group">
+                        <input type="text" id="Nombree" name="Nombree" placeholder="Nombre" class="form-control">
+                    </div>
+                    <label>Email: </label>
+                    <div class="form-group">
+                        <input type="text" id="Correoe" name="Correoe" placeholder="Correo" class="form-control">
+                    </div>
+                    <label>Sucursal: </label>
+                    <div class="form-group col-md-12">
+                        <select class="select2 form-control col-md-12" style="width: 100%" id="selectSucursalese" name="selectSucursalese" disabled>
+                            <option value="">Seleccione</option>
+                        </select>
+                    </div>
+                    <label>Roles: </label>
+                    <div class="form-group col-md-12">
+                        <select class="select2 form-control col-md-12" style="width: 100%" multiple="multiple" id="selectRolese" name="selectRolese">
+                        </select>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" id="btnGuardarUsuarioe">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Modal Editar Usuario Fin -->
+
+@section Scripts {
+    <script src="~/template/app-assets/vendors/js/tables/datatable/datatables.min.js"></script>
+    <script src="~/template/app-assets/vendors/js/tables/datatable/datatables.bootstrap4.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/forms/select/select2.full.min.js"></script>
+    <script src="~/Template/app-assets/js/scripts/forms/select/form-select2.js"></script>
+    <script src="~/template/app-assets/vendors/js/forms/validation/jquery.validate.min.js"></script>
+    <script src="~/js/jquery.loadingmodal.js"></script>
+    <script src="~/js/sweetalert2.all.min.js"></script>
+    <script>
+
+        $(document).ready(function () {
+
+            $('#usersTable').DataTable({
+                "language": { "url": "https://cdn.datatables.net/plug-ins/1.12.1/i18n/es-ES.json" },
+                "ajax": {
+                    "url": "@Url.Action("ListaUsuarios", "User")",
+                    "type": "GET",
+                    "dataType": "json"
+                },
+                "order": [[0, "desc"]],
+                columns: [
+                    { "data": "usuario" },
+                    { "data": "nombre" },
+                    { "data": "sucursal" },
+                    { "data": "roles" },
+                    { "data": "activo" },
+                    {
+                        'defaultContent': null,
+                        'render': function (data, type, row) {
+                            return '<div class="d-flex"> <button type="button" class="btn btn-icon btn-warning mx-1" id="' + row.usuario + '" onclick="detallesUsuario(this.id)" data-toggle="tooltip" data-placement="left" title="Modificar"> <i class="fa fa-pencil"></i></i> </button> <button type="button" class="btn btn-icon btn-danger mx-1" id="' + row.usuario + '" onclick="EliminarUsuario(this.id)" data-toggle="tooltip" data-placement="left" title="Eliminar"> <i class="fa fa-trash-o"></i> </button> </div>'
+                        }
+                    }
+                ],
+                rowCallback: function (row, data) {
+                    if (data.activo === 'Inactivo') {
+                        $($(row).find("td")[4]).css("color", "#E60026");
+                    }
+                    else {
+                        $($(row).find("td")[4]).css("color", "green");
+                    }
+                }
+            });
+
+
+        });
+
+        //Cargar información en select sucursales y roles
+        $("#addUser").click(function () {
+            //sucursales
+            $.getJSON("@Url.Action("ListaSucursales", "User")", function (dataSource) {
+                $("#selectSucursales").select2({
+                    data: dataSource
+                })
+            });
+
+            //roles
+            $.getJSON("@Url.Action("ListaRoles", "User")", function (dataSource) {
+                $("#selectRoles").select2({
+                    data: dataSource
+                })
+            });
+            
+        });
+
+        //VALIDACION DE FORMULARIOS
+
+        $("#form-user").validate({
+            ignore: 'input[type=hidden]',//para select2
+            rules: {
+                Usuario: "required",
+                Contraseña: "required",
+                Nombre: "required",
+                Correo: "required",
+                selectSucursales: "required",
+                selectRoles: "required"
+            },
+            messages: {
+                Usuario: "Debe agregar un usuario",
+                Contraseña: "Debe agregar una contraseña",
+                Nombre: "Debe agregar un Nombre",
+                Correo: "Debe agregar un Correo",
+                selectSucursales: "Seleccione una sucursal",
+                selectRoles: "seleccione al menos un rol"
+            },
+            submitHandler: function (form) {
+                event.preventDefault();
+                agregarUsuario();
+
+                //Evitar doble click envio formulario
+                //$('button[type=submit]').click(function () {
+                  //  $(this).prop('disabled', true);
+
+                //})
+            }
+        });
+
+         $("#form-user-edit").validate({
+            ignore: 'input[type=hidden]',//para select2
+            rules: {
+                Usuarioe: "required",
+                Contraseñae: "required",
+                Nombree: "required",
+                Correoe: "required",
+                selectSucursalese: "required",
+                selectRolese: "required"
+            },
+            messages: {
+                Usuarioe: "Debe agregar un usuario",
+                Contraseñae: "Debe agregar una contraseña",
+                Nombree: "Debe agregar un Nombre",
+                Correoe: "Debe agregar un Correo",
+                selectSucursalese: "Seleccione una sucursal",
+                selectRolese: "seleccione al menos un rol"
+            },
+            submitHandler: function (form) {
+                event.preventDefault();
+                editarUsuario();
+            }
+        });
+
+
+        //FUNCIONES
+
+        $('#modalAgregarUsuario').on('hidden.bs.modal', function () {
+            resetModal()
+        });
+
+        function ResetModal() {
+            var validator = $("#modalAgregarUsuario").validate();
+            validator.resetForm();
+            $("#selectSucursales").val('').trigger('change')
+            $("#selectRoles").val('').trigger('change')
+            $("#Usuario").val("")
+            $("#Contraseña").val("")
+            $("#Nombre").val("")
+            $("#Correo").val("")
+        }
+
+        function ResetModalEditar() {
+            var validator = $("#modalEditarUsuario").validate();
+            validator.resetForm();
+            $("#selectSucursalese").val('').trigger('change')
+            $("#selectRolese").val('').trigger('change')
+            $("#Usuarioe").val("")
+            $("#Contraseñae").val("")
+            $("#Nombree").val("")
+            $("#Correoe").val("")
+        }
+
+        function agregarUsuario(){
+            //mensaje carga
+            $('body').loadingModal({
+                position: 'auto',
+                text: 'Cargando',
+                color: '#fff',
+                opacity: '0.7',
+                backgrundColor: 'rgb(0,0,0)',
+                animation: 'doubleBounce'
+            });
+
+            //objeto
+            var usuario = $("#Usuario").val();
+            var password = $("#Contraseña").val();
+            var nombre = $("#Nombre").val();
+            var correo = $("#Correo").val();
+            var sucursal = $('#selectSucursales').select2('data')[0].id;
+            var rolesObject = $('#selectRoles').select2('data');
+            var rolesObjectResult = [];
+
+            //Logica obtener roles
+            for (var i = 0; i < rolesObject.length; i++) {
+                var rolObjectInter = rolesObject[i].id;
+                rolesObjectResult.push(rolObjectInter);
+            }
+
+            var parametros = JSON.stringify({ Usuario: usuario, Password: password, Nombre: nombre, Correo: correo, Sucursal: sucursal, Roles: rolesObjectResult.toString() });
+
+            $.ajax({
+                url: "@Url.Action("AgregarUsuario", "User")",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: parametros,
+                dataType: "json",
+                success: function (result) {
+                    //show Alert
+                    Swal.fire({
+                        title: 'Agregar Usuario',
+                        text: result.mensaje,
+                        icon: result.tipo
+                    })
+                    //$("#modalAgregarUsuario").modal('hide');
+                    $('#closeModalAgregarUsuario').trigger("click");
+
+                    //reload table
+                    var table = $('#usersTable').DataTable();
+                    table.ajax.reload();
+                    //hidemodal loading
+                    $('body').loadingModal('destroy');
+                },
+                error: function (result) {
+                    Swal.fire({
+                        title: 'Agregar Usuario',
+                        text: result.Mensaje,
+                        icon: result.Tipo
+                    })
+                    //hidemodal loading
+                    $('body').loadingModal('destroy');
+
+                }
+            });
+        }
+
+        function detallesUsuario(id) {
+            //Modal Loading
+            $('body').loadingModal({
+                position: 'auto',
+                text: 'Cargando',
+                color: '#fff',
+                opacity: '0.7',
+                backgrundColor: 'rgb(0,0,0)',
+                animation: 'doubleBounce'
+            });
+
+            $.ajax({
+                url: "@Url.Action("DetallesUsuario", "User")",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify({ Usuario: id }),
+                success: function (result) {
+
+                    $("#Usuarioe").val(result.usuario);
+                    $("#Contraseñae").val(result.contraseña);
+                    $("#Nombree").val(result.nombre);
+                    $("#Correoe").val(result.email);
+                    //sucursal
+                    $.getJSON("@Url.Action("ListaSucursales", "User")", function (dataSource) {
+                        $("#selectSucursalese").select2({
+                            data: dataSource,
+                            enable: false
+                        }).val(result.idSucursal).trigger('change');
+                    });
+
+                    //roles
+                    $.getJSON("@Url.Action("ListaRoles", "User")", function (dataSource) {
+                        $("#selectRolese").select2({
+                            data: dataSource
+                        }).val([result.roles]).trigger('change');
+                    });
+
+                    $("#modalEditarUsuario").modal("show")
+
+
+                    $('body').loadingModal('destroy');
+                },
+                error: function (result) {
+                    //show Alert
+                    Swal.fire({
+                        title: "HA OCURRIDO UN ERROR",
+                        text: "Error en el Servidor" + result.responseText,
+                        icon: "error"
+                    })
+                    //hidemodal loading
+                    $('body').loadingModal('destroy');
+
+                }
+            });
+        }
+
+        function editarUsuario(){
+            //mensaje carga
+            $('body').loadingModal({
+                position: 'auto',
+                text: 'Cargando',
+                color: '#fff',
+                opacity: '0.7',
+                backgrundColor: 'rgb(0,0,0)',
+                animation: 'doubleBounce'
+            });
+
+            //objeto
+            var usuario = $("#Usuarioe").val();
+            var password = $("#Contraseñae").val();
+            var nombre = $("#Nombree").val();
+            var correo = $("#Correoe").val();
+            var sucursal = $('#selectSucursalese').select2('data')[0].id;
+            var rolesObject = $('#selectRolese').select2('data');
+            var rolesObjectResult = [];
+
+            //Logica obtener roles
+            for (var i = 0; i < rolesObject.length; i++) {
+                var rolObjectInter = rolesObject[i].id;
+                rolesObjectResult.push(rolObjectInter);
+            }
+
+            var parametros = JSON.stringify({ Usuario: usuario, Password: password, Nombre: nombre, Correo: correo, Sucursal: sucursal, Roles: rolesObjectResult.toString() });
+
+            $.ajax({
+                url: "@Url.Action("EditarUsuario", "User")",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: parametros,
+                dataType: "json",
+                success: function (result) {
+                    //show Alert
+                    Swal.fire({
+                        title: 'Editar Usuario',
+                        text: result.mensaje,
+                        icon: result.tipo
+                    })
+                    //$("#modalAgregarUsuario").modal('hide');
+                    $('#closeModalEditarUsuario').trigger("click");
+
+                    //reload table
+                    var table = $('#usersTable').DataTable();
+                    table.ajax.reload();
+                    //hidemodal loading
+                    $('body').loadingModal('destroy');
+                },
+                error: function (result) {
+                    Swal.fire({
+                        title: 'Editar Usuario',
+                        text: result.Mensaje,
+                        icon: result.Tipo
+                    })
+                    //hidemodal loading
+                    $('body').loadingModal('destroy');
+
+                }
+            });
+        }
+
+        function EliminarUsuario(id) {
+            Swal.fire({
+                title: "¿DESACTIVAR USUARIO?",
+                text: "¿Está seguro que desea desactivar este usuario?"+ id,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si, Desactivar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    //Modal Loading
+                    $('body').loadingModal({
+                        position: 'auto',
+                        text: 'Cargando',
+                        color: '#fff',
+                        opacity: '0.7',
+                        backgrundColor: 'rgb(0,0,0)',
+                        animation: 'doubleBounce'
+                    });
+
+                    $.ajax({
+                        url: "@Url.Action("DesactivarUsuario","User")",
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        data: JSON.stringify({ Usuario: id }),
+                        success: function (result) {
+                            //show Alert
+                            Swal.fire({
+                                title: 'DESACTIVAR USUARIO',
+                                text: result.mensaje,
+                                icon: result.tipo
+                            })
+
+                            //reload table
+                            var table = $('#usersTable').DataTable();
+                            table.ajax.reload();
+                            //hidemodal loading
+                            $('body').loadingModal('destroy');
+                        },
+                        error: function (result) {
+                            //show Alert
+                            Swal.fire({
+                                title: "HA OCURRIDO UN ERROR",
+                                text: "Error en el Servidor" + result.responseText,
+                                icon: "error"
+                            })
+                            //hidemodal loading
+                            $('body').loadingModal('destroy');
+
+                        }
+                    });
+
+                }
+            });
+        }
+
+
+    </script>
+
+
+}
