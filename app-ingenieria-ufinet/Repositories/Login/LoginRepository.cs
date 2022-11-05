@@ -4,12 +4,18 @@ using app_ingenieria_ufinet.Utils;
 
 namespace app_ingenieria_ufinet.Repositories.Login
 {
+    /// <summary>
+    /// Interfaces, agregar métodos
+    /// </summary>
     public interface ILoginRepository
     {
         Usuario LoginUsuario(string username, string password);
         List<Roles> LoginRoles(string username);
     }
 
+    /// <summary>
+    /// Repositorio con funcionalidades para el login
+    /// </summary>
     public class LoginRepository: ILoginRepository
     {
         private IDatabaseUtils _dbUtils;
@@ -19,6 +25,12 @@ namespace app_ingenieria_ufinet.Repositories.Login
             this._dbUtils = dbUtils ?? throw new ArgumentNullException(nameof(dbUtils));
         }
 
+        /// <summary>
+        /// Funcionalidad para hacer login y obtener datos
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public Usuario LoginUsuario(string username, string password)
         {
             var procedureParams = new Dictionary<string, object>()
@@ -49,6 +61,11 @@ namespace app_ingenieria_ufinet.Repositories.Login
             }
         }
 
+        /// <summary>
+        /// Obtener los roles de la base de datos
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns>Lista de roles</returns>
         public List<Roles> LoginRoles(string username)
         {
             var procedureParams = new Dictionary<string, object>()

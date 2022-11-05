@@ -8,9 +8,19 @@ namespace app_ingenieria_ufinet.Utils
 {
     public interface IDatabaseUtils
     {
+        /// <summary>
+        /// Execute procedure from database using it's name and params that is protected from the SQL injection attacks.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="storedProcedureName">Name of the procedure that should be executed.</param>
+        /// <param name="procParams">Dictionary of params that procedure takes. </param>
+        /// <returns>List of objects that are mapped in T type, returned by procedure.</returns>
         List<T> ExecuteStoredProc<T>(string storedProcedureName, Dictionary<string, object> procParams) where T : class;
     }
 
+    /// <summary>
+    /// Utilidades de base de datos
+    /// </summary>
     public class DatabaseUtils : IDatabaseUtils
     {
         private readonly DataContext _context;
