@@ -1,0 +1,497 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/forms/select/select2.min.css">
+<link href="~/css/jquery.loadingmodal.css" rel="stylesheet" />
+
+<!-- Zero configuration table -->
+<section id="basic-datatable">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Tipos de Bobinas de Fibra Optica</h4>
+                    <button type="button" id="addType" name="addType" class="btn btn-outline-success" data-toggle="modal" data-target="#modalAgregarTipo">
+                        Agregar Tipo de Bobina
+                    </button>
+                </div>
+                <div class="card-content">
+                    <div class="card-body card-dashboard">
+                        <div class="table-responsive col-md-12">
+                            <table class="table zero-configuration" id="typesTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID Tipo Bobina</th>
+                                        <th>Tipo Bobina</th>
+                                        <th>Precio</th>
+                                        <th>Distancia Bobina</th>
+                                        <th>Eliminar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--/ Zero configuration table -->
+
+<!-- Modal Agregar Tipo -->
+<div class="modal fade text-left" id="modalAgregarTipo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel33"> Agregar un Tipo Bobina FO </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="ResetModal()" id="closeModalAgregarTipo">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="form-type" name="form-type" method="post">
+                <div class="modal-body">
+                    <label>Tipo Bobina Descripcion: </label>
+                    <div class="form-group">
+                        <input type="text" id="TipoBobina" name="TipoBobina" placeholder="Descripcion del tipo de bobina de fo" class="form-control">
+                    </div>
+                    <label>Precio: </label>
+                    <div class="form-group">
+                        <input type="text" id="Precio" name="Precio" placeholder="Precio" class="form-control">
+                    </div>
+                    <label>Unidad de Medida para el precio: </label>
+                    <div class="form-group">
+                        <select class="form-control col-md-12" id="selectUnidadMedidaPrecio" name="selectUnidadMedidaPrecio">
+                            <option value="">Seleccione una opción</option>
+                        </select>
+                    </div>
+                    <label>Moneda: </label>
+                    <div class="form-group">
+                        <select class="form-control col-md-12" id="selectMoneda" name="selectMoneda">
+                            <option value="">Seleccione una opción</option>
+                        </select>
+                    </div>
+                    <label>Distancia Bobina: </label>
+                    <div class="form-group">
+                        <input type="text" id="Distancia" name="Distancia" placeholder="Precio" class="form-control">
+                    </div>
+                    <label>Unidad medida para la bobina: </label>
+                    <div class="form-group col-md-12">
+                        <select class="form-control col-md-12" id="selectUnidadMedidaBobina" name="selectUnidadMedidaBobina">
+                            <option value="">Seleccione una opción</option>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" id="btnGuardarTipo">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Modal Agregar Usuario Fin -->
+@section Scripts {
+    <script src="~/template/app-assets/vendors/js/tables/datatable/datatables.min.js"></script>
+    <script src="~/template/app-assets/vendors/js/tables/datatable/datatables.bootstrap4.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/forms/select/select2.full.min.js"></script>
+    <script src="~/Template/app-assets/js/scripts/forms/select/form-select2.js"></script>
+    <script src="~/template/app-assets/vendors/js/forms/validation/jquery.validate.min.js"></script>
+    <script src="~/js/jquery.loadingmodal.js"></script>
+    <script src="~/js/sweetalert2.all.min.js"></script>
+    <script>
+
+        $(document).ready(function () {
+
+            $('#typesTable').DataTable({
+                "language": { "url": "https://cdn.datatables.net/plug-ins/1.12.1/i18n/es-ES.json" },
+                "ajax": {
+                    "url": "@Url.Action("ListaTiposBobinaFo", "Parametrization")",
+                    "type": "GET",
+                    "dataType": "json"
+                },
+                "order": [[0, "desc"]],
+                columns: [
+                    { "data": "idTipoBobinaFO" },
+                    { "data": "tipoBobinaFODesc" },
+                    {
+                        "render": function (data, type, row) {
+                            return row.simbolo + row.precio + " x " + row.unidadMedidaPrecio
+                        }
+                    },
+                    {
+                        "render": function (data, type, row) {
+                            return row.distanciaBobina + row.unidadMedidaBobina
+                        }
+                    },
+                    {
+                        'defaultContent': null,
+                        'render': function (data, type, row) {
+                            return '<div class="d-flex"> <button type="button" class="btn btn-icon btn-danger mx-1" id="' + row.idTipoBobinaFO + '" onclick="EliminarTipo(this.id)" data-toggle="tooltip" data-placement="left" title="Eliminar"> <i class="fa fa-trash-o"></i> </button> </div>'
+                        }
+                    }
+                ],
+                //rowCallback: function (row, data) {
+                //    if (data.activo === 'Inactivo') {
+                //        $($(row).find("td")[4]).css("color", "#E60026");
+                //    }
+                //    else {
+                //        $($(row).find("td")[4]).css("color", "green");
+                //    }
+                //}
+            });
+
+            cargarSelect();//Carga selects
+
+        });
+
+        //Cargar información en select sucursales y roles
+        $("#addUser").click(function () {
+            //sucursales
+            $.getJSON("@Url.Action("ListaSucursales", "User")", function (dataSource) {
+                $("#selectSucursales").select2({
+                    data: dataSource
+                })
+            });
+
+            //roles
+            $.getJSON("@Url.Action("ListaRoles", "User")", function (dataSource) {
+                $("#selectRoles").select2({
+                    data: dataSource
+                })
+            });
+
+        });
+
+        //VALIDACION DE FORMULARIOS
+
+        $("#form-type").validate({
+            rules: {
+                TipoBobina: "required",
+                Precio: "required",
+                selectUnidadMedidaPrecio: "required",
+                selectMoneda: "required",
+                Distancia: "required",
+                selectUnidadMedidaBobina: "required"
+            },
+            messages: {
+                TipoBobina: "Ingrese tipo de bobina",
+                Precio: "Ingrese el precio",
+                selectUnidadMedidaPrecio: "Ingrese unidad medida",
+                selectMoneda: "Ingrese Moneda",
+                Distancia: "Ingrese distancia",
+                selectUnidadMedidaBobina: "Ingrese unidad de medida"
+            },
+            submitHandler: function (form) {
+                event.preventDefault();
+                agregarTipo();
+
+                //Evitar doble click envio formulario
+                //$('button[type=submit]').click(function () {
+                //  $(this).prop('disabled', true);
+
+                //})
+            }
+        });
+
+        //FUNCIONES
+
+        $('#modalAgregarTipo').on('hidden.bs.modal', function () {
+            resetModal()
+        });
+
+        function ResetModal() {
+            var validator = $("#modalAgregarTipo").validate();
+            validator.resetForm();
+            $("#TipoBobina").val("");
+            $("#Precio").val("");
+            $("#selectUnidadMedidaPrecio").val(0);
+            $("#selectMoneda").val(0);
+            $("#Distancia").val("");
+            $("#selectUnidadMedidaBobina").val(0)
+        }
+
+        function agregarTipo() {
+            //mensaje carga
+            $('body').loadingModal({
+                position: 'auto',
+                text: 'Cargando',
+                color: '#fff',
+                opacity: '0.7',
+                backgrundColor: 'rgb(0,0,0)',
+                animation: 'doubleBounce'
+            });
+
+            //objeto
+            var tipoBobina = $("#TipoBobina").val();
+            var precio = $("#Precio").val();
+            var selectUnidadMedidaPrecio = $("#selectUnidadMedidaPrecio").val();
+            var selectMoneda = $("#selectMoneda").val();
+            var distancia = $("#Distancia").val();
+            var selectUnidadMedidaBobina = $("#selectUnidadMedidaBobina").val();
+
+            var parametros = JSON.stringify({ TipoBobinaFO: tipoBobina, Precio: precio, IdUnidadmedidaPrecio: selectUnidadMedidaPrecio, IdMoneda: selectMoneda, DistanciaBobina: distancia, IdUnidadMedidaBobina: selectUnidadMedidaBobina });
+
+            $.ajax({
+                url: "@Url.Action("AgregarTipoBobinaFo", "Parametrization")",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: parametros,
+                dataType: "json",
+                success: function (result) {
+                    //show Alert
+                    Swal.fire({
+                        title: 'Agregar Tipo FO',
+                        text: result.mensaje,
+                        icon: result.tipo
+                    })
+                    //$("#modalAgregarUsuario").modal('hide');
+                    $('#closeModalAgregarTipo').trigger("click");
+
+                    //reload table
+                    var table = $('#typesTable').DataTable();
+                    table.ajax.reload();
+                    //hidemodal loading
+                    $('body').loadingModal('destroy');
+                },
+                error: function (result) {
+                    Swal.fire({
+                        title: 'Agregar Tipo FO',
+                        text: result.Mensaje,
+                        icon: result.Tipo
+                    })
+                    //hidemodal loading
+                    $('body').loadingModal('destroy');
+
+                }
+            });
+        }
+
+        function detallesUsuario(id) {
+            //Modal Loading
+            $('body').loadingModal({
+                position: 'auto',
+                text: 'Cargando',
+                color: '#fff',
+                opacity: '0.7',
+                backgrundColor: 'rgb(0,0,0)',
+                animation: 'doubleBounce'
+            });
+
+            $.ajax({
+                url: "@Url.Action("DetallesUsuario", "User")",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify({ Usuario: id }),
+                success: function (result) {
+
+                    $("#Usuarioe").val(result.usuario);
+                    $("#Contraseñae").val(result.contraseña);
+                    $("#Nombree").val(result.nombre);
+                    $("#Correoe").val(result.email);
+                    //sucursal
+                    $.getJSON("@Url.Action("ListaSucursales", "User")", function (dataSource) {
+                        $("#selectSucursalese").select2({
+                            data: dataSource,
+                            enable: false
+                        }).val(result.idSucursal).trigger('change');
+                    });
+
+                    //roles
+                    $.getJSON("@Url.Action("ListaRoles", "User")", function (dataSource) {
+                        $("#selectRolese").select2({
+                            data: dataSource
+                        }).val([result.roles]).trigger('change');
+                    });
+
+                    $("#modalEditarUsuario").modal("show")
+
+
+                    $('body').loadingModal('destroy');
+                },
+                error: function (result) {
+                    //show Alert
+                    Swal.fire({
+                        title: "HA OCURRIDO UN ERROR",
+                        text: "Error en el Servidor" + result.responseText,
+                        icon: "error"
+                    })
+                    //hidemodal loading
+                    $('body').loadingModal('destroy');
+
+                }
+            });
+        }
+
+        function editarUsuario() {
+            //mensaje carga
+            $('body').loadingModal({
+                position: 'auto',
+                text: 'Cargando',
+                color: '#fff',
+                opacity: '0.7',
+                backgrundColor: 'rgb(0,0,0)',
+                animation: 'doubleBounce'
+            });
+
+            //objeto
+            var usuario = $("#Usuarioe").val();
+            var password = $("#Contraseñae").val();
+            var nombre = $("#Nombree").val();
+            var correo = $("#Correoe").val();
+            var sucursal = $('#selectSucursalese').select2('data')[0].id;
+            var rolesObject = $('#selectRolese').select2('data');
+            var rolesObjectResult = [];
+
+            //Logica obtener roles
+            for (var i = 0; i < rolesObject.length; i++) {
+                var rolObjectInter = rolesObject[i].id;
+                rolesObjectResult.push(rolObjectInter);
+            }
+
+            var parametros = JSON.stringify({ Usuario: usuario, Password: password, Nombre: nombre, Correo: correo, Sucursal: sucursal, Roles: rolesObjectResult.toString() });
+
+            $.ajax({
+                url: "@Url.Action("EditarUsuario", "User")",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: parametros,
+                dataType: "json",
+                success: function (result) {
+                    //show Alert
+                    Swal.fire({
+                        title: 'Editar Usuario',
+                        text: result.mensaje,
+                        icon: result.tipo
+                    })
+                    //$("#modalAgregarUsuario").modal('hide');
+                    $('#closeModalEditarUsuario').trigger("click");
+
+                    //reload table
+                    var table = $('#usersTable').DataTable();
+                    table.ajax.reload();
+                    //hidemodal loading
+                    $('body').loadingModal('destroy');
+                },
+                error: function (result) {
+                    Swal.fire({
+                        title: 'Editar Usuario',
+                        text: result.Mensaje,
+                        icon: result.Tipo
+                    })
+                    //hidemodal loading
+                    $('body').loadingModal('destroy');
+
+                }
+            });
+        }
+
+        function EliminarTipo(id) {
+            Swal.fire({
+                title: "¿Eliminar Tipo de FO?",
+                text: "¿Está seguro que desea eliminar tipo de bobina FO?" + id,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si, Eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    //Modal Loading
+                    $('body').loadingModal({
+                        position: 'auto',
+                        text: 'Cargando',
+                        color: '#fff',
+                        opacity: '0.7',
+                        backgrundColor: 'rgb(0,0,0)',
+                        animation: 'doubleBounce'
+                    });
+
+                    $.ajax({
+                        url: "@Url.Action("DesactivarTipoBobinaFO","Parametrization")",
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        data: JSON.stringify({ idTipoBobinaFO: id }),
+                        success: function (result) {
+                            //show Alert
+                            Swal.fire({
+                                title: 'ELIMINAR TIPO BOBINA',
+                                text: result.mensaje,
+                                icon: result.tipo
+                            })
+
+                            //reload table
+                            var table = $('#typesTable').DataTable();
+                            table.ajax.reload();
+                            //hidemodal loading
+                            $('body').loadingModal('destroy');
+                        },
+                        error: function (result) {
+                            //show Alert
+                            Swal.fire({
+                                title: "HA OCURRIDO UN ERROR",
+                                text: "Error en el Servidor" + result.responseText,
+                                icon: "error"
+                            })
+                            //hidemodal loading
+                            $('body').loadingModal('destroy');
+
+                        }
+                    });
+
+                }
+            });
+        }
+
+        
+        function cargarSelect() {
+            //Moneda
+            $.get("@Url.Action("ListaMonedas","Parametrization")", function (data) {
+
+                $("#selectMoneda").empty();
+
+                $.each(data, function (index, row) {
+                    $("#selectMoneda").append("<option value='" + row.idMoneda + "'>" + row.nombre + "</option>")
+
+                });
+                $("#selectMoneda").append("<option selected disabled hidden value='0'>" + "Por Favor Seleccione moneda" + "</option>");
+            });
+
+            //Unidades medida precio
+            $.get("@Url.Action("ListaUnidadesMedidaPrecio","Parametrization")", function (data) {
+
+                $("#selectUnidadMedidaPrecio").empty();
+
+                $.each(data, function (index, row) {
+                    $("#selectUnidadMedidaPrecio").append("<option value='" + row.idUnidadMedidaPrecio + "'>" + row.unidadMedida + "</option>")
+
+                });
+                $("#selectUnidadMedidaPrecio").append("<option selected disabled hidden value='0'>" + "Por Favor Seleccione Unidad Medida" + "</option>");
+            });
+
+            //Unidades medida precio
+            $.get("@Url.Action("ListaUnidadesMedidaBobina","Parametrization")", function (data) {
+
+                $("#selectUnidadMedidaBobina").empty();
+
+                $.each(data, function (index, row) {
+                    $("#selectUnidadMedidaBobina").append("<option value='" + row.idUnidadMedidaBobina + "'>" + row.unidadMedida + "</option>")
+
+                });
+                $("#selectUnidadMedidaBobina").append("<option selected disabled hidden value='0'>" + "Por Favor Seleccione Unidad Medida" + "</option>");
+            });
+
+
+
+        }
+
+
+    </script>
+
+
+}

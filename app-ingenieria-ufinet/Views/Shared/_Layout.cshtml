@@ -198,43 +198,20 @@
                 <li class=" nav-item">
                     <a href="index.html"><i class="feather icon-home"></i><span class="menu-title" data-i18n="Dashboard">Dashboard</span><span class="badge badge badge-warning badge-pill float-right mr-2">2</span></a>
                     <ul class="menu-content">
-                        <li class="active">
-                            <a href="dashboard-analytics.html"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Analytics">Analytics</span></a>
-                        </li>
-                        <li>
-                            <a href="dashboard-ecommerce.html"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="eCommerce">eCommerce</span></a>
-                        </li>
+                       
                     </ul>
                 </li>
                 <li class=" navigation-header">
                     <span>Apps</span>
                 </li>
                 <li class=" nav-item">
-                    <a href="app-email.html"><i class="feather icon-mail"></i><span class="menu-title" data-i18n="Email">Email</span></a>
-                </li>
-                <li class=" nav-item">
-                    <a href="app-chat.html"><i class="feather icon-message-square"></i><span class="menu-title" data-i18n="Chat">Chat</span></a>
-                </li>
-                <li class=" nav-item">
-                    <a href="app-todo.html"><i class="feather icon-check-square"></i><span class="menu-title" data-i18n="Todo">Todo</span></a>
-                </li>
-                <li class=" nav-item">
-                    <a href="app-calender.html"><i class="feather icon-calendar"></i><span class="menu-title" data-i18n="Calender">Calender</span></a>
-                </li>
-                <li class=" nav-item">
-                    <a href="#"><i class="feather icon-shopping-cart"></i><span class="menu-title" data-i18n="Ecommerce">Ecommerce</span></a>
+                    <a href="#"><i class="feather icon-database"></i><span class="menu-title" data-i18n="Ecommerce">Parametrización</span></a>
                     <ul class="menu-content">
-                        <li>
-                            <a href="app-ecommerce-shop.html"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Shop">Shop</span></a>
+                        <li class="@(ViewContext.RouteData.Values["Controller"].ToString() + ViewContext.RouteData.Values["Action"].ToString() == "ParametrizationTipoBobinaFo" ? "active nav-item" : "nav-item")">
+                            <a href="@Url.Action("TipoBobinaFo", "Parametrization")"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Shop">Tipos Bobinas FO</span></a>
                         </li>
-                        <li>
-                            <a href="app-ecommerce-details.html"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Details">Details</span></a>
-                        </li>
-                        <li>
-                            <a href="app-ecommerce-wishlist.html"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Wish List">Wish List</span></a>
-                        </li>
-                        <li>
-                            <a href="app-ecommerce-checkout.html"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Checkout">Checkout</span></a>
+                        <li class="@(ViewContext.RouteData.Values["Controller"].ToString() + ViewContext.RouteData.Values["Action"].ToString() == "ParametrizationTipoHerraje" ? "active nav-item" : "nav-item")">
+                            <a href="@Url.Action("TipoHerraje", "Parametrization")"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Details">Tipos Herrajes</span></a>
                         </li>
                     </ul>
                 </li>
@@ -264,7 +241,7 @@
     <!-- BEGIN: Footer-->
     <footer class="footer footer-static footer-light">
         <p class="clearfix blue-grey lighten-2 mb-0">
-            <span class="float-md-left d-block d-md-inline-block mt-25">COPYRIGHT &copy; 2019<a class="text-bold-800 grey darken-2" href="https://1.envato.market/pixinvent_portfolio" target="_blank">Pixinvent,</a>All rights Reserved</span><span class="float-md-right d-none d-md-block">Hand-crafted & Made with<i class="feather icon-heart pink"></i></span>
+            <span class="float-md-left d-block d-md-inline-block mt-25">COPYRIGHT &copy; 2022<a class="text-bold-800 grey darken-2" href="https://1.envato.market/pixinvent_portfolio" target="_blank">,</a>All rights Reserved</span>
             <button class="btn btn-primary btn-icon scroll-top" type="button"><i class="feather icon-arrow-up"></i></button>
         </p>
     </footer>
