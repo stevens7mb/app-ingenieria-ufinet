@@ -2,6 +2,7 @@
 using app_ingenieria_ufinet.Models.Login;
 using app_ingenieria_ufinet.Models.Parametrization.BobinaFO;
 using app_ingenieria_ufinet.Models.Parametrization.BobinFO;
+using app_ingenieria_ufinet.Models.Parametrization.Herraje;
 using app_ingenieria_ufinet.Models.Parametrization.Moneda;
 using app_ingenieria_ufinet.Models.Parametrization.UnidadesMedida;
 using app_ingenieria_ufinet.Models.User;
@@ -52,8 +53,27 @@ namespace app_ingenieria_ufinet.Repositories.Parametrization
         /// </summary>
         /// <returns>devuelve listado de unidades de medida para la distancia de la bobina de fo</returns>
         List<UnidadesMedidaBobina> ListaUnidadesMedidaBobina();
-    }
 
+        /// <summary>
+        /// Obtiene la lista de tipos de herrajes
+        /// </summary>
+        /// <returns>retorna una lista de tipos de bobina de fibra optica</returns>
+        List<TipoHerraje> ListaTiposHerrajes();
+
+        /// <summary>
+        /// Agrega un nuevo tipo de herraje
+        /// </summary>
+        /// <param name="tipoherraje">Modelo de Tipo Herraje</param>
+        /// <returns>respuesta generica sp</returns>
+        SPResponseGeneric AgregarTipoHerraje(TipoHerrajeRequestModel tipoherraje);
+
+        /// <summary>
+        /// Desactiva el tipo de herraje
+        /// </summary>
+        /// <param name="idTipoHerraje">Identificador Tipo Herraje</param>
+        /// <returns>respuesta generica sp</returns>
+        SPResponseGeneric DesactivarTipoHerraje(int idTipoHerraje);
+    }
     #endregion interface
 
     /// <summary>
@@ -67,6 +87,8 @@ namespace app_ingenieria_ufinet.Repositories.Parametrization
         {
             this._dbUtils = dbUtils ?? throw new ArgumentNullException(nameof(dbUtils));
         }
+
+        #region TiposBobinasFO
 
         /// <summary>
         /// Obtiene la lista de tipos de bobina de fibra óptica
@@ -107,7 +129,7 @@ namespace app_ingenieria_ufinet.Repositories.Parametrization
         /// <summary>
         /// Desactiva el tipo de bobina de fo
         /// </summary>
-        /// <param name="idTipoBobinaFO">Modelo de Usuario</param>
+        /// <param name="idTipoBobinaFO">Identificador Tipo Bobina FO</param>
         /// <returns>respuesta generica sp</returns>
         public SPResponseGeneric DesactivarTipoDeBobinaFO(int idTipoBobinaFO)
         {
@@ -120,14 +142,70 @@ namespace app_ingenieria_ufinet.Repositories.Parametrization
 
             return result[0];
         }
+        #endregion TiposBobinasFO
 
+        #region TiposHerraje
+
+        /// <summary>
+        /// Obtiene la lista de tipos de herrajes
+        /// </summary>
+        /// <returns>retorna una lista de tipos de bobina de fibra optica</returns>
+        public List<TipoHerraje> ListaTiposHerrajes()
+        {
+            var procedureParams = new Dictionary<string, object>() { };
+
+            var result = this._dbUtils.ExecuteStoredProc<TipoHerraje>("lista_tipos_herrajes", procedureParams);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Agrega un nuevo tipo de herraje
+        /// </summary>
+        /// <param name="tipoherraje">Modelo de Tipo Herraje</param>
+        /// <returns>respuesta generica sp</returns>
+        public SPResponseGeneric AgregarTipoHerraje(TipoHerrajeRequestModel tipoherraje)
+        {
+            var procedureParams = new Dictionary<string, object>()
+            {
+                {"@tipoHerraje", tipoherraje.tipoHerraje},
+                {"@precio", tipoherraje.precio},
+                {"@idMoneda", tipoherraje.idMoneda},
+                {"@idTipoBobinaFO", tipoherraje.idTipoBobinaFO}
+            };
+
+            var result = this._dbUtils.ExecuteStoredProc<SPResponseGeneric>("crear_tipo_herraje", procedureParams);
+
+            return result[0];
+        }
+
+        /// <summary>
+        /// Desactiva el tipo de herraje
+        /// </summary>
+        /// <param name="idTipoHerraje">Identificador Tipo Herraje</param>
+        /// <returns>respuesta generica sp</returns>
+        public SPResponseGeneric DesactivarTipoHerraje(int idTipoHerraje)
+        {
+            var procedureParams = new Dictionary<string, object>()
+            {
+                {"@idTipoHerraje", idTipoHerraje}
+            };
+
+            var result = this._dbUtils.ExecuteStoredProc<SPResponseGeneric>("desactivar_tipo_herraje", procedureParams);
+
+            return result[0];
+        }
+
+        #endregion TiposHerraje
+
+        #region Comunes
         /// <summary>
         /// Listado de monedas
         /// </summary>
         /// <returns>devuelve listado de monedas</returns>
         public List<Moneda> ListadoMoneda()
         {
-            var procedureParams = new Dictionary<string, object>(){};
+            var procedureParams = new Dictionary<string, object>() { };
 
             var result = this._dbUtils.ExecuteStoredProc<Moneda>("lista_monedas", procedureParams);
 
@@ -160,5 +238,6 @@ namespace app_ingenieria_ufinet.Repositories.Parametrization
             return result;
         }
 
+        #endregion Comunes
     }
 }

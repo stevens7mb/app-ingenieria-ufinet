@@ -1,6 +1,7 @@
 ﻿using app_ingenieria_ufinet.Models.Commons;
 using app_ingenieria_ufinet.Models.Parametrization.BobinaFO;
 using app_ingenieria_ufinet.Models.Parametrization.BobinFO;
+using app_ingenieria_ufinet.Models.Parametrization.Herraje;
 using app_ingenieria_ufinet.Models.Parametrization.Moneda;
 using app_ingenieria_ufinet.Models.Parametrization.UnidadesMedida;
 using app_ingenieria_ufinet.Models.User;
@@ -18,6 +19,8 @@ namespace app_ingenieria_ufinet.Controllers
         {
             _parametrizationRepository = parametrizationRepository;
         }
+
+        #region Views
         public IActionResult TipoBobinaFo()
         {
             return View();
@@ -27,6 +30,9 @@ namespace app_ingenieria_ufinet.Controllers
         {
             return View();
         }
+        #endregion Views
+
+        #region TipoBobinaFO
 
         [HttpGet]
         public JsonResult ListaTiposBobinaFO()
@@ -51,6 +57,7 @@ namespace app_ingenieria_ufinet.Controllers
 
             return Json(result);
         }
+        #endregion TipoBobinaFO
 
         #region dropdowns
 
@@ -77,7 +84,41 @@ namespace app_ingenieria_ufinet.Controllers
 
             return Json(listaUnidades);
         }
+
+        [HttpGet]
+        public JsonResult ListaTiposDeBobinaFO()
+        {
+            List<TipoBobinaFO> tiposBobina = _parametrizationRepository.ListaTiposFO();
+
+            return Json(tiposBobina);
+        }
         #endregion dropdowns
+
+        #region TipoHerraje
+        [HttpGet]
+        public JsonResult ListaTiposHerrajes()
+        {
+            List<TipoHerraje> result = this._parametrizationRepository.ListaTiposHerrajes();
+
+            return Json(new { data = result });
+        }
+
+        [HttpPost]
+        public JsonResult AgregarTipoHerraje([FromBody] TipoHerrajeRequestModel tipoHerraje)
+        {
+            SPResponseGeneric result = this._parametrizationRepository.AgregarTipoHerraje(tipoHerraje);
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult DesactivarTipoHerraje([FromBody] TipoHerrajeRequestModel tipoHerraje)
+        {
+            SPResponseGeneric result = this._parametrizationRepository.DesactivarTipoHerraje((int)tipoHerraje.idTipoHerraje);
+
+            return Json(result);
+        }
+        #endregion TipoHerraje
 
     }
 }
