@@ -1,3 +1,94 @@
 ﻿@{
     Layout = "_Layout";
 }
+
+<!-- BEGIN: Content-->
+<div class="content-body">
+    <section class="invoice-list-wrapper">
+        <div class="card">
+            <div class="card-datatable table-responsive">
+                <table class="pi-table" id="pi-table">
+                    <thead>
+                        <tr>
+                            <th>ID Tipo Herraje</th>
+                            <th class="text-truncate">Tipo Herraje</th>
+                            <th>Precio</th>
+                            <th>Tipo Bobina FO</th>
+                            <th class="cell-fit">Actions</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </section>
+
+</div>
+<!-- END: Content-->
+
+@section Scripts {
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/jquery.dataTables.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/jquery.dataTables.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/datatables.buttons.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/dataTables.bootstrap5.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/datatables.checkboxes.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/dataTables.responsive.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/responsive.bootstrap5.js"></script>
+    <script src="~/template/app-assets/vendors/js/forms/validation/jquery.validate.min.js"></script>
+    <script src="~/js/jquery.loadingmodal.js"></script>
+    <script src="~/js/sweetalert2.all.min.js"></script>
+    <script>
+
+        $(document).ready(function () {
+
+            $('#pi-table').DataTable({
+                "language": { "url": "https://cdn.datatables.net/plug-ins/1.12.1/i18n/es-ES.json" },
+                "ajax": {
+                    "url": "@Url.Action("ListaTiposHerrajes", "Parametrization")",
+                    "type": "GET",
+                    "dataType": "json"
+                },
+                "order": [[0, "desc"]],
+                columns: [
+                    { "data": "idTipoHerraje" },
+                    { "data": "tipoHerrajeDesc" },
+                    {
+                        "render": function (data, type, row) {
+                            return row.moneda + row.precio
+                        }
+                    },
+                    {
+                        "data": "tipoBobinaFO",
+                        "className": "dropdown",
+                    },
+                    {
+                        'defaultContent': null,
+                        'render': function (data, type, row) {
+                            return '<div class="d-flex"> <button type="button" class="btn btn-icon btn-danger mx-1" id="' + row.idTipoHerraje + '" onclick="EliminarTipo(this.id)" data-toggle="tooltip" data-placement="left" title="Eliminar"> <i class="fa fa-trash-o"></i> </button> </div>'
+                        }
+                    }
+                ],
+                initComplete: function () {
+                    this.api().columns('.dropdown').every(function () {
+                        var column = this;
+                        var select = $('<select class="form-control"><option value=""></option></select>')
+                            .appendTo($("#filtro").empty())
+                            .on('change', function () {
+                                var val = $.fn.dataTable.util.escapeRegex(
+                                    $(this).val()
+                                );
+                                column
+                                    .search(val ? '^' + val + '$' : '', true, false)
+                                    .draw();
+                            });
+                        column.data().unique().sort().each(function (d, j) {
+                            select.append('<option value="' + d + '">' + d + '</option>')
+                        });
+                    });
+                }
+            });
+
+
+        });
+
+    </script>
+}

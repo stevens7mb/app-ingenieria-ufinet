@@ -2,6 +2,13 @@
     Layout = "_Layout";
 }
 
+<!--Bootstrap Datatable-->
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/tables/datatable/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/tables/datatable/responsive.bootstrap5.min.css">
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/tables/datatable/buttons.bootstrap5.min.css">
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/tables/datatable/rowGroup.bootstrap5.min.css">
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/pickers/flatpickr/flatpickr.min.css">
+
 <link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/forms/select/select2.min.css">
 <link href="~/css/jquery.loadingmodal.css" rel="stylesheet" />
 
@@ -12,7 +19,7 @@
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">Tipos de Herrajes</h4>
-                    <button type="button" id="addType" name="addType" class="btn btn-outline-success" data-toggle="modal" data-target="#modalAgregarTipo">
+                    <button type="button" id="addType" name="addType" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalAgregarTipo">
                         Agregar Tipo de Herraje
                     </button>
                 </div>
@@ -49,33 +56,33 @@
 <!--/ Zero configuration table -->
 
 <!-- Modal Agregar Tipo -->
-<div class="modal fade text-left" id="modalAgregarTipo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
+<div class="modal fade text-start" id="modalAgregarTipo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="myModalLabel33"> Agregar Tipo de Herraje </h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="ResetModal()" id="closeModalAgregarTipo">
-                    <span aria-hidden="true">&times;</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="ResetModal()" id="closeModalAgregarTipo">
+                @*    <span aria-hidden="true">&times;</span>*@
                 </button>
             </div>
             <form id="form-type" name="form-type" method="post">
                 <div class="modal-body">
                     <label>Tipo Herraje Descripcion: </label>
-                    <div class="form-group">
+                    <div class="mb-1">
                         <input type="text" id="tipoHerraje" name="tipoHerraje" placeholder="Descripcion del tipo de herraje" class="form-control">
                     </div>
                     <label>Precio: </label>
-                    <div class="form-group">
+                    <div class="mb-1">
                         <input type="text" id="Precio" name="Precio" placeholder="Precio" class="form-control">
                     </div>
                     <label>Moneda: </label>
-                    <div class="form-group">
+                    <div class="mb-1">
                         <select class="form-control col-md-12" id="selectMoneda" name="selectMoneda">
                             <option value="">Seleccione una opción</option>
                         </select>
                     </div>
                     <label>Tipo de Bobina FO: </label>
-                    <div class="form-group">
+                    <div class="mb-1">
                         <select class="form-control col-md-12" id="selectTipoBobinaFO" name="selectTipoBobinaFO">
                             <option value="">Seleccione una opción</option>
                         </select>
@@ -91,12 +98,27 @@
 </div>
 <!-- Modal Agregar Usuario Fin -->
 @section Scripts {
-    <script src="~/template/app-assets/vendors/js/tables/datatable/datatables.min.js"></script>
-    <script src="~/template/app-assets/vendors/js/tables/datatable/datatables.bootstrap4.min.js"></script>
+    <!-- Bootstrap datatable -->
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/jquery.dataTables.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/dataTables.bootstrap5.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/dataTables.responsive.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/responsive.bootstrap5.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/datatables.checkboxes.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/datatables.buttons.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/jszip.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/pdfmake.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/vfs_fonts.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/buttons.html5.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/buttons.print.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/dataTables.rowGroup.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/pickers/flatpickr/flatpickr.min.js"></script>
+    <!-- end Bootstrap datatable -->
     <script src="~/Template/app-assets/vendors/js/forms/select/select2.full.min.js"></script>
-    <script src="~/Template/app-assets/js/scripts/forms/select/form-select2.js"></script>
-    <script src="~/template/app-assets/vendors/js/forms/validation/jquery.validate.min.js"></script>
-    <script src="~/js/jquery.loadingmodal.js"></script>
+    <script src="~/Template/app-assets/js/scripts/forms/form-select2.js"></script>
+    <script src="~/Template/app-assets/vendors/js/forms/validation/jquery.validate.min.js"></script>
+    <!-- Mensaje cargando-->
+    <script src="~/js/jquery.loadingModal.js"></script>
+    <!-- Alertas-->
     <script src="~/js/sweetalert2.all.min.js"></script>
     <script>
 
@@ -125,7 +147,7 @@
                     {
                         'defaultContent': null,
                         'render': function (data, type, row) {
-                            return '<div class="d-flex"> <button type="button" class="btn btn-icon btn-danger mx-1" id="' + row.idTipoHerraje + '" onclick="EliminarTipo(this.id)" data-toggle="tooltip" data-placement="left" title="Eliminar"> <i class="fa fa-trash-o"></i> </button> </div>'
+                            return '<div class="d-flex"> <button type="button" class="btn btn-icon btn-danger mx-1" id="' + row.idTipoHerraje + '" onclick="EliminarTipo(this.id)" data-toggle="tooltip" data-placement="left" title="Eliminar"> <i data-feather="trash"></i> </button> </div>'
                         }
                     }
                 ],
@@ -146,7 +168,11 @@
                             select.append('<option value="' + d + '">' + d + '</option>')
                         });
                     });
+                },
+                drawCallback: function (settings) {
+                    feather.replace();
                 }
+
             });
 
             cargarSelect();//Carga selects
@@ -181,10 +207,6 @@
         });
 
         //FUNCIONES
-
-        $('#modalAgregarTipo').on('hidden.bs.modal', function () {
-            resetModal()
-        });
 
         function ResetModal() {
             var validator = $("#modalAgregarTipo").validate();

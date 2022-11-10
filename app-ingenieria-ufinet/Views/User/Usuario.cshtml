@@ -1,6 +1,13 @@
 ﻿@{
     Layout = "_Layout";
 }
+<!--Bootstrap Datatable-->
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/tables/datatable/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/tables/datatable/responsive.bootstrap5.min.css">
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/tables/datatable/buttons.bootstrap5.min.css">
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/tables/datatable/rowGroup.bootstrap5.min.css">
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/pickers/flatpickr/flatpickr.min.css">
+
 <link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/forms/select/select2.min.css">
 <link href="~/css/jquery.loadingmodal.css" rel="stylesheet" />
 
@@ -11,7 +18,7 @@
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">Usuarios</h4>
-                    <button type="button" id="addUser" name="addUser" class="btn btn-outline-success" data-toggle="modal" data-target="#modalAgregarUsuario">
+                    <button type="button" id="addUser" name="addUser" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalAgregarUsuario" onclick="ResetModal()">
                         Agregar Usuario
                     </button>
                 </div>
@@ -43,42 +50,42 @@
 
 
 <!-- Modal Agregar Usuario -->
-<div class="modal fade text-left" id="modalAgregarUsuario" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
+<div class="modal fade fade text-start" id="modalAgregarUsuario" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="myModalLabel33"> Agregar un Usuario </h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="ResetModal()" id="closeModalAgregarUsuario">
-                    <span aria-hidden="true">&times;</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="ResetModal()" id="closeModalAgregarUsuario">
+                   @* <span aria-hidden="true">&times;</span>*@
                 </button>
             </div>
             <form id="form-user" name="form-user" method="post">
                 <div class="modal-body">
                     <label>Usuario: </label>
-                    <div class="form-group">
+                    <div class="mb-1">
                         <input type="text" id="Usuario" name="Usuario" placeholder="Identificador de Usuario" class="form-control">
                     </div>
                     <label>Password: </label>
-                    <div class="form-group">
+                    <div class="mb-1">
                         <input type="password" id="Contraseña" name="Contraseña" placeholder="Password" class="form-control">
                     </div>
                     <label>Nombre: </label>
-                    <div class="form-group">
+                    <div class="mb-1">
                         <input type="text" id="Nombre" name="Nombre" placeholder="Nombre" class="form-control">
                     </div>
                     <label>Email: </label>
-                    <div class="form-group">
+                    <div class="mb-1">
                         <input type="text" id="Correo" name="Correo" placeholder="Correo" class="form-control">
                     </div>
                     <label>Sucursal: </label>
-                    <div class="form-group col-md-12">
-                        <select class="select2 form-control col-md-12" style="width: 100%" id="selectSucursales" name="selectSucursales">
+                    <div class="mb-1 col-md-12">
+                        <select class="select2 form-select" style="width: 100%" id="selectSucursales" name="selectSucursales">
                             <option value="">Seleccione</option>
                         </select>
                     </div>
                     <label>Roles: </label>
-                    <div class="form-group col-md-12">
-                        <select class="select2 form-control col-md-12" style="width: 100%" multiple="multiple" id="selectRoles" name="selectRoles">
+                    <div class="mb-1 col-md-12">
+                        <select class="select2 form-select" style="width: 100%" multiple="multiple" id="selectRoles" name="selectRoles">
                         </select>
                     </div>
 
@@ -93,13 +100,13 @@
 <!-- Modal Agregar Usuario Fin -->
 
 <!-- Modal Editar Usuario -->
-<div class="modal fade text-left" id="modalEditarUsuario" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
+<div class="modal fade text-start" id="modalEditarUsuario" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="myModalLabel33"> Editar Usuario </h4>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" onclick="ResetModalEditar()" id="closeModalEditarUsuario">
-                    <span aria-hidden="true">&times;</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="ResetModalEditar()" id="closeModalEditarUsuario">
+                    @*<span aria-hidden="true">&times;</span>*@
                 </button>
             </div>
             <form id="form-user-edit" name="form-user-edit" method="post">
@@ -122,13 +129,13 @@
                     </div>
                     <label>Sucursal: </label>
                     <div class="form-group col-md-12">
-                        <select class="select2 form-control col-md-12" style="width: 100%" id="selectSucursalese" name="selectSucursalese" disabled>
+                        <select class="select2 form-select" style="width: 100%" id="selectSucursalese" name="selectSucursalese" disabled>
                             <option value="">Seleccione</option>
                         </select>
                     </div>
                     <label>Roles: </label>
                     <div class="form-group col-md-12">
-                        <select class="select2 form-control col-md-12" style="width: 100%" multiple="multiple" id="selectRolese" name="selectRolese">
+                        <select class="select2 form-select" style="width: 100%" multiple="multiple" id="selectRolese" name="selectRolese">
                         </select>
                     </div>
 
@@ -143,12 +150,26 @@
 <!-- Modal Editar Usuario Fin -->
 
 @section Scripts {
-    <script src="~/template/app-assets/vendors/js/tables/datatable/datatables.min.js"></script>
-    <script src="~/template/app-assets/vendors/js/tables/datatable/datatables.bootstrap4.min.js"></script>
+    <!-- Bootstrap datatable -->
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/jquery.dataTables.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/dataTables.bootstrap5.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/dataTables.responsive.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/responsive.bootstrap5.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/datatables.checkboxes.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/datatables.buttons.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/jszip.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/pdfmake.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/vfs_fonts.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/buttons.html5.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/buttons.print.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/dataTables.rowGroup.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/pickers/flatpickr/flatpickr.min.js"></script>
+    <!-- end Bootstrap datatable -->
     <script src="~/Template/app-assets/vendors/js/forms/select/select2.full.min.js"></script>
-    <script src="~/Template/app-assets/js/scripts/forms/select/form-select2.js"></script>
-    <script src="~/template/app-assets/vendors/js/forms/validation/jquery.validate.min.js"></script>
-    <script src="~/js/jquery.loadingmodal.js"></script>
+    <script src="~/Template/app-assets/vendors/js/forms/validation/jquery.validate.min.js"></script>
+    <!-- Mensaje cargando-->
+    <script src="~/js/jquery.loadingModal.js"></script>
+    <!-- Alertas-->
     <script src="~/js/sweetalert2.all.min.js"></script>
     <script>
 
@@ -171,7 +192,7 @@
                     {
                         'defaultContent': null,
                         'render': function (data, type, row) {
-                            return '<div class="d-flex"> <button type="button" class="btn btn-icon btn-warning mx-1" id="' + row.usuario + '" onclick="detallesUsuario(this.id)" data-toggle="tooltip" data-placement="left" title="Modificar"> <i class="fa fa-pencil"></i></i> </button> <button type="button" class="btn btn-icon btn-danger mx-1" id="' + row.usuario + '" onclick="EliminarUsuario(this.id)" data-toggle="tooltip" data-placement="left" title="Eliminar"> <i class="fa fa-trash-o"></i> </button> </div>'
+                            return '<div class="d-flex"> <button type="button" class="btn btn-icon btn-warning mx-1" id="' + row.usuario + '" onclick="detallesUsuario(this.id)" data-toggle="tooltip" data-placement="left" title="Modificar"> <i data-feather="edit"></i></i> </button> <button type="button" class="btn btn-icon btn-danger mx-1" id="' + row.usuario + '" onclick="EliminarUsuario(this.id)" data-toggle="tooltip" data-placement="left" title="Eliminar"> <i data-feather="trash"></i> </button> </div>'
                         }
                     }
                 ],
@@ -182,6 +203,9 @@
                     else {
                         $($(row).find("td")[4]).css("color", "green");
                     }
+                },
+                drawCallback: function (settings) {
+                    feather.replace();
                 }
             });
 
@@ -264,10 +288,6 @@
 
 
         //FUNCIONES
-
-        $('#modalAgregarUsuario').on('hidden.bs.modal', function () {
-            resetModal()
-        });
 
         function ResetModal() {
             var validator = $("#modalAgregarUsuario").validate();
@@ -535,6 +555,4 @@
 
 
     </script>
-
-
 }
