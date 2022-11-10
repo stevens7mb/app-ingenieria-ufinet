@@ -1,26 +1,26 @@
-var htmlbeautify = require("gulp-html-beautify")
+var htmlbeautify = require('gulp-html-beautify');
 
 module.exports = (gulp, callback) => {
-  const beautifyHtmlDemoTask = function() {
+  const beautifyHtmlDemoTask = function () {
     return gulp
-      .src("html-demo/**/*.html")
+      .src('html-demo/**/*.html')
       .pipe(htmlbeautify({ indentSize: 2 }))
-      .pipe(gulp.dest("./html-demo/"))
-  }
+      .pipe(gulp.dest('./html-demo/'));
+  };
 
-  const beautifyHtmlTask = function() {
+  const beautifyHtmlTask = function () {
     return gulp
-      .src("html/**/*.html")
+      .src('html/**/*.html')
       .pipe(htmlbeautify({ indentSize: 2 }))
-      .pipe(gulp.dest("./html/"))
-  }
+      .pipe(gulp.dest('./html/'));
+  };
 
-  const beautifySkTask = function() {
+  const beautifySkTask = function () {
     return gulp
-      .src("starter-kit/**/*.html")
+      .src('starter-kit/**/*.html')
       .pipe(htmlbeautify({ indentSize: 2 }))
-      .pipe(gulp.dest("./starter-kit/"))
-  }
+      .pipe(gulp.dest('./starter-kit/'));
+  };
 
   // ---------------------------------------------------------------------------
   // Exports
@@ -29,5 +29,5 @@ module.exports = (gulp, callback) => {
     html_demo: beautifyHtmlDemoTask,
     html: beautifyHtmlTask,
     starter_kit: beautifySkTask
-  }
-}
+  };
+};

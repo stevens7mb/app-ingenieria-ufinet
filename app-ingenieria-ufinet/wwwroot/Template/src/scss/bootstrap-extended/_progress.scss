@@ -6,47 +6,15 @@
   Author: PIXINVENT
   Author URL: http://www.themeforest.net/user/pixinvent
   ----------------------------------------------------------------------------------------
-
-  Modifiers:       `progress-lg`
-                   `progress-md`
-                   `progress-sm`
-                   `progress-xs`
-
 ==========================================================================================*/
 
-// Size Modifier
-// ========================================================================
-
 .progress {
-  margin-bottom: 3rem;
-
-  // margin for last progress bar
-
-  &:last-child {
-    margin-bottom: 1rem;
+  // border radius to set for stacked bars
+  .progress-bar + .progress-bar:not(:last-child) {
+    border-radius: 0;
   }
-
-  // progress bar sizes
-
-  &.progress-xl {
-    height: $progress-size-xl;
-  }
-
-  &.progress-lg {
-    height: $progress-size-lg;
-  }
-
-  &.progress-md {
-    height: $progress-size-md;
-  }
-
-  &.progress-sm {
-    height: $progress-size-sm;
-  }
-
-  // progress bar radius
-
-  .progress-bar {
-    border-radius: $progress-border-radius;
+  .progress-bar:last-child {
+    border-top-right-radius: $progress-border-radius;
+    border-bottom-right-radius: $progress-border-radius;
   }
 }

@@ -1,13 +1,11 @@
-/*!
- * Bootstrap v4.3.1 (https://getbootstrap.com/)
- * Copyright 2011-2019 The Bootstrap Authors
- * Copyright 2011-2019 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- */
+// ================================================================================================
+//  File Name: bootstrap.scss
+//  Description: Include bootstrap core from node_modules
+//  ----------------------------------------------------------------------------------------------
+//  Item Name: Vuexy  - Vuejs, HTML & Laravel Admin Dashboard Template
+//  Author: PIXINVENT
+//  Author URL: http://www.themeforest.net/user/pixinvent
+// ================================================================================================
 
- @import "bootstrap/functions";
- 
- @import "core/variables/variables";
- @import "bootstrap/variables";
-
- @import "bootstrap/bootstrap";
+@import 'bootstrap-extended/include'; // Bootstrap includes
+@import 'bootstrap/scss/bootstrap'; // Bootstrap core

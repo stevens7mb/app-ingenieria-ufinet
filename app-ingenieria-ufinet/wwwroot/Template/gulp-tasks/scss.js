@@ -1,84 +1,109 @@
-var sass = require("gulp-sass")
-var merge = require("merge-stream")
+var sass = require('gulp-sass');
+var merge = require('merge-stream');
 
 module.exports = (gulp, callback) => {
-  const scssCoreTask = function() {
+  const scssCoreTask = function () {
     return gulp
-      .src(config.source.sass + "/core/**/*.scss")
-      .pipe(sass().on("error", sass.logError))
-      .pipe(gulp.dest(config.destination.css + "/core/"))
-  }
-
-  const scssMainTask = function() {
-    return gulp
-      .src(
-        [
-          "bootstrap.scss",
-          "bootstrap-extended.scss",
-          "colors.scss",
-          "components.scss"
-        ],
-        { cwd: config.source.sass }
+      .src(config.source.sass + '/core/**/*.scss')
+      .pipe(
+        sass({
+          includePaths: ['node_modules', 'assets']
+        })
       )
-      .pipe(sass().on("error", sass.logError))
-      .pipe(gulp.dest(config.destination.css))
-  }
+      .pipe(sass().on('error', sass.logError))
+      .pipe(gulp.dest(config.destination.css + '/core/'));
+  };
 
-  const scssPagesTask = function() {
+  const scssMainTask = function () {
     return gulp
-      .src(config.source.sass + "/pages/**/*.scss")
-      .pipe(sass().on("error", sass.logError))
-      .pipe(gulp.dest(config.destination.css + "/pages/"))
-  }
+      .src(['bootstrap.scss', 'bootstrap-extended.scss', 'colors.scss', 'components.scss'], { cwd: config.source.sass })
+      .pipe(
+        sass({
+          includePaths: ['node_modules', 'assets']
+        })
+      )
+      .pipe(sass().on('error', sass.logError))
+      .pipe(gulp.dest(config.destination.css));
+  };
 
-  const scssPluginTask = function() {
+  const scssPagesTask = function () {
     return gulp
-      .src(config.source.sass + "/plugins/**/*.scss")
-      .pipe(sass().on("error", sass.logError))
-      .pipe(gulp.dest(config.destination.css + "/plugins/"))
-  }
+      .src(config.source.sass + '/pages/**/*.scss')
+      .pipe(
+        sass({
+          includePaths: ['node_modules', 'assets']
+        })
+      )
+      .pipe(sass().on('error', sass.logError))
+      .pipe(gulp.dest(config.destination.css + '/pages/'));
+  };
 
-  const scssStyleTask = function() {
+  const scssPluginTask = function () {
     return gulp
-      .src(config.assets + "/scss/style.scss")
-      .pipe(sass().on("error", sass.logError))
-      .pipe(gulp.dest(config.assets + "/css/"))
-  }
+      .src(config.source.sass + '/plugins/**/*.scss')
+      .pipe(
+        sass({
+          includePaths: ['node_modules', 'assets']
+        })
+      )
+      .pipe(sass().on('error', sass.logError))
+      .pipe(gulp.dest(config.destination.css + '/plugins/'));
+  };
 
-  const scssThemesTask = function() {
+  const scssStyleTask = function () {
     return gulp
-      .src(config.source.sass + "/themes/**/*.scss")
-      .pipe(sass().on("error", sass.logError))
-      .pipe(gulp.dest(config.destination.css + "/themes/"))
-  }
+      .src(config.assets + '/scss/style.scss')
+      .pipe(
+        sass({
+          includePaths: ['node_modules', 'assets']
+        })
+      )
+      .pipe(sass().on('error', sass.logError))
+      .pipe(gulp.dest(config.assets + '/css/'));
+  };
 
-  const scssRtlTask = function() {
+  const scssThemesTask = function () {
+    return gulp
+      .src(config.source.sass + '/themes/**/*.scss')
+      .pipe(
+        sass({
+          includePaths: ['node_modules', 'assets']
+        })
+      )
+      .pipe(sass().on('error', sass.logError))
+      .pipe(gulp.dest(config.destination.css + '/themes/'));
+  };
+
+  const scssRtlTask = function () {
     var custom = gulp
-      .src(config.source.sass + "/custom-rtl.scss")
-      .pipe(sass().on("error", sass.logError))
-      .pipe(gulp.dest(config.destination.css_rtl))
+      .src(config.source.sass + '/custom-rtl.scss')
+      .pipe(
+        sass({
+          includePaths: ['node_modules', 'assets']
+        })
+      )
+      .pipe(sass().on('error', sass.logError))
+      .pipe(gulp.dest(config.destination.css_rtl));
 
     var style = gulp
-      .src(config.assets + "/scss/style-rtl.scss")
-      .pipe(sass().on("error", sass.logError))
-      .pipe(gulp.dest(config.assets + "/css/"))
-
-    return merge(custom, style)
-  }
-
-  const scssWatchTask = function() {
-    return gulp.watch(
-      config.source.sass + "/**/*.scss",
-      gulp.parallel(
-        scssCoreTask,
-        scssMainTask,
-        scssPagesTask,
-        scssPluginTask,
-        scssStyleTask,
-        scssThemesTask
+      .src(config.assets + '/scss/style-rtl.scss')
+      .pipe(
+        sass({
+          includePaths: ['node_modules', 'assets']
+        })
       )
-    )
-  }
+      .pipe(sass().on('error', sass.logError))
+      .pipe(gulp.dest(config.assets + '/css/'));
+
+    return merge(custom, style);
+  };
+
+  const scssWatchTask = function () {
+    return gulp.watch(
+      [config.source.sass + '/**/*.scss', config.assets + '/scss/**/*.scss'],
+      gulp.parallel(scssCoreTask, scssMainTask, scssPagesTask, scssPluginTask, scssStyleTask, scssThemesTask)
+    );
+  };
 
   // ---------------------------------------------------------------------------
   // Exports
@@ -92,5 +117,5 @@ module.exports = (gulp, callback) => {
     themes: scssThemesTask,
     rtl: scssRtlTask,
     watch: scssWatchTask
-  }
-}
+  };
+};

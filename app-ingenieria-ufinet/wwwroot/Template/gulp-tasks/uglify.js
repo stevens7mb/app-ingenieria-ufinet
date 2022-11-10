@@ -1,24 +1,24 @@
-var uglify = require("gulp-uglify")
-var rename = require("gulp-rename")
+var uglify = require('gulp-terser');
+var rename = require('gulp-rename');
 
 module.exports = (gulp, callback) => {
-  const uglifyJsTask = function() {
+  const uglifyJsTask = function () {
     return gulp
-      .src(["**/*.js", "!**/*.min.js"], {
+      .src(['**/*.js', '!**/*.min.js'], {
         cwd: config.destination.js
       })
       .pipe(uglify())
-      .on("error", function(err) {
-        console.log("\x1b[31m", err.toString())
+      .on('error', function (err) {
+        console.log('\x1b[31m', err.toString());
       })
-      .pipe(rename({ suffix: ".min" }))
-      .pipe(gulp.dest(config.destination.js))
-  }
+      .pipe(rename({ suffix: '.min' }))
+      .pipe(gulp.dest(config.destination.js));
+  };
 
   // ---------------------------------------------------------------------------
   // Exports
 
   return {
     js: uglifyJsTask
-  }
-}
+  };
+};

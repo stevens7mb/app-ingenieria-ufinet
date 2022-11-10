@@ -205,6 +205,17 @@
                     <span>Apps</span>
                 </li>
                 <li class=" nav-item">
+                    <a href="#"><i class="feather icon-credit-card"></i><span class="menu-title" data-i18n="Ecommerce">PI</span></a>
+                    <ul class="menu-content">
+                        <li class="@(ViewContext.RouteData.Values["Controller"].ToString() + ViewContext.RouteData.Values["Action"].ToString() == "PIPIList" ? "active nav-item" : "nav-item")">
+                            <a href="@Url.Action("PIList", "PI")"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Shop">Generacion de PI</span></a>
+                        </li>
+                @*        <li class="@(ViewContext.RouteData.Values["Controller"].ToString() + ViewContext.RouteData.Values["Action"].ToString() == "ParametrizationTipoHerraje" ? "active nav-item" : "nav-item")">
+                            <a href="@Url.Action("TipoHerraje", "Parametrization")"><i class="feather icon-circle"></i><span class="menu-item" data-i18n="Details">Tipos Herrajes</span></a>
+                        </li>*@
+                    </ul>
+                </li>
+                <li class=" nav-item">
                     <a href="#"><i class="feather icon-database"></i><span class="menu-title" data-i18n="Ecommerce">Parametrización</span></a>
                     <ul class="menu-content">
                         <li class="@(ViewContext.RouteData.Values["Controller"].ToString() + ViewContext.RouteData.Values["Action"].ToString() == "ParametrizationTipoBobinaFo" ? "active nav-item" : "nav-item")">

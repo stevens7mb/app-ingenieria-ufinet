@@ -8,17 +8,16 @@
 ==========================================================================================*/
 
 .navbar-container {
-
   a.nav-link-search {
     float: left;
   }
 
   .search-input {
-    float: left;
-    // padding-top: 1.2rem;
     width: 0;
+    float: left;
+    display: none;
 
-    // select{
+    // select
     input {
       width: 0;
       border: none;
@@ -30,12 +29,12 @@
 
     &.open {
       position: absolute;
+      top: 0;
       left: 0;
-      // padding: 1.6rem;
-      background: #fff;
-      right: 0;
-      width: 100%;
       z-index: 1000;
+      width: 100%;
+      display: block;
+      background: $white;
       border-radius: 0.5rem;
 
       .search-input-close,
@@ -43,44 +42,58 @@
         display: block;
       }
 
-      // select{
+      // select
 
       input {
         width: 100%;
-        // padding-right:2rem;
         outline: none;
         background: none;
+        height: auto;
+        box-shadow: none;
         transition: all 0.3s ease-out;
       }
     }
 
     .search-list {
       max-height: 450px;
-      height: calc(100vh - 11rem);
+      height: auto;
       position: absolute;
       top: 100%;
       left: 0;
       background: $white;
       width: 100%;
-      margin-top: .5rem;
+      margin-top: 0.5rem;
       padding-left: 0;
       border-radius: $border-radius;
       display: none;
+      @media only screen and (min-device-width: 320px) and (max-device-width: 875px) and (orientation: landscape) {
+        max-height: 250px;
+      }
 
       &.search-list-bookmark {
         height: auto !important;
+        i,
+        svg {
+          font-size: 1.2rem;
+          height: 1.2rem;
+          width: 1.2rem;
+        }
       }
 
       &.show {
         display: block;
+        min-height: 3rem;
       }
 
       li {
         a {
-          padding: .9rem 1rem;
+          padding: 0.9rem 1rem;
           color: $body-color;
 
-          span[class*="feather icon-"] {
+          i,
+          svg[class*='feather feather-'] {
+            height: 1.25rem;
+            width: 1.25rem;
             font-size: 1.25rem;
           }
         }
@@ -96,10 +109,12 @@
         }
 
         &.auto-suggestion {
-
+          display: flex;
+          align-items: center;
+          cursor: pointer;
           &:hover,
           &.current_item {
-            background-color: #f1f1f1;
+            background-color: $body-bg;
           }
         }
       }
@@ -110,11 +125,14 @@
       display: none;
       position: absolute;
       left: 1.5rem;
-      top: 37%;
+      top: 32%;
       cursor: pointer;
 
-      i {
-        font-size: 1.25rem
+      i,
+      svg {
+        height: 1.25rem;
+        width: 1.25rem;
+        font-size: 1.25rem;
       }
     }
 
@@ -126,8 +144,11 @@
       top: 32%;
       cursor: pointer;
 
-      i {
-        font-size: 1.75rem
+      i,
+      svg {
+        height: 1.25rem;
+        width: 1.25rem;
+        font-size: 1.25rem;
       }
     }
   }
@@ -137,6 +158,9 @@
     top: 102%;
     width: 25%;
     display: none;
+    background: $white;
+    border-radius: $border-radius;
+    box-shadow: 0 15px 30px 0 rgba($black, 0.11), 0 5px 15px 0 rgba($black, 0.08);
 
     &.show {
       display: block;
@@ -145,15 +169,16 @@
     .bookmark-input-icon {
       position: absolute;
       z-index: 1;
-      top: .85rem;
-      left: 1rem;
+      top: 20px;
+      left: 24px;
     }
 
     input {
-      padding: .7rem .7rem .7rem 2.5rem;
-      width: 100%;
+      padding: 0.7rem 0.7rem 0.7rem 2.5rem;
+      margin: 12px;
+      width: calc(100% - 24px); // Reduce width by 10*2
       background: $white;
-      border: 1px solid rgba($pure_black, 0.2);
+      border: 1px solid rgba($black, 0.2);
 
       &:focus {
         border: 1px solid $primary;
@@ -161,7 +186,7 @@
     }
 
     .search-list {
-      box-shadow: 0 15px 30px 0 rgba($pure_black, .11), 0 5px 15px 0 rgba($pure_black, .08);
+      position: relative; // To consider outer div width
     }
   }
 
@@ -182,31 +207,30 @@
   }
 }
 
-.navbar-dark,
-.navbar-semi-light {
+.navbar-dark
+// .navbar-semi-light
+{
   .search-input {
     .input {
-      color: #F5F7FA;
-      border-radius: .5rem;
+      color: #f5f7fa;
+      border-radius: 0.5rem;
     }
 
     &.open {
       .input {
-        color: #F5F7FA;
-        border: 1px solid #F5F7FA;
+        color: #f5f7fa;
+        border: 1px solid #f5f7fa;
       }
     }
   }
 }
 
 // navbar-sticky
-body {
-  &.navbar-static {
-    .navbar-container {
-      .search-input {
-        &.open {
-          border-radius: 0;
-        }
+.navbar-static {
+  .navbar-container {
+    .search-input {
+      &.open {
+        border-radius: 0;
       }
     }
   }

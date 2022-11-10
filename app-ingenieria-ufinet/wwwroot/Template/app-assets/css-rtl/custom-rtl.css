@@ -1,7 +1,8 @@
-/*========================================================
-        DARK LAYOUT
-=========================================================*/
-.main-menu .navigation li > a > i, .main-menu .dropdown-menu i, .main-menu .dropdown-user > a > i, .main-menu .navigation > li > a > i {
+pre, code, kbd, samp {
+  direction : ltr;
+}
+
+.main-menu .navigation li > a > svg, .main-menu .navigation li > a > i, .main-menu .dropdown-menu svg, .main-menu .dropdown-menu i, .main-menu .dropdown-user > a > svg, .main-menu .dropdown-user > a > i, .main-menu .navigation > li > a > svg, .main-menu .navigation > li > a > i {
   float : right;
 }
 
@@ -16,47 +17,93 @@
           align-items : center;
 }
 
-.header-navbar .navbar-container ul.nav li.dropdown .dropdown-menu {
-  top : 48px !important;
+[type='tel'], [type='url'], [type='email'], [type='number'] {
+  direction : rtl;
 }
+
+.vertical-layout.vertical-menu-modern.menu-expanded .main-menu .navigation li.has-sub > a:after, .vertical-layout.vertical-overlay-menu.menu-open .main-menu .navigation li.has-sub > a:after {
+  -webkit-transform : rotate(180deg);
+      -ms-transform : rotate(180deg);
+          transform : rotate(180deg);
+}
+
+.vertical-layout.vertical-menu-modern.menu-expanded
+.main-menu
+.navigation
+li.has-sub.open:not(.menu-item-closing) > a:after {
+  -webkit-transform : rotate(90deg);
+      -ms-transform : rotate(90deg);
+          transform : rotate(90deg);
+}
+
+.horizontal-menu .header-navbar.navbar-horizontal .dropdown-menu .dropdown-toggle::after {
+  background-image : url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%236e6b7b\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\' class=\'feather feather-chevron-left\'%3E%3Cpolyline points=\'15 18 9 12 15 6\'%3E%3C/polyline%3E%3C/svg%3E');
+}
+
 .header-navbar .navbar-container ul.nav li.dropdown .dropdown-menu::before {
   top : 1px;
 }
 
-.header-navbar .navbar-container ul.nav li.dropdown.dropdown-user .dropdown-menu .dropdown-item i {
-  float : right;
-}
-
-.header-navbar .dropdown .dropdown-menu.dropdown-menu-right::before, .header-navbar .dropup .dropdown-menu.dropdown-menu-right::before {
+.header-navbar .dropdown .dropdown-menu.dropdown-menu-end::before, .header-navbar .dropup .dropdown-menu.dropdown-menu-end::before {
   right : auto;
   left : 0.5rem;
 }
 
-.dropdown .dropdown-menu, .dropup .dropdown-menu {
+.dropdown .dropdown-menu, .dropup .dropdown-menu, .btn-group .dropdown-menu {
   right : auto !important;
-  top : 0 !important;
   left : auto !important;
 }
-.dropdown .dropdown-menu.dropdown-menu-right, .dropup .dropdown-menu.dropdown-menu-right {
+
+.dropdown .dropdown-menu.dropdown-menu-end, .dropup .dropdown-menu.dropdown-menu-end, .btn-group .dropdown-menu.dropdown-menu-end {
   left : 0 !important;
 }
-.dropdown .dropdown-menu.dropdown-menu-right::before, .dropup .dropdown-menu.dropdown-menu-right::before {
+
+.dropdown .dropdown-menu.dropdown-menu-end::before, .dropup .dropdown-menu.dropdown-menu-end::before, .btn-group .dropdown-menu.dropdown-menu-end::before {
   right : 0.6rem;
   left : auto;
 }
 
-.dropleft .dropdown-toggle::before {
-  content : '\e844' !important;
+.dropstart .dropdown-toggle::before {
+  background-image : url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23fff\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\' class=\'feather feather-chevron-right\'%3E%3Cpolyline points=\'9 18 15 12 9 6\'%3E%3C/polyline%3E%3C/svg%3E') !important;
 }
 
-.dropright .dropdown-toggle::after {
-  content : '\e843' !important;
+.dropstart .dropdown-menu {
+  margin-right : 0.4rem !important;
 }
 
-.input-group .dropdown-menu.show {
-  top : 0 !important;
-  right : auto !important;
+.dropend .dropdown-toggle::after {
+  background-image : url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23fff\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\' class=\'feather feather-chevron-left\'%3E%3Cpolyline points=\'15 18 9 12 15 6\'%3E%3C/polyline%3E%3C/svg%3E') !important;
+}
+
+.dropend .dropdown-menu {
   left : 0 !important;
+  margin-left : 0.4rem !important;
+}
+
+.toast {
+  right : auto;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+  left : 1px;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+  float : right;
+}
+
+.select2-search__field {
+  direction : rtl;
+}
+
+.select2, .select2-container {
+  text-align : right;
+}
+
+.apexcharts-canvas .apexcharts-text.apexcharts-yaxis-label {
+  -webkit-transform : translate(14px, 0);
+      -ms-transform : translate(14px, 0);
+          transform : translate(14px, 0);
 }
 
 .chartjs-render-monitor {
@@ -67,85 +114,72 @@ div.dataTables_wrapper div.dataTables_filter {
   text-align : left !important;
 }
 
-#dashboard-analytics .img-left {
-  left : 0;
+table.dataTable thead .sorting:before, table.dataTable thead .sorting_asc:before, table.dataTable thead .sorting_desc:before {
+  right : 0.45rem;
+}
+
+.dtr-modal .dtr-modal-close {
+  left : 6px;
   right : auto !important;
 }
 
-#dashboard-analytics .img-right {
-  right : 0;
-  left : auto;
+.avatar-group .avatar {
+  margin-right : -0.785rem;
+  margin-left : 0;
 }
 
-.square.slider-xl .noUi-handle:before {
-  left : 5px;
+.avatar-group .avatar-sm {
+  margin-right : -0.65rem;
 }
 
-.square.slider-xl .noUi-handle:after {
-  left : 10px;
+.avatar-group .avatar-lg {
+  margin-right : -1.5rem;
 }
 
-.square .noUi-handle:before {
-  left : 2px;
+.avatar-group .avatar-xl {
+  margin-right : -1.85rem;
 }
 
-.square .noUi-handle:after {
-  left : 7px;
+.breadcrumb:not([class*='breadcrumb-']) .breadcrumb-item + .breadcrumb-item:before, .breadcrumb.breadcrumb-chevron .breadcrumb-item + .breadcrumb-item:before {
+  -webkit-transform : rotate(180deg);
+      -ms-transform : rotate(180deg);
+          transform : rotate(180deg);
 }
 
-.noUi-vertical.square .noUi-handle:before {
-  left : -1px;
+.pagination .page-item.prev-item .page-link:before, .pagination .page-item.prev .page-link:before, .pagination .page-item.previous .page-link:before {
+  -webkit-transform : rotate(180deg);
+      -ms-transform : rotate(180deg);
+          transform : rotate(180deg);
 }
 
-.noUi-vertical.square .noUi-handle:after {
-  left : -1px;
+.pagination .page-item.prev-item .page-link:hover:before, .pagination .page-item.prev-item .page-link:active:before, .pagination .page-item.prev .page-link:hover:before, .pagination .page-item.prev .page-link:active:before, .pagination .page-item.previous .page-link:hover:before, .pagination .page-item.previous .page-link:active:before {
+  -webkit-transform : rotate(180deg);
+      -ms-transform : rotate(180deg);
+          transform : rotate(180deg);
 }
 
-.noUi-horizontal.slider-sm .noUi-handle {
-  left : auto !important;
-  right : -2px !important;
+.pagination .page-item.prev-item.disabled .page-link:before, .pagination .page-item.prev.disabled .page-link:before, .pagination .page-item.previous.disabled .page-link:before {
+  -webkit-transform : rotate(180deg);
+      -ms-transform : rotate(180deg);
+          transform : rotate(180deg);
 }
 
-.noUi-horizontal.slider-xs .noUi-handle {
-  left : auto !important;
-  right : -2px !important;
+.pagination .page-item.next-item .page-link:after, .pagination .page-item.next .page-link:after {
+  -webkit-transform : rotate(180deg);
+      -ms-transform : rotate(180deg);
+          transform : rotate(180deg);
 }
 
-.context-menu-list {
-  z-index : 1031 !important;
+.pagination .page-item.next-item .page-link:hover:after, .pagination .page-item.next-item .page-link:active:after, .pagination .page-item.next .page-link:hover:after, .pagination .page-item.next .page-link:active:after {
+  -webkit-transform : rotate(180deg);
+      -ms-transform : rotate(180deg);
+          transform : rotate(180deg);
 }
 
-.context-menu-item > .context-menu-list {
-  right : 100%;
-  margin-right : 0;
-}
-
-.pagination .page-item.prev-item .page-link:before {
-  content : '\e844';
-  font-family : 'feather';
-}
-
-.pagination .page-item.next-item .page-link:after {
-  content : '\e843';
-  font-family : 'feather';
-}
-
-.pagination .page-item.prev .page-link:after, .pagination .page-item.previous .page-link:after {
-  content : '\e844';
-  font-family : 'feather';
-}
-
-.pagination .page-item.prev .page-link:before, .pagination .page-item.previous .page-link:before {
-  display : none;
-}
-
-.pagination .page-item.next .page-link:before {
-  content : '\e843';
-  font-family : 'feather';
-}
-
-.pagination .page-item.next .page-link:after {
-  display : none;
+.pagination .page-item.next-item.disabled .page-link:before, .pagination .page-item.next.disabled .page-link:before {
+  -webkit-transform : rotate(180deg);
+      -ms-transform : rotate(180deg);
+          transform : rotate(180deg);
 }
 
 code[class*='language-'], pre[class*='language-'] {
@@ -158,14 +192,6 @@ code[class*='language-'], pre[class*='language-'] {
   }
 }
 
-.list-group .list-group-item i {
-  float : right;
-}
-
-.email-application .app-content .list-group .list-group-item i {
-  float : right !important;
-}
-
 .fc .fc-header-toolbar .fc-right .fc-button.fc-prev-button .fc-icon {
   right : 4px !important;
 }
@@ -174,51 +200,46 @@ code[class*='language-'], pre[class*='language-'] {
   left : -3px !important;
 }
 
-.btn i {
-  float : right;
-  margin-left : 0.25rem;
-}
-
-.btn.btn-icon i {
-  margin-left : 0;
-}
-
-.carousel-control-next {
-  left : auto;
-  right : 0;
-}
-
-.carousel-control-prev {
-  left : 0;
-  right : auto;
-}
-
-.bs-tooltip-left .arrow::before, .bs-tooltip-auto[x-placement^='left'] .arrow::before {
+.bs-popover-start .popover-arrow::before, .bs-tooltip-start .tooltip-arrow::before, .bs-popover-auto[data-popper-placement^='left'] .popover-arrow::before {
   border-width : 0.4rem 0 0.4rem 0.4rem;
   border-left-color : #323232;
+  left : -1px;
 }
 
-.bs-tooltip-left .arrow, .bs-tooltip-auto[x-placement^='left'] .arrow {
-  right : 0;
-  left : auto;
+.bs-tooltip-start .tooltip-arrow::before {
+  left : -6px;
 }
 
-.bs-tooltip-right .arrow::before, .bs-tooltip-auto[x-placement^='right'] .arrow::before {
+.bs-popover-start > .popover-arrow::after, .bs-tooltip-start > .tooltip-arrow::after {
+  left : -1px;
+  border-width : 0.4rem 0 0.4rem 0.4rem;
+  border-left-color : #FFFFFF;
+}
+
+.bs-popover-start .popover-arrow, .bs-tooltip-start .tooltip-arrow, .bs-popover-auto[data-popper-placement^='left'] .popover-arrow {
+  right : auto;
+  left : 100%;
+}
+
+.bs-popover-end .popover-arrow::before, .bs-tooltip-end .tooltip-arrow::before, .bs-popover-auto[data-popper-placement^='right'] .popover-arrow::before {
   border-width : 0.4rem 0.4rem 0.4rem 0;
   border-right-color : #323232;
+  right : -1px;
 }
 
-.bs-tooltip-right .arrow, .bs-tooltip-auto[x-placement^='right'] .arrow {
-  left : 0;
-  right : auto;
+.bs-tooltip-end .tooltip-arrow::before {
+  right : -6px;
 }
 
-.popover {
-  right : auto !important;
+.bs-popover-end > .popover-arrow::after, .bs-tooltip-end > .tooltip-arrow::after {
+  right : -1px;
+  border-width : 0.4rem 0.4rem 0.4rem 0;
+  border-right-color : #FFFFFF;
 }
 
-.ql-snow .ql-picker:not(.ql-color-picker):not(.ql-icon-picker) svg {
-  right : auto !important;
+.bs-popover-end .popover-arrow, .bs-tooltip-end .tooltip-arrow, .bs-popover-auto[data-popper-placement^='right'] .popover-arrow {
+  left : auto;
+  right : 100%;
 }
 
 body .ps__rail-y {
@@ -226,6 +247,34 @@ body .ps__rail-y {
   left : 1px !important;
 }
 
-.ecommerce-application .sidebar-shop .range-slider.noUi-horizontal .noUi-handle {
-  left : 5px !important;
+.faq-navigation img, .pricing-free-trial .pricing-trial-img {
+  -webkit-transform : scaleX(-1);
+      -ms-transform : scaleX(-1);
+          transform : scaleX(-1);
+}
+
+.feather-chevron-left, .feather-chevron-right {
+  -webkit-transform : rotate(-180deg) !important;
+      -ms-transform : rotate(-180deg) !important;
+          transform : rotate(-180deg) !important;
+}
+
+.kanban-application .kanban-container .kanban-item i, .kanban-application .kanban-container .kanban-item svg {
+  margin-right : 0 !important;
+  margin-left : 0.25rem;
+}
+
+.invoice-list-wrapper .dataTables_filter input {
+  margin-left : 0 !important;
+  margin-right : 0.5rem;
+}
+
+.invoice-list-wrapper .dropdown .dropdown-menu.dropdown-menu-end {
+  left : 2rem !important;
+}
+
+.file-manager-application .sidebar-file-manager .sidebar-inner .my-drive .jstree-node.jstree-closed > .jstree-icon {
+  -webkit-transform : rotate(180deg);
+      -ms-transform : rotate(180deg);
+          transform : rotate(180deg);
 }

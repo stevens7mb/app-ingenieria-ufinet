@@ -1,10 +1,7 @@
 // Badge
 
 .badge {
-  color: $white;
-  background-color: $primary;
-  font-weight: 400;
-  &[class*='badge-'] {
+  &[class*='bg-'] {
     [class*='icon-'] {
       line-height: 1;
     }
@@ -13,18 +10,17 @@
       color: $white;
     }
 
-    i{
-      vertical-align: middle;
-    }
-
     // badge dropdown alignment
     .dropdown-toggle,
     &.dropdown-toggle {
-      span,i {
+      span,
+      i,
+      svg {
         vertical-align: text-top;
       }
-      i{
-        padding-left: .2rem;
+      i,
+      svg {
+        padding-left: 0.2rem;
       }
       &::after {
         position: relative;
@@ -40,6 +36,15 @@
     }
   }
 
+  i,
+  svg {
+    height: 12px;
+    width: 11px;
+    font-size: 12px;
+    stroke-width: 3;
+    vertical-align: top;
+  }
+
   // square badge
   &.badge-square {
     border-radius: 0;
@@ -49,40 +54,36 @@
   // to align badge over any element
   &.badge-up {
     position: absolute;
-    top: -1rem;
-    right: -1rem;
-    &.badge-sm{
-      top: -.5rem;
-      right: -.5rem;
+    top: -11px;
+    right: -9px;
+    min-width: 1.429rem;
+    min-height: 1.429rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.786rem;
+    line-height: 0.786;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+    &.badge-sm {
+      top: -0.5rem;
+      right: -0.5rem;
     }
   }
 }
 
-// badge sizes
-.badge-xl {
-  font-size: 1.8rem;
-}
-.badge-lg {
-  font-size: 1.2rem;
-}
-.badge-md {
-  font-size: 1rem;
-}
-.badge-sm {
-  font-size: 0.7rem;
-}
-
 // For fullscreen search
 .badge-icon {
-  i {
+  i,
+  svg {
     font-size: 100%;
     margin-right: 5px;
   }
 }
 
- // badge dropup pointer
-.dropup{
-  .badge{
+// badge dropup pointer
+.dropup {
+  .badge {
     cursor: pointer;
   }
 }
