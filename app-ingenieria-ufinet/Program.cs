@@ -1,6 +1,7 @@
 using app_ingenieria_ufinet.Data;
 using app_ingenieria_ufinet.Repositories.Login;
 using app_ingenieria_ufinet.Repositories.Parametrization;
+using app_ingenieria_ufinet.Repositories.PI;
 using app_ingenieria_ufinet.Repositories.User;
 using app_ingenieria_ufinet.Utils;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -24,6 +25,7 @@ builder.Services.AddTransient<ILoginRepository, LoginRepository>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IDatabaseUtils, DatabaseUtils>();
 builder.Services.AddTransient<IParametrizationRepository, ParametrizationRepository>();
+builder.Services.AddTransient<IPIRepository, PIRepository>();
 
 //Auth
 builder.Services.AddSession(options =>

@@ -2197,7 +2197,7 @@ ul.list-inline.list-inline-pipe > li + li:before {
 
 @media (min-width: 576px) {
   .modal-slide-in .modal-dialog.sidebar-lg {
-    width: 30rem; } }
+    width: 60rem; } }
 
 .modal-slide-in .btn-close {
   top: 0.4rem;
