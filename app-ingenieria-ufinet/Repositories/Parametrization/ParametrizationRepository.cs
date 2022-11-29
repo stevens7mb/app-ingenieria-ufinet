@@ -23,6 +23,12 @@ namespace app_ingenieria_ufinet.Repositories.Parametrization
         List<TipoBobinaFO> ListaTiposFO();
 
         /// <summary>
+        /// Obtiene tipo de bobina fo en especifico
+        /// </summary>
+        /// <returns>retorna un objeto con los datos de bobina de fibra optica</returns>
+        TipoBobinaFO ObtenerTipoFO(int idTipoBobinaFO);
+
+        /// <summary>
         /// Agrega un nuevo tipo de bobina fo
         /// </summary>
         /// <param name="tipobobina">Modelo de Tipo Bobina de FO</param>
@@ -101,6 +107,23 @@ namespace app_ingenieria_ufinet.Repositories.Parametrization
             var result = this._dbUtils.ExecuteStoredProc<TipoBobinaFO>("lista_tipos_bobina_fo", procedureParams);
 
             return result;
+        }
+
+        /// <summary>
+        /// Obtiene tipo de bobina fo en especifico
+        /// </summary>
+        /// <param name="idTipoBobinaFO">Identificador Tipo Bobina</param>
+        /// <returns>retorna un objeto con los datos de bobina de fibra optica</returns>
+        public TipoBobinaFO ObtenerTipoFO(int idTipoBobinaFO)
+        {
+            var procedureParams = new Dictionary<string, object>()
+            {
+                {"@id_tipo_bobina", idTipoBobinaFO},
+            };
+
+            var result = this._dbUtils.ExecuteStoredProc<TipoBobinaFO>("obtener_datos_fo", procedureParams);
+
+            return result[0];
         }
 
 

@@ -52,8 +52,10 @@ window.colors = {
     var rtl;
     var compactMenu = false;
 
-    if ($body.hasClass('menu-collapsed') || localStorage.getItem('menuCollapsed') === 'true') {
-      compactMenu = true;
+    //if ($body.hasClass('menu-collapsed')) {
+    // ? replace above if condition with below one for menu collapsed localstorage
+    if (/*$body.hasClass('menu-collapsed') ||*/ localStorage.getItem('menuCollapsed') === 'true') {
+        compactMenu = true;
     }
 
     if ($('html').data('textdirection') == 'rtl') {
@@ -1000,7 +1002,7 @@ window.colors = {
 
   // Set layout on screen load
   //? Comment it if you don't want to sync layout with local db
-  // setLayout(currentLocalStorageLayout);
+  setLayout(currentLocalStorageLayout);
 
   function setLayout(currentLocalStorageLayout) {
     var navLinkStyle = $('.nav-link-style'),

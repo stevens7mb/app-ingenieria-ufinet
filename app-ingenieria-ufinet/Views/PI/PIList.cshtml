@@ -218,11 +218,7 @@
                 <form>
                     <div class="mb-1 position-relative">
                         <label for="customer-country" class="form-label">Seleccione Tipo de Fibra Optica</label>
-                        <select class="form-select" id="idTipoBobinaFO" name="idTipoBobinaFO">
-                            <option label="seleccione una opción"></option>
-                            <option value="Australia">Tipo 1</option>
-                            <option value="Canada">Tipo 2</option>
-                            <option value="Russia">Tipo 3</option>
+                        <select class="form-select" id="selectTipoBobinaFO" name="selectTipoBobinaFO">
                         </select>
                     </div>
                     <div class="row">
@@ -255,6 +251,9 @@
                         <div class="card">
                             <div class="card-content">
                                 <div class="card-body">
+                                    <div class="col-md-12 text-center">
+                                        <button type="button" class="btn btn-primary col-md-3">Calcular</button>
+                                    </div>
                                     <table class="datatables-basic table" id="pi-table-herraje">
                                         <thead>
                                             <tr>
@@ -440,7 +439,49 @@
                 ],
             });
 
+            cargarSelect();
 
+        });
+
+        function cargarSelect(){
+            //Tipos de Bobina de FO
+            $.get("@Url.Action("ListaTiposDeBobinaFO","Parametrization")", function (data) {
+
+                $("#selectTipoBobinaFO").empty();
+
+                $.each(data, function (index, row) {
+                    $("#selectTipoBobinaFO").append("<option value='" + row.idTipoBobinaFO + "'>" + row.tipoBobinaFODesc + "</option>")
+
+                });
+                $("#selectTipoBobinaFO").append("<option selected disabled hidden value='0'>" + "Por Favor Seleccione Tipo de Bobina de FO" + "</option>");
+            });
+        }
+
+        //FUNCIONES MODAL AGREGAR FO
+
+        //Select cargar datos de fo
+        $('#selectTipoBobinaFO').on('change', function () {
+            var parametros = JSON.stringify({ idTipoBobinaFO: $("#selectTipoBobinaFO").val() });
+
+            $.ajax({
+                url: "@Url.Action("ObtenerTipoBobinaFO", "PI")",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: parametros,
+                dataType: "json",
+                success: function (result) {
+                    $("#distanciaBobina").val(result.distanciaBobina);
+                    $("#precioUnidadMedida").val(result.precio);
+                },
+                error: function (result) {
+                    //show Alert
+                    Swal.fire({
+                        title: "HA OCURRIDO UN ERROR",
+                        text: "Error en el Servidor" + result.responseText,
+                        icon: "error"
+                    })
+                }
+            });
         });
 
     </script>
