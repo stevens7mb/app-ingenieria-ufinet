@@ -252,15 +252,29 @@
                             <div class="card-content">
                                 <div class="card-body">
                                     <div class="col-md-12 text-center">
-                                        <button type="button" class="btn btn-primary col-md-3">Calcular</button>
+                                        <div class="row">
+                                            <div class="col-md-3 mx-auto">
+                                                <div class="mb-1">
+                                                    <label class="form-label">Total Bobina</label>
+                                                    <input id="totalBobina" name="totalBobina" class="form-control" type="text" disabled />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 mx-auto">
+                                                <div class="mb-1">
+                                                    <label class="form-label">Total Herrajes</label>
+                                                    <input id="totalHerrajes" name="totalHerrajes" class="form-control" type="text" disabled />
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <table class="datatables-basic table" id="pi-table-herraje">
+                                    <table class="datatables-basic table" id="pi-table-herraje" style="display: none">
                                         <thead>
                                             <tr>
                                                 <th>ID Tipo Herraje</th>
                                                 <th class="text-truncate">Tipo Herraje</th>
                                                 <th>Precio</th>
-                                                <th>Tipo Bobina FO</th>
+                                                <th>Formula</th>
+                                                <th>Cantidad</th>
                                             </tr>
                                         </thead>
                                     </table>
@@ -413,32 +427,6 @@
                 }
             });
 
-
-            $('#pi-table-herraje').DataTable({
-                "language": { "url": "https://cdn.datatables.net/plug-ins/1.12.1/i18n/es-ES.json" },
-                "dom": 'rtip',
-                "pageLength": 5,
-                "ajax": {
-                    "url": "@Url.Action("ListaTiposHerrajes", "Parametrization")",
-                    "type": "GET",
-                    "dataType": "json"
-                },
-                "order": [[0, "desc"]],
-                columns: [
-                    { "data": "idTipoHerraje" },
-                    { "data": "tipoHerrajeDesc" },
-                    {
-                        "render": function (data, type, row) {
-                            return row.moneda + row.precio
-                        }
-                    },
-                    {
-                        "data": "tipoBobinaFO",
-                        "className": "dropdown",
-                    }
-                ],
-            });
-
             cargarSelect();
 
         });
@@ -482,6 +470,88 @@
                     })
                 }
             });
+        });
+
+        //Traer datos de calculo de herrajes y totales
+        $("#distancia").blur(function () {
+            if ($("#selectTipoBobinaFO").val() != null && $("#distancia").val() != null && $("#distancia").val() > 0) {
+                var parametros = JSON.stringify
+                    (
+                        {
+                            idTipoBobinaFO: $("#selectTipoBobinaFO").val(),
+                            distancia: $("#distancia").val(),
+                            distanciaBobina: $("#distanciaBobina").val(),
+                            precio: $("#precioUnidadMedida").val()
+                        }
+                    );
+
+                $.ajax({
+                    url: "@Url.Action("CalcularBobinaHerrajes", "PI")",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    data: parametros,
+                    dataType: "json",
+                    success: function (result) {
+                        $("#cantidadBobinas").val(result.cantidadBobinas);
+                        console.log(result)
+
+                        //Cargar herrajes en tabla
+                        $("#pi-table-herraje").show();
+                        if ( $.fn.dataTable.isDataTable('#pi-table-herraje')) {
+
+                            $('#pi-table-herraje').DataTable().clear(); //se limpia tabla
+                            $('#pi-table-herraje').DataTable().rows.add(result.herrajes).draw(); //se llena con datos
+                        }
+                        else{ //primera instancia tabla
+                            $('#pi-table-herraje').DataTable({
+                                "language": { "url": "https://cdn.datatables.net/plug-ins/1.12.1/i18n/es-ES.json" },
+                                "dom": 'rtip',
+                                "pageLength": 5,
+                                "data": result.herrajes,
+                                "order": [[0, "desc"]],
+                                autoWidth: false,
+                                retrieve: true,
+                                columns: [
+                                    { "data": "idTipoHerraje" },
+                                    { "data": "tipoHerraje" },
+                                    { "data": "precio" },
+                                    { "data": "formula" },
+                                    {
+                                        "render": function (data, type, row) {
+                                            return 0 + row.formulaOut
+                                        }
+                                    }
+                                ],
+                                columnDefs: [
+                                    { width: "5%", targets: 0 }
+                                ],
+                            });
+                        }  
+                        //termina cargar herrajes tabla
+                        //asigna totales
+                        $("#totalBobina").val(result.totalBobina);
+                        $("#totalHerrajes").val(result.totalHerrajes);
+
+                    },
+                    error: function (result) {
+                        //show Alert
+                        Swal.fire({
+                            title: "HA OCURRIDO UN ERROR",
+                            text: "Error en el Servidor" + result.responseText,
+                            icon: "error"
+                        })
+                    }
+                });
+            }
+        });
+
+        //Al cambiar select se resetea tabla
+        $("#selectTipoBobinaFO").change(function () {
+            $('#pi-table-herraje').hide();
+            $('#distancia').val("");
+            $('#cantidadBobinas').val("");
+            $('#totalBobina').val("");
+            $('#totalHerrajes').val("");
         });
 
     </script>

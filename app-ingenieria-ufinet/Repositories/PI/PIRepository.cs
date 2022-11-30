@@ -16,11 +16,18 @@ namespace app_ingenieria_ufinet.Repositories.PI
     public interface IPIRepository
     {
         /// <summary>
+        /// Calcula los herrajes para la bobina y los totales
+        /// </summary>
+        /// <param name="request">Modelo Request Calculo</param>
+        /// <returns>respuestas de ejecutar sp</returns>
+        CalculoBobinaHerrajeResponseModel CalcularBobinaHerrajes(CalculoBobinaHerrajeRequest request);
+
+        /// <summary>
         /// Agrega un nueva compra pi
         /// </summary>
         /// <param name="pi">Modelo Request PI</param>
         /// <returns>respuestas de ejecutar sps</returns>
-        public CrearPIResponseModel CrearNuevoPI(PIRequest pi);
+        CrearPIResponseModel CrearNuevoPI(PIRequest pi);
     }
     #endregion interface
 
@@ -37,6 +44,43 @@ namespace app_ingenieria_ufinet.Repositories.PI
         }
 
         #region PI
+
+        /// <summary>
+        /// Calcula los herrajes para la bobina y los totales
+        /// </summary>
+        /// <param name="request">Modelo Request Calculo</param>
+        /// <returns>respuestas de ejecutar sp</returns>
+        public CalculoBobinaHerrajeResponseModel CalcularBobinaHerrajes(CalculoBobinaHerrajeRequest request)
+        {
+            //instancia de modelo
+            CalculoBobinaHerrajeResponseModel response = new CalculoBobinaHerrajeResponseModel();
+
+            //CALCULAR HERRAJES
+            var procedureParamsCalcHerrajes = new Dictionary<string, object>()
+            {
+                {"@id_tipo_bobina_fo", request.IdTipoBobinaFO},
+                {"@distancia", request.Distancia}
+            };
+            //resultado de stored procedure
+            var resultCalcHerrajes = this._dbUtils.ExecuteStoredProc<CalculoHerrajesResponseModel>("calc_herrajes", procedureParamsCalcHerrajes);
+
+            //CALCULO DE TOTALES
+            //total Bobina
+            var totalBobina = request.Distancia * request.Precio;
+            //total de Herrajes
+            var totalHerrajes = resultCalcHerrajes.Sum(x => x.FormulaOut * x.Precio);
+            //cantidad de bobinas
+            var cantidadBobinas = request.DistanciaBobina / request.Distancia;
+
+            //ASIGNACION VALORES A RESPONSE
+            response.herrajes = resultCalcHerrajes;
+            response.TotalHerrajes = totalHerrajes;
+            response.TotalBobina = totalBobina;
+            response.CantidadBobinas = cantidadBobinas;
+
+            //respuesta de metodo
+            return response;
+        }
 
         /// <summary>
         /// Agrega un nueva compra pi
