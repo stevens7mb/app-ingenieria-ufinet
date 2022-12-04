@@ -3,7 +3,7 @@
     public class PIDetalleHerrajeRequest
     {
         public int idTipoHerraje { get; set;} 
-        public int idPiDetalleFO { get; set;}
+        public int idPIDetalleFO { get; set;}
         public int numPI { get; set; }
         public string nombrePI { get; set; }    
         public DateTime fechaSolicitud { get; set; }

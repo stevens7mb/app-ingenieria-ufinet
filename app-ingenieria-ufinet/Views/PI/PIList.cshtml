@@ -22,7 +22,7 @@
                 <div class="card-header">
                     <h4 class="card-title">LISTADO DE PI</h4>
                     <div class="col text-center">
-                        <button type="button" id="addUser" name="addUser" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalAgregarPI">
+                        <button type="button" id="addPI" name="addPI" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalAgregarPI">
                             Agregar PI
                         </button>
                     </div>
@@ -129,7 +129,7 @@
 
                                 <div class="card-body invoice-padding">
                                     <div class="col-md-12 text-center">
-                                        <button type="button" class="btn btn-outline-primary col-md-3" data-bs-toggle="modal" data-bs-target="#add-new-customer-sidebar">Agregar FO</button>
+                                        <button type="button" id="btn-modal-fo" class="btn btn-outline-primary col-md-3" data-bs-toggle="modal" data-bs-target="#add-new-fo-sidebar">Agregar FO</button>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="card">
@@ -138,10 +138,10 @@
                                                     <table class="datatables-basic table" id="pi-table-fo">
                                                         <thead>
                                                             <tr>
-                                                                <th>ID Tipo Herraje</th>
-                                                                <th class="text-truncate">Tipo Herraje</th>
-                                                                <th>Precio</th>
-                                                                <th>Tipo Bobina FO</th>
+                                                                <th>ID Tipo Fibra</th>
+                                                                <th class="text-truncate">Tipo Fibra</th>
+                                                                <th>Total Fibra</th>
+                                                                <th>Total Herrajes</th>
                                                                 <th class="cell-fit">Actions</th>
                                                             </tr>
                                                         </thead>
@@ -204,8 +204,8 @@
 </div>
 <!-- END: Modal Agregar PI-->
 
-<!-- Add New Customer Sidebar -->
-<div class="modal modal-slide-in fade" id="add-new-customer-sidebar" aria-hidden="true">
+<!-- Add New FO Sidebar -->
+<div class="modal modal-slide-in fade" id="add-new-fo-sidebar" aria-hidden="true">
     <div class="modal-dialog sidebar-lg">
         <div class="modal-content p-0">
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">×</button>
@@ -215,7 +215,7 @@
                 </h5>
             </div>
             <div class="modal-body flex-grow-1">
-                <form>
+                <form id="form-fo" name="form-fo">
                     <div class="mb-1 position-relative">
                         <label for="customer-country" class="form-label">Seleccione Tipo de Fibra Optica</label>
                         <select class="form-select" id="selectTipoBobinaFO" name="selectTipoBobinaFO">
@@ -231,19 +231,19 @@
                         <div class="col-md-3">
                             <div class="mb-1">
                                 <label class="form-label">Cantidad Bobinas</label>
-                                <input id="cantidadBobinas" name="cantidadBobinas" class="form-control" type="text" disabled />
+                                <input id="cantidadBobinas" name="cantidadBobinas" class="form-control" type="text" readonly />
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="mb-1">
                                 <label class="form-label">Distancia Bobina</label>
-                                <input id="distanciaBobina" name="distanciaBobina" class="form-control" type="text" disabled />
+                                <input id="distanciaBobina" name="distanciaBobina" class="form-control" type="text" readonly />
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="mb-1">
                                 <label class="form-label">Precio por Metro</label>
-                                <input id="precioUnidadMedida" name="precioUnidadMedida" class="form-control" type="text" disabled />
+                                <input id="precioUnidadMedida" name="precioUnidadMedida" class="form-control" type="text" readonly />
                             </div>
                         </div>
                     </div>
@@ -256,28 +256,30 @@
                                             <div class="col-md-3 mx-auto">
                                                 <div class="mb-1">
                                                     <label class="form-label">Total Bobina</label>
-                                                    <input id="totalBobina" name="totalBobina" class="form-control" type="text" disabled />
+                                                    <input id="totalBobina" name="totalBobina" class="form-control" type="text" readonly />
                                                 </div>
                                             </div>
                                             <div class="col-md-3 mx-auto">
                                                 <div class="mb-1">
                                                     <label class="form-label">Total Herrajes</label>
-                                                    <input id="totalHerrajes" name="totalHerrajes" class="form-control" type="text" disabled />
+                                                    <input id="totalHerrajes" name="totalHerrajes" class="form-control" type="text" readonly />
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <table class="datatables-basic table" id="pi-table-herraje" style="display: none">
-                                        <thead>
-                                            <tr>
-                                                <th>ID Tipo Herraje</th>
-                                                <th class="text-truncate">Tipo Herraje</th>
-                                                <th>Precio</th>
-                                                <th>Formula</th>
-                                                <th>Cantidad</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
+                                    <div id="pi-table-herraje-div">
+                                        <table class="datatables-basic table" id="pi-table-herraje" style="display: none">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID Tipo Herraje</th>
+                                                    <th class="text-truncate">Tipo Herraje</th>
+                                                    <th>Precio</th>
+                                                    <th>Formula</th>
+                                                    <th>Cantidad</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -286,8 +288,8 @@
             </div>
             <div class="modal-footer mb-1">
                 <div class="mb-1 d-flex flex-wrap mt-2">
-                    <button type="button" class="btn btn-primary me-1" data-bs-dismiss="modal">Agregar</button>
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary me-1" id="btn-add-fo">Agregar</button>
+                    <button type="button" id="add-fo-modal" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
                 </div>
             </div>
         </div>
@@ -326,7 +328,45 @@
 @*    <script src="~/Template/app-assets/js/scripts/pages/app-invoice.js"></script>*@
 
     <script>
+        //DEFINICIONES Y VARIABLES
+        var distanciaBobina = 0;
+        var precioBobinaMetro = 0;
+        var cantidadBobinas = 0;
+        var totalBobina = 0;
+        var totalHerrajes = 0;
+        var herrajesResponse = [];
+        var herrajes = [];
+        var herrajesDataTable = [];
+        var fibras = [];
 
+        function herraje(idTipoHerraje, cantidadHerrajes, precioUnitarioHerraje) {
+            this.idTipoHerraje = idTipoHerraje,
+            //this.numPI = numPI,
+            //this.nombrePI = nombrePI,
+            //this.fechaSolicitud = fechaSolicitud,
+            //this.fechaOC = fechaOC,
+            //this.fechaBodegaSucursal = fechaBodegaSucursal,
+            //this.totalDetalleFOPIDesc = totalDetalleFOPIDesc,
+            //this.incurrido = incurrido,
+            //this.pendienteIncurrir = pendienteIncurrir,
+            this.cantidadHerrajes = cantidadHerrajes,
+            this.precioUnitarioHerraje = precioUnitarioHerraje
+        }
+
+        function fibra(idTipoBobinaFO, tipoBobinaFO, distanciaPIDetalle, distanciaBobina, cantidadBobinas, precioUnitario, totalDetalleFOPI, totalHerrajes, herrajes, herrajesDataTable){
+            this.idTipoBobinaFO = idTipoBobinaFO,
+            this.tipoBobinaFO = tipoBobinaFO,
+            this.distanciaPIDetalle = distanciaPIDetalle,
+            this.distanciaBobina = distanciaBobina
+            this.cantidadBobinas = cantidadBobinas,
+            this.precioUnitario = precioUnitario,
+            this.totalDetalleFOPI = totalDetalleFOPI,
+            this.totalHerrajes = totalHerrajes
+            this.herrajes = herrajes,
+            this.herrajesDataTable = herrajesDataTable
+        }
+
+        //Cargar Pagina
         $(document).ready(function () {
 
             $('#pi-table').DataTable({
@@ -382,48 +422,22 @@
                 "language": { "url": "https://cdn.datatables.net/plug-ins/1.12.1/i18n/es-ES.json" },
                 "dom": 'rtip',
                 "pageLength" : 5,
-                "ajax": {
-                    "url": "@Url.Action("ListaTiposHerrajes", "Parametrization")",
-                    "type": "GET",
-                    "dataType": "json"
-                },
+                "data" : fibras,
                 "order": [[0, "desc"]],
                 columns: [
-                    { "data": "idTipoHerraje" },
-                    { "data": "tipoHerrajeDesc" },
-                    {
-                        "render": function (data, type, row) {
-                            return row.moneda + row.precio
-                        }
-                    },
-                    {
-                        "data": "tipoBobinaFO",
-                        "className": "dropdown",
-                    },
+                    { "data": "idTipoBobinaFO" },
+                    { "data": "tipoBobinaFO" },
+                    { "data": "totalDetalleFOPI" },
+                    { "data": "totalHerrajes" },
                     {
                         'defaultContent': null,
                         'render': function (data, type, row) {
-                            return '<div class="d-flex"> <button type="button" class="btn btn-icon btn-danger mx-1" id="' + row.idTipoHerraje + '" onclick="EliminarTipo(this.id)" data-toggle="tooltip" data-placement="left" title="Eliminar"> <i class="fa fa-trash-o"></i> </button> </div>'
+                            return '<div class="d-flex"> <button type="button" class="btn btn-icon btn-warning mx-1" id="' + row.idTipoBobinaFO + '" onclick="detallesFO(this.id)" data-toggle="tooltip" data-placement="left" title="Modificar"> <i data-feather="edit"></i></i> </button> <button type="button" class="btn btn-icon btn-danger mx-1" id="' + row.idTipoBobinaFO + '" onclick="eliminarFO(this.id)" data-toggle="tooltip" data-placement="left" title="Eliminar"> <i data-feather="trash"></i> </button> </div>'
                         }
                     }
                 ],
-                initComplete: function () {
-                    this.api().columns('.dropdown').every(function () {
-                        var column = this;
-                        var select = $('<select class="form-control"><option value=""></option></select>')
-                            .appendTo($("#filtro").empty())
-                            .on('change', function () {
-                                var val = $.fn.dataTable.util.escapeRegex(
-                                    $(this).val()
-                                );
-                                column
-                                    .search(val ? '^' + val + '$' : '', true, false)
-                                    .draw();
-                            });
-                        column.data().unique().sort().each(function (d, j) {
-                            select.append('<option value="' + d + '">' + d + '</option>')
-                        });
-                    });
+                drawCallback: function (settings) {
+                    feather.replace();
                 }
             });
 
@@ -446,7 +460,6 @@
         }
 
         //FUNCIONES MODAL AGREGAR FO
-
         //Select cargar datos de fo
         $('#selectTipoBobinaFO').on('change', function () {
             var parametros = JSON.stringify({ idTipoBobinaFO: $("#selectTipoBobinaFO").val() });
@@ -460,6 +473,11 @@
                 success: function (result) {
                     $("#distanciaBobina").val(result.distanciaBobina);
                     $("#precioUnidadMedida").val(result.precio);
+                    //Se guarda en variables para utilizar 
+                    distanciaBobina = 0;
+                    precioBobinaMetro = 0;
+                    distanciaBobina = result.distanciaBobina;
+                    precioBobinaMetro = result.precio;
                 },
                 error: function (result) {
                     //show Alert
@@ -470,6 +488,27 @@
                     })
                 }
             });
+        });
+
+        function resetModalFO() {
+            //Se asignan valores a vista
+            $("#selectTipoBobinaFO").val(0);
+            $("#distancia").val("");
+            $("#precioUnidadMedida").val("");
+            $("#cantidadBobinas").val("");
+            $("#distanciaBobina").val("");
+            $("#totalBobina").val("");
+            $("#totalHerrajes").val("");
+             //se limpia tabla
+            if ($.fn.dataTable.isDataTable('#pi-table-herraje')) {
+                $('#pi-table-herraje').DataTable().clear().draw();
+            }
+            $('#pi-table-herraje-div').hide();
+        }
+
+        //al abrir modal resetear fo
+        $('#btn-modal-fo').on('click', function() {
+            resetModalFO();
         });
 
         //Traer datos de calculo de herrajes y totales
@@ -493,10 +532,11 @@
                     dataType: "json",
                     success: function (result) {
                         $("#cantidadBobinas").val(result.cantidadBobinas);
-                        console.log(result)
-
+                        cantidadBobinas = 0;
+                        cantidadBobinas = result.cantidadBobinas;
                         //Cargar herrajes en tabla
                         $("#pi-table-herraje").show();
+                        $('#pi-table-herraje-div').show();
                         if ( $.fn.dataTable.isDataTable('#pi-table-herraje')) {
 
                             $('#pi-table-herraje').DataTable().clear(); //se limpia tabla
@@ -531,7 +571,14 @@
                         //asigna totales
                         $("#totalBobina").val(result.totalBobina);
                         $("#totalHerrajes").val(result.totalHerrajes);
-
+                        //guarda en variables globales 
+                        totalBobina = 0;
+                        totalHerrajes = 0;
+                        totalBobina = result.totalBobina;
+                        totalHerrajes = result.totalHerrajes;
+                        //guardar en objeto para almacenar herrajes de fo
+                        herrajesResponse = [];
+                        herrajesResponse = result.herrajes;
                     },
                     error: function (result) {
                         //show Alert
@@ -553,6 +600,147 @@
             $('#totalBobina').val("");
             $('#totalHerrajes').val("");
         });
+
+        //AGREGAR FO
+        //Validacion de formulario de fo
+        $("#form-fo").validate({
+            rules: {
+                selectTipoBobinaFO: "required",
+                distancia: "required",
+                cantidadBobinas: "required",
+                distanciaBobina: "required",
+                precioUnidadMedida: "required",
+                totalBobina: "required",
+                totalHerrajes: "required",
+                table_required: {
+                    required: function () {
+                        return $('#pi-table-herraje').DataTable().data().any();
+                    }
+                }
+
+            },
+            messages: {
+                selectTipoBobinaFO: "Seleccione Bobina",
+                distancia: "Seleccione Cantidad",
+                cantidadBobinas: "Requerido",
+                distanciaBobina: "Requerido",
+                precioUnidadMedida: "Requerido",
+                totalBobina: "Requerido",
+                totalHerrajes: "Requerido",
+                table_required : "Herrajes vacíos"
+            },
+            submitHandler: function (form) {
+                event.preventDefault();
+                guardarFO();
+            }
+        });
+        //Validacion formulario fo al dar click
+        $('#btn-add-fo').on('click', function() {
+            if (!$("#form-fo").validate()) { // Not Valid
+                return false;
+            } else {
+                $("#form-fo").submit()
+            }
+        });
+
+        //Guardar fo con detalle de herraje y mostrar en datatable
+        function guardarFO() {
+            //Se arma objeto para herrajes
+            herrajes = [];//reset object
+            herrajesDataTable = [];
+            herrajesDataTable = herrajesResponse;
+            herrajesResponse.forEach(function(current, index, array){
+                let herrajeLocal = new herraje(
+                    current.idTipoHerraje,
+                    //$("#numPI").val(),
+                    //$("#nombrePI").val(),
+                    //$("#fechaSolicitud").val(),
+                    //$("#fechaOC").val(),
+                    //$("#fechaBodegaSucursal").val(),
+                    //$("#totalPI").val(),
+                    //$("#incurrido").val(),
+                    //$("#pendienteIncurrir").val(),
+                    current.formulaOut,
+                    current.precio
+                );
+
+                //Se agrega a lista de herrajes
+                herrajes.push(herrajeLocal);
+            });
+
+            //Se arma objeto para fibra optica
+            let fibraLocal = new fibra(
+                $("#selectTipoBobinaFO").val(),
+                $("#selectTipoBobinaFO option:selected").text(),
+                $("#distancia").val(),
+                distanciaBobina,
+                cantidadBobinas,
+                precioBobinaMetro,
+                totalBobina,
+                totalHerrajes,
+                herrajes,
+                herrajesDataTable
+            );
+
+            if(fibras.filter((obj) => obj.idTipoBobinaFO === fibraLocal.idTipoBobinaFO).length > 0){
+                Swal.fire({
+                    title: "AVISO FIBRA",
+                    text: "Tipo de fibra optica ya existe en la lista, eliminar antes, si desea agregar",
+                    icon: "warning"
+                })
+            }
+            else{
+                //Se agrega a objeto
+                fibras.push(fibraLocal);
+
+                //Mostrar en tabla
+                $('#pi-table-fo').DataTable().clear(); //se limpia tabla
+                $('#pi-table-fo').DataTable().rows.add(fibras).draw(); //se llena con datos
+                $('#add-fo-modal').trigger("click");
+            }
+        }
+
+        //CARGAR DETALLES FO
+        function detallesFO(id){
+            //Se obtiene fibra de la lista
+            var fibraEditar = fibras.filter((obj) => obj.idTipoBobinaFO === id);
+            //Se abre modal
+            $('#add-new-fo-sidebar').modal('show');
+            //Se limpia modal fo
+            resetModalFO(); 
+            //Se asignan valores a vista
+            $("#selectTipoBobinaFO").val(fibraEditar[0].idTipoBobinaFO);
+            $("#distancia").val(fibraEditar[0].distanciaPIDetalle);
+            $("#cantidadBobinas").val(fibraEditar[0].cantidadBobinas);
+            $("#distanciaBobina").val(fibraEditar[0].distanciaBobina);
+            $("#precioUnidadMedida").val(fibraEditar[0].precioUnitario);
+            $("#totalBobina").val(fibraEditar[0].totalDetalleFOPI);
+            $("#totalHerrajes").val(fibraEditar[0].totalHerrajes);
+            //Se colocan herrajes en tabla
+            console.log(fibraEditar[0].herrajesDataTable);
+            $('#pi-table-herraje').DataTable().rows.add(fibraEditar[0].herrajesDataTable).draw(); //se llena con datos
+            $('#pi-table-herraje-div').show();
+        }
+
+        //ELIMINAR FO
+        function eliminarFO(id){
+            Swal.fire({
+                title: "¿Eliminar FO?",
+                text: "¿Está seguro que desea eliminar FO? con id: " + id,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si, Eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fibras = fibras.filter((obj) => obj.idTipoBobinaFO !== id);
+                    $('#pi-table-fo').DataTable().clear(); //se limpia tabla
+                    $('#pi-table-fo').DataTable().rows.add(fibras).draw(); //se llena con datos
+                }
+            });
+        }
 
     </script>
 }

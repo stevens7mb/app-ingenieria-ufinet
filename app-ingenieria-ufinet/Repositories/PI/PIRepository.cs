@@ -149,7 +149,7 @@ namespace app_ingenieria_ufinet.Repositories.PI
                             var procedureParamsHerraje = new Dictionary<string, object>()
                             {
                                 {"@idTipoHerraje", herraje.idTipoHerraje},
-                                {"@IdPIDetalleFO", resultFO[0].Id},
+                                {"@idPIDetalleFO", resultFO[0].Id},
                                 {"@numPI", herraje.numPI},
                                 {"@nombrePI", herraje.nombrePI},
                                 {"@fechaSolicitud", herraje.fechaSolicitud},
