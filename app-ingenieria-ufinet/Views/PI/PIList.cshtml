@@ -170,21 +170,17 @@
                                     <div class="col-md-12 d-flex justify-content-center">
                                         <div class="invoice-total-wrapper">
                                             <div class="invoice-total-item">
-                                                <p class="invoice-total-title">Subtotal:</p>
-                                                <p class="invoice-total-amount">$1800</p>
+                                                <p class="invoice-total-title">Total Herrajes:</p>
+                                                <p class="invoice-total-amount" id="granTotalHerrajes">$0</p>
                                             </div>
                                             <div class="invoice-total-item">
-                                                <p class="invoice-total-title">Discount:</p>
-                                                <p class="invoice-total-amount">$28</p>
-                                            </div>
-                                            <div class="invoice-total-item">
-                                                <p class="invoice-total-title">Tax:</p>
-                                                <p class="invoice-total-amount">21%</p>
+                                                <p class="invoice-total-title">Total Fibras:</p>
+                                                <p class="invoice-total-amount" id="granTotalFibras">$0</p>
                                             </div>
                                             <hr class="my-50" />
                                             <div class="invoice-total-item">
                                                 <p class="invoice-total-title">Total:</p>
-                                                <p class="invoice-total-amount">$1690</p>
+                                                <p class="invoice-total-amount" id="granTotal">$0</p>
                                             </div>
                                         </div>
                                     </div>
@@ -698,6 +694,7 @@
                 $('#pi-table-fo').DataTable().rows.add(fibras).draw(); //se llena con datos
                 $('#add-fo-modal').trigger("click");
             }
+            calcularTotales();
         }
 
         //CARGAR DETALLES FO
@@ -738,8 +735,30 @@
                     fibras = fibras.filter((obj) => obj.idTipoBobinaFO !== id);
                     $('#pi-table-fo').DataTable().clear(); //se limpia tabla
                     $('#pi-table-fo').DataTable().rows.add(fibras).draw(); //se llena con datos
+                    calcularTotales();
                 }
             });
+        }
+
+        function calcularTotales(){
+            //inicializan variables
+            var totalHerrajes = 0;
+            var totalFibras = 0;
+            var total = 0;
+            var totalHerrajes = 0;
+            var totalFibras = 0;
+
+            //Calculos
+            fibras.forEach(function(current, index, array){
+                 totalHerrajes = current.totalHerrajes + totalHerrajes;
+                totalFibras = current.totalDetalleFOPI + totalFibras;
+            });
+            total = totalHerrajes + totalFibras; 
+
+            //Se setea en valores de vista
+            $("#granTotalHerrajes").text(totalHerrajes);
+            $("#granTotalFibras").text(totalFibras);
+            $("#granTotal").text(total);
         }
 
     </script>
