@@ -4,6 +4,5 @@
     {
         public PIResumenCompraRequest PIResumenCompraRequest { get; set; }
         public List<PIDetalleFORequest>  PIDetalleFORequest { get; set; }
-        public List<PIDetalleHerrajeRequest> PIDetalleHerrajeRequest { get; set; }
     }
 }

@@ -57,143 +57,149 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <section class="invoice-add-wrapper">
-                    <div class="row invoice-add">
-                        <!-- Invoice Add Left starts -->
-                        <div class="col-xl-9 col-md-8 col-12">
-                            <div class="card invoice-preview-card">
-                                <!-- Header starts -->
-                                <div class="card-body invoice-padding pb-0">
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="logo-wrapper">
-                                                <h3 class="text-primary invoice-logo">Nueva PI</h3>
+                <form id="form-pi" name="form-pi">
+                    <section class="invoice-add-wrapper">
+                        <div class="row invoice-add">
+                            <!-- Invoice Add Left starts -->
+                            <div class="col-xl-9 col-md-8 col-12">
+                                <div class="card invoice-preview-card">
+                                    <!-- Header starts -->
+                                    <div class="card-body invoice-padding pb-0">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="logo-wrapper">
+                                                    <h3 class="text-primary invoice-logo">Nueva PI</h3>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>Nombre de PI: </label>
+                                                <div class="mb-1">
+                                                    <input type="text" id="nombrePI" name="nombrePI" placeholder="Nombre de PI" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label>Numero de PI: </label>
+                                                <div class="mb-1">
+                                                    <input type="text" id="numPI" name="numPI" placeholder="Numero de PI" class="form-control">
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <label>Nombre de PI: </label>
-                                            <div class="mb-1">
-                                                <input type="text" id="nombrePI" name="nombrePI" placeholder="Nombre de PI" class="form-control">
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <div class="mb-1">
+                                                    <label class="form-label">Fecha Solicitud</label>
+                                                    <input id="fechaSolicitud" name="fechaSolicitud" class="form-control" type="date" />
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label>Numero de PI: </label>
-                                            <div class="mb-1">
-                                                <input type="text" id="numPI" name="numPI" placeholder="Numero de PI" class="form-control">
+                                            <div class="col-md-2">
+                                                <div class="mb-1">
+                                                    <label class="form-label">Fecha OC</label>
+                                                    <input id="fechaOC" name="fechaOC" class="form-control" type="date" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="mb-1">
+                                                    <label class="form-label">Fecha BodegaGT</label>
+                                                    <input id="fechaBodegaSucursal" name="fechaBodegaSucursal" class="form-control" type="date" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="mb-1">
+                                                    <label class="form-label" for="first-name-column">Total PI</label>
+                                                    <input type="text" id="totalPI" name="totalPI" placeholder="Total PI" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="mb-1">
+                                                    <label class="form-label" for="first-name-column">Incurrido</label>
+                                                    <input type="text" id="incurrido" name="incurrido" placeholder="Incurrido" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="mb-1">
+                                                    <label class="form-label" for="first-name-column">Pendiente Incurrir</label>
+                                                    <input type="text" id="pendienteIncurrir" name="pendienteIncurrir" placeholder="Pendiente" class="form-control" readonly>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-2">
-                                            <div class="mb-1">
-                                                <label class="form-label">Fecha Solicitud</label>
-                                                <input id="fechaSolicitud" name="fechaSolicitud" class="form-control" type="date" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="mb-1">
-                                                <label class="form-label">Fecha OC</label>
-                                                <input id="fechaOC" name="fechaOC" class="form-control" type="date" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="mb-1">
-                                                <label class="form-label">Fecha BodegaGT</label>
-                                                <input id="fechaBodegaSucursal" name="fechaBodegaSucursal" class="form-control" type="date" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="mb-1">
-                                                <label class="form-label" for="first-name-column">Total PI</label>
-                                                <input type="text" id="totalPI" name="totalPI" placeholder="Total PI" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="mb-1">
-                                                <label class="form-label" for="first-name-column">Incurrido</label>
-                                                <input type="text" id="incurrido" name="incurrido" placeholder="Incurrido" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="mb-1">
-                                                <label class="form-label" for="first-name-column">Pendiente Incurrir</label>
-                                                <input type="text" id="pendienteIncurrir" name="pendienteIncurrir" placeholder="Pendiente" class="form-control">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Header ends -->
+                                    <!-- Header ends -->
 
-                                <hr class="invoice-spacing" />
+                                    <hr class="invoice-spacing" />
 
 
-                                <div class="card-body invoice-padding">
-                                    <div class="col-md-12 text-center">
-                                        <button type="button" id="btn-modal-fo" class="btn btn-outline-primary col-md-3" data-bs-toggle="modal" data-bs-target="#add-new-fo-sidebar">Agregar FO</button>
+                                    <div class="card-body invoice-padding">
+                                        <div class="col-md-12 text-center">
+                                            <button type="button" id="btn-modal-fo" class="btn btn-outline-primary col-md-3" data-bs-toggle="modal" data-bs-target="#add-new-fo-sidebar">Agregar FO</button>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="card">
+                                                <div class="card-content">
+                                                    <div class="card-body">
+                                                        <table class="datatables-basic table" id="pi-table-fo" name="pi-table-fo">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>ID Tipo Fibra</th>
+                                                                    <th class="text-truncate">Tipo Fibra</th>
+                                                                    <th>Total Fibra</th>
+                                                                    <th>Total Herrajes</th>
+                                                                    <th class="cell-fit">Actions</th>
+                                                                </tr>
+                                                            </thead>
+                                                        </table>
+                                                        <div id="alert-table-fo" class="alert alert-warning fade show" role="alert" style="display:none">
+                                                            <strong>No hay FO</strong> Debe de haber por lo menos una fo para poder guardar la PI
+                                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-md-12">
-                                        <div class="card">
-                                            <div class="card-content">
-                                                <div class="card-body">
-                                                    <table class="datatables-basic table" id="pi-table-fo">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>ID Tipo Fibra</th>
-                                                                <th class="text-truncate">Tipo Fibra</th>
-                                                                <th>Total Fibra</th>
-                                                                <th>Total Herrajes</th>
-                                                                <th class="cell-fit">Actions</th>
-                                                            </tr>
-                                                        </thead>
-                                                    </table>
+                                        <div class="mb-2">
+                                            <label for="note" class="form-label fw-bold">Comentario:</label>
+                                            <textarea class="form-control" rows="2" id="comentario" name="comentario"></textarea>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <!-- Invoice Add Left ends -->
+                            <!-- Invoice Add Right starts -->
+                            <div class="col-xl-3 col-md-4 col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h3 class="text-primary invoice-logo">RESUMEN PI</h3>
+                                        <div class="col-md-12 d-flex justify-content-center">
+                                            <div class="invoice-total-wrapper">
+                                                <div class="invoice-total-item">
+                                                    <p class="invoice-total-title">Total Herrajes:</p>
+                                                    <p class="invoice-total-amount" id="granTotalHerrajes">$0</p>
+                                                </div>
+                                                <div class="invoice-total-item">
+                                                    <p class="invoice-total-title">Total Fibras:</p>
+                                                    <p class="invoice-total-amount" id="granTotalFibras">$0</p>
+                                                </div>
+                                                <hr class="my-50" />
+                                                <div class="invoice-total-item">
+                                                    <p class="invoice-total-title">Total:</p>
+                                                    <p class="invoice-total-amount" id="granTotal">$0</p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-12">
-                                    <div class="mb-2">
-                                        <label for="note" class="form-label fw-bold">Comentario:</label>
-                                        <textarea class="form-control" rows="2" id="comentario" name="comentario"></textarea>
-                                    </div>
-                                </div>
-
-
                             </div>
+                            <!-- Invoice Add Right ends -->
                         </div>
-                        <!-- Invoice Add Left ends -->
-                        <!-- Invoice Add Right starts -->
-                        <div class="col-xl-3 col-md-4 col-12">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h3 class="text-primary invoice-logo">RESUMEN PI</h3>
-                                    <div class="col-md-12 d-flex justify-content-center">
-                                        <div class="invoice-total-wrapper">
-                                            <div class="invoice-total-item">
-                                                <p class="invoice-total-title">Total Herrajes:</p>
-                                                <p class="invoice-total-amount" id="granTotalHerrajes">$0</p>
-                                            </div>
-                                            <div class="invoice-total-item">
-                                                <p class="invoice-total-title">Total Fibras:</p>
-                                                <p class="invoice-total-amount" id="granTotalFibras">$0</p>
-                                            </div>
-                                            <hr class="my-50" />
-                                            <div class="invoice-total-item">
-                                                <p class="invoice-total-title">Total:</p>
-                                                <p class="invoice-total-amount" id="granTotal">$0</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Invoice Add Right ends -->
-                    </div>
-                </section>
+                    </section>
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary">Guardar PI</button>
+                <button type="button" id="btn-guardar-pi" name="btn-guardar-pi" class="btn btn-primary">Guardar PI</button>
             </div>
         </div>
     </div>
@@ -220,7 +226,7 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="mb-1">
-                                <label class="form-label">Distancia</label>
+                                <label class="form-label">Cantidad Fibra Mts.</label>
                                 <input id="distancia" name="distancia" class="form-control" type="text" />
                             </div>
                         </div>
@@ -251,7 +257,7 @@
                                         <div class="row">
                                             <div class="col-md-3 mx-auto">
                                                 <div class="mb-1">
-                                                    <label class="form-label">Total Bobina</label>
+                                                    <label class="form-label">Costo Total Fibra</label>
                                                     <input id="totalBobina" name="totalBobina" class="form-control" type="text" readonly />
                                                 </div>
                                             </div>
@@ -334,32 +340,41 @@
         var herrajes = [];
         var herrajesDataTable = [];
         var fibras = [];
+        var modoEditarModalFO = false;
+        var fibraEditar = [];
 
         function herraje(idTipoHerraje, cantidadHerrajes, precioUnitarioHerraje) {
             this.idTipoHerraje = idTipoHerraje,
-            //this.numPI = numPI,
-            //this.nombrePI = nombrePI,
-            //this.fechaSolicitud = fechaSolicitud,
-            //this.fechaOC = fechaOC,
-            //this.fechaBodegaSucursal = fechaBodegaSucursal,
-            //this.totalDetalleFOPIDesc = totalDetalleFOPIDesc,
-            //this.incurrido = incurrido,
-            //this.pendienteIncurrir = pendienteIncurrir,
             this.cantidadHerrajes = cantidadHerrajes,
             this.precioUnitarioHerraje = precioUnitarioHerraje
         }
 
-        function fibra(idTipoBobinaFO, tipoBobinaFO, distanciaPIDetalle, distanciaBobina, cantidadBobinas, precioUnitario, totalDetalleFOPI, totalHerrajes, herrajes, herrajesDataTable){
+        function fibra(idTipoBobinaFO, tipoBobinaFO, distanciaPIDetalle, distanciaPIBobina, cantidadBobinas, precioUnitario, totalDetalleFOPI, totalHerrajes, herrajes, herrajesDataTable){
             this.idTipoBobinaFO = idTipoBobinaFO,
             this.tipoBobinaFO = tipoBobinaFO,
             this.distanciaPIDetalle = distanciaPIDetalle,
-            this.distanciaBobina = distanciaBobina
+            this.distanciaPIBobina = distanciaPIBobina
             this.cantidadBobinas = cantidadBobinas,
             this.precioUnitario = precioUnitario,
             this.totalDetalleFOPI = totalDetalleFOPI,
             this.totalHerrajes = totalHerrajes
             this.herrajes = herrajes,
             this.herrajesDataTable = herrajesDataTable
+        }
+
+        function encabezado(numPI, nombrePI, fechaSolicitud, fechaOC, fechaBodegaSucursal, totalPIEncabezado, incurrido, pendienteIncurrir, totalPIFO, totalPIHerrajes, totalPI, comentarioPI ){
+            this.numPI = numPI,
+            this.nombrePI = nombrePI,
+            this.fechaSolicitud = fechaSolicitud,
+            this.fechaOC = fechaOC,
+            this.fechaBodegaSucursal = fechaBodegaSucursal,
+            this.totalPIEncabezado = totalPIEncabezado,
+            this.incurrido = incurrido,
+            this.pendienteIncurrir = pendienteIncurrir,
+            this.totalPIFO = totalPIFO,
+            this.totalPIHerrajes = totalPIHerrajes,
+            this.totalPI = totalPI,
+            this.comentarioPI = comentarioPI
         }
 
         //Cargar Pagina
@@ -455,6 +470,15 @@
             });
         }
 
+        $("#incurrido").blur(function () {
+            var total = $("#totalPI").val();
+            var incurrido = $("#incurrido").val();
+            
+            if(total != null && incurrido != null){
+                $("#pendienteIncurrir").val(total - incurrido);
+            }
+        })
+
         //FUNCIONES MODAL AGREGAR FO
         //Select cargar datos de fo
         $('#selectTipoBobinaFO').on('change', function () {
@@ -504,6 +528,7 @@
 
         //al abrir modal resetear fo
         $('#btn-modal-fo').on('click', function() {
+            modoEditarModalFO = false; //modo editar desactivado
             resetModalFO();
         });
 
@@ -648,14 +673,6 @@
             herrajesResponse.forEach(function(current, index, array){
                 let herrajeLocal = new herraje(
                     current.idTipoHerraje,
-                    //$("#numPI").val(),
-                    //$("#nombrePI").val(),
-                    //$("#fechaSolicitud").val(),
-                    //$("#fechaOC").val(),
-                    //$("#fechaBodegaSucursal").val(),
-                    //$("#totalPI").val(),
-                    //$("#incurrido").val(),
-                    //$("#pendienteIncurrir").val(),
                     current.formulaOut,
                     current.precio
                 );
@@ -678,29 +695,48 @@
                 herrajesDataTable
             );
 
-            if(fibras.filter((obj) => obj.idTipoBobinaFO === fibraLocal.idTipoBobinaFO).length > 0){
-                Swal.fire({
-                    title: "AVISO FIBRA",
-                    text: "Tipo de fibra optica ya existe en la lista, eliminar antes, si desea agregar",
-                    icon: "warning"
-                })
-            }
-            else{
-                //Se agrega a objeto
-                fibras.push(fibraLocal);
+            //Modo editar
+            if (modoEditarModalFO == true) {
+                //indice de elemento que se edita
+                var indice = fibras.findIndex(fibra=> fibra.idTipoBobinaFO === fibraEditar[0].idTipoBobinaFO);
+                
+                //Se cambian valores
+                fibras[indice] = fibraLocal;
 
                 //Mostrar en tabla
                 $('#pi-table-fo').DataTable().clear(); //se limpia tabla
                 $('#pi-table-fo').DataTable().rows.add(fibras).draw(); //se llena con datos
                 $('#add-fo-modal').trigger("click");
             }
+            else{
+                if (fibras.filter((obj) => obj.idTipoBobinaFO === fibraLocal.idTipoBobinaFO).length > 0) {
+                    Swal.fire({
+                        title: "AVISO FIBRA",
+                        text: "Tipo de fibra optica ya existe en la lista, eliminar antes, si desea agregar",
+                        icon: "warning"
+                    })
+                }
+                else {
+                    //Se agrega a objeto
+                    fibras.push(fibraLocal);
+
+                    //Mostrar en tabla
+                    $('#pi-table-fo').DataTable().clear(); //se limpia tabla
+                    $('#pi-table-fo').DataTable().rows.add(fibras).draw(); //se llena con datos
+                    $('#add-fo-modal').trigger("click");
+                }
+            }
+
             calcularTotales();
         }
 
         //CARGAR DETALLES FO
         function detallesFO(id){
+            //modo editar modal activado
+            modoEditarModalFO = true;
             //Se obtiene fibra de la lista
-            var fibraEditar = fibras.filter((obj) => obj.idTipoBobinaFO === id);
+            fibraEditar = [];
+            fibraEditar = fibras.filter((obj) => obj.idTipoBobinaFO === id);
             //Se abre modal
             $('#add-new-fo-sidebar').modal('show');
             //Se limpia modal fo
@@ -714,7 +750,6 @@
             $("#totalBobina").val(fibraEditar[0].totalDetalleFOPI);
             $("#totalHerrajes").val(fibraEditar[0].totalHerrajes);
             //Se colocan herrajes en tabla
-            console.log(fibraEditar[0].herrajesDataTable);
             $('#pi-table-herraje').DataTable().rows.add(fibraEditar[0].herrajesDataTable).draw(); //se llena con datos
             $('#pi-table-herraje-div').show();
         }
@@ -759,6 +794,98 @@
             $("#granTotalHerrajes").text(totalHerrajes);
             $("#granTotalFibras").text(totalFibras);
             $("#granTotal").text(total);
+        }
+
+        //////////////////////////////////GUARDAR PI///////////////////////////////////////////////////
+        //Validacion de formulario de pi
+        $("#form-pi").validate({
+            rules: {
+                nombrePI: "required",
+                numPI: "required",
+                fechaSolicitud: "required",
+                fechaOC: "required",
+                fechaBodegaSucursal: "required",
+                totalPI: "required",
+                incurrido: "required",
+                pendienteIncurrir: "required",
+                table_required: {
+                    required: function () {
+                        return $('#pi-table-fo').DataTable().data().any();
+                    }
+                }
+
+            },
+            messages: {
+                nombrePI: "Agregue un nombre para la PI",
+                numPI: "Agregue num PI",
+                fechaSolicitud: "Agregue fecha",
+                fechaOC: "Agregue fecha",
+                fechaBodegaSucursal: "Agregue fecha",
+                totalPI: "Agregue total",
+                incurrido: "Agregue incurrido",
+                pendienteIncurrir: "Agruegue pendiente incurrir",
+                table_required: "No se han agregado fibras a la PI"
+            },
+            submitHandler: function (form) {
+                if($('#pi-table-fo').DataTable().data().any()){
+                    $("#alert-table-fo").hide();
+                    event.preventDefault();
+                    guardarPI();
+                }
+                else{
+                    $("#alert-table-fo").show();
+                }
+            }
+        });
+        //Validacion formulario fo al dar click
+        $('#btn-guardar-pi').on('click', function () {
+            if (!$("#form-pi").validate()) { // Not Valid
+                return false;
+            } else {
+                $("#form-pi").submit()
+            }
+        });
+
+        function guardarPI(){
+            let header = new encabezado(
+                $("#numPI").val(),
+                $("#nombrePI").val(),
+                $("#fechaSolicitud").val(),
+                $("#fechaOC").val(),
+                $("#fechaBodegaSucursal").val(),
+                $("#totalPI").val(),
+                $("#incurrido").val(),
+                $("#pendienteIncurrir").val(),
+                $("#granTotalFibras").text(),
+                $("#granTotalHerrajes").text(),
+                $("#granTotal").text()
+            );
+
+            var request = JSON.stringify({ "PIResumenCompraRequest": header, "PIDetalleFORequest": fibras });
+
+            $.ajax({
+                url: "@Url.Action("GuardarPI", "PI")",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: request,
+                dataType: "json",
+                success: function (result) {
+                    Swal.fire({
+                        title: "PI GUARDADA",
+                        text: "Se ha guardado correctamente la PI",
+                        icon: result.result
+                    })
+                    $('#modalAgregarPI').modal('hide');
+                },
+                error: function (result) {
+                    //show Alert
+                    Swal.fire({
+                        title: "HA OCURRIDO UN ERROR",
+                        text: "Error en el Servidor" + result.responseText,
+                        icon: "error"
+                    })
+                }
+            });
         }
 
     </script>

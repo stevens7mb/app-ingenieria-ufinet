@@ -53,5 +53,14 @@ namespace app_ingenieria_ufinet.Controllers
 
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult GuardarPI([FromBody] PIRequest request)
+        {
+
+            CrearPIResponseModel result = this._piRepository.CrearNuevoPI(request);
+
+            return Json(result);
+        }
     }
 }

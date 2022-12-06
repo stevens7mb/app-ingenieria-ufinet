@@ -93,6 +93,9 @@ namespace app_ingenieria_ufinet.Repositories.PI
 
             response.numPI = pi.PIResumenCompraRequest.numPI;
 
+            var totalFibrasIniciales = pi.PIDetalleFORequest.Count();
+            var totalHerrajesIniciales = 0;
+
             //Resumen de compra 
             var procedureParamsResumen = new Dictionary<string, object>()
             {
@@ -102,20 +105,26 @@ namespace app_ingenieria_ufinet.Repositories.PI
                 {"@fechaSolicitud", pi.PIResumenCompraRequest.fechaSolicitud},
                 {"@fechaOC", pi.PIResumenCompraRequest.fechaOC},
                 {"@fechaBodegaSucursal", pi.PIResumenCompraRequest.fechaBodegaSucursal},
-                {"@idSucursal", pi.PIResumenCompraRequest.idSucursal},
-                {"@totalPIResumenCompra", pi.PIResumenCompraRequest.totalPIResumenCompra},
-                {"@usuario", pi.PIResumenCompraRequest.usuario}
+                {"@idSucursal", 1},///PENDIENTE
+                {"@totalPIResumenCompra", pi.PIResumenCompraRequest.totalPIEncabezado},
+                {"@usuario", "rconde"},///PENDIENTE
+                {"@totalPIFO", pi.PIResumenCompraRequest.totalPIFO},
+                {"@totalPIHerrajes", pi.PIResumenCompraRequest.totalPIHerrajes},
+                {"@totalPI", pi.PIResumenCompraRequest.totalPI}
             };
 
             var resultResumenCompra = this._dbUtils.ExecuteStoredProc<SPResponseGenericWithVal>("crear_pi_resumen_compra", procedureParamsResumen);
 
             //Si se guarda cabecera o resumen exitosamente
-            if(resultResumenCompra.Count() > 0)
+            if(resultResumenCompra.Count() > 0 && resultResumenCompra[0].Tipo == "success")
             {
                 response.idResumenCompra = resultResumenCompra[0].Id;
 
                 if (resultResumenCompra[0].Tipo == "success" && resultResumenCompra[0].Id != 0)
                 {
+                    var responseResultFOs = new List<SPResponseGenericWithVal>();
+                    var responseResultHerrajes = new List<SPResponseGenericWithVal>();
+
                     //Se guardan las bobinas de fo
                     //Resumen de compra 
                     foreach (var fo in pi.PIDetalleFORequest)
@@ -123,25 +132,18 @@ namespace app_ingenieria_ufinet.Repositories.PI
                         var procedureParamsFO = new Dictionary<string, object>()
                         {
                             {"@idPIResumenCompra", resultResumenCompra[0].Id},
-                            {"@numPI", fo.numPI},
-                            {"@nombrePI", fo.nombrePI},
-                            {"@fechaSolicitud", fo.fechaSolicitud},
-                            {"@fechaOC", fo.fechaOC},
-                            {"@fechaBodegaSucursal", fo.fechaBodegaSucursal},
-                            {"@idSucursal", fo.idSucursal},
-                            {"@totalDetalleFOPIDesc", fo.totalDetalleFOPIDesc},
-                            {"@incurrido", fo.incurrido},
+                            {"@numPI", pi.PIResumenCompraRequest.numPI},
                             {"@idTipoBobinaFO", fo.idTipoBobinaFO},
                             {"@distanciaPIDetalle", fo.distanciaPIDetalle},
                             {"@cantidadBobinas", fo.cantidadBobinas},
                             {"@precioUnitario", fo.precioUnitario},
                             {"@totalDetalleFOPI", fo.totalDetalleFOPI},
-                            {"@usuario", fo.usuario},
+                            {"@usuario", "rconde"}//PENDIENTE
                         };
 
                         var resultFO = this._dbUtils.ExecuteStoredProc<SPResponseGenericWithVal>("crear_pi_detalle_fo", procedureParamsFO);
 
-                        response.responseFO.Add(resultFO[0]);//Agregar resultado
+                        responseResultFOs.Add(resultFO[0]);//Agregar resultado
 
                         //se guardan herrajes
                         foreach(var herraje in fo.herrajes)
@@ -150,27 +152,30 @@ namespace app_ingenieria_ufinet.Repositories.PI
                             {
                                 {"@idTipoHerraje", herraje.idTipoHerraje},
                                 {"@idPIDetalleFO", resultFO[0].Id},
-                                {"@numPI", herraje.numPI},
-                                {"@nombrePI", herraje.nombrePI},
-                                {"@fechaSolicitud", herraje.fechaSolicitud},
-                                {"@fechaOC", herraje.fechaOC},
-                                {"@fechaBodegaSucursal", herraje.fechaBodegaSucursal},
-                                {"@idSucursal", herraje.idSucursal},
-                                {"@totalDetalleFOPIDesc", herraje.totalDetalleFOPIDesc},
-                                {"@incurrido", herraje.incurrido},
-                                {"@pendienteIncurrir", herraje.pendienteIncurrir},
+                                {"@numPI", pi.PIResumenCompraRequest.numPI},
                                 {"@cantidadHerrajes", herraje.cantidadHerrajes},
                                 {"@precioUnitarioHerraje", herraje.precioUnitarioHerraje},
-                                {"@totalDetalleCompraHerraje", herraje.totalDetalleCompraHerraje},
-                                {"@usuario", herraje.usuario},
+                                {"@usuario", "rconde"}//PENDIENTE
                             };
 
                             var resultHerraje = this._dbUtils.ExecuteStoredProc<SPResponseGenericWithVal>("crear_pi_detalle_herraje", procedureParamsHerraje);
-                           
-                            response.responseHerraje.Add(resultHerraje[0]);//Agregar resultado
+
+                            responseResultHerrajes.Add(resultHerraje[0]);//Agregar resultado
                         }
                     }
+                    response.responseFO = responseResultFOs;
+                    response.responseHerraje = responseResultHerrajes;
                 }
+            }
+
+            //Si total de fibras fueron procesadas.
+            if(totalFibrasIniciales == response.responseFO.Select(x=>x.Tipo == "success").Count())
+            {
+                response.result = "success";
+            }
+            else
+            {
+                response.result = "error";
             }
 
             return response;

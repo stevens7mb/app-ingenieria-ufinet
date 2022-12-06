@@ -4,12 +4,15 @@
     {
         public int numPI { get; set; }
         public string nombrePI { get; set; }    
-        public string comentarioPI { get; set; }
         public DateTime fechaSolicitud { get; set; }
         public DateTime fechaOC { get; set; }
         public DateTime fechaBodegaSucursal { get; set; }
-        public int idSucursal { get; set; }
-        public decimal totalPIResumenCompra { get; set; }
-        public string usuario { get; set; }
+        public decimal totalPIEncabezado { get; set; }
+        public decimal incurrido { get; set; }
+        public decimal pendienteIncurrir { get; set; }
+        public decimal totalPIFO { get; set; }
+        public decimal totalPIHerrajes { get; set; }
+        public decimal totalPI { get; set; }
+        public string comentarioPI { get; set; }
     }
 }
