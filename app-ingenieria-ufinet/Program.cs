@@ -26,6 +26,8 @@ builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IDatabaseUtils, DatabaseUtils>();
 builder.Services.AddTransient<IParametrizationRepository, ParametrizationRepository>();
 builder.Services.AddTransient<IPIRepository, PIRepository>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<IUserService, UserService>();
 
 //Auth
 builder.Services.AddSession(options =>

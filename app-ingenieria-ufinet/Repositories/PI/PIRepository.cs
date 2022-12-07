@@ -6,6 +6,9 @@ using app_ingenieria_ufinet.Models.Parametrization.Moneda;
 using app_ingenieria_ufinet.Models.Parametrization.UnidadesMedida;
 using app_ingenieria_ufinet.Models.PI;
 using app_ingenieria_ufinet.Utils;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace app_ingenieria_ufinet.Repositories.PI
 {
@@ -28,6 +31,19 @@ namespace app_ingenieria_ufinet.Repositories.PI
         /// <param name="pi">Modelo Request PI</param>
         /// <returns>respuestas de ejecutar sps</returns>
         CrearPIResponseModel CrearNuevoPI(PIRequest pi);
+
+        /// <summary>
+        /// Listado de PI
+        /// </summary>
+        /// <returns>retorna listado de pi generadas</returns>
+        List<ListaPIResponseModel> ListadoPIGeneradas();
+
+        /// <summary>
+        /// Eliminar PI
+        /// </summary>
+        /// param name="idResumenCompraPI">Id del resumen de pi</param>
+        /// <returns>retorna respuesta generica sp</returns>
+        SPResponseGeneric EliminarPI(int idResumenCompraPI);
     }
     #endregion interface
 
@@ -37,10 +53,12 @@ namespace app_ingenieria_ufinet.Repositories.PI
     public class PIRepository : IPIRepository
     {
         private IDatabaseUtils _dbUtils;
+        private IUserService _userService;
 
-        public PIRepository(IDatabaseUtils dbUtils)
+        public PIRepository(IDatabaseUtils dbUtils, IUserService userService)
         {
             this._dbUtils = dbUtils ?? throw new ArgumentNullException(nameof(dbUtils));
+            _userService = userService;
         }
 
         #region PI
@@ -169,7 +187,7 @@ namespace app_ingenieria_ufinet.Repositories.PI
             }
 
             //Si total de fibras fueron procesadas.
-            if(totalFibrasIniciales == response.responseFO.Select(x=>x.Tipo == "success").Count())
+            if(totalFibrasIniciales == response.responseFO.Select(x=> x.Tipo == "success").Count())
             {
                 response.result = "success";
             }
@@ -179,6 +197,44 @@ namespace app_ingenieria_ufinet.Repositories.PI
             }
 
             return response;
+        }
+
+        /// <summary>
+        /// Listado de PI
+        /// </summary>
+        /// <returns>retorna listado de pi generadas</returns>
+        public List<ListaPIResponseModel> ListadoPIGeneradas()
+        {
+            var usuario = _userService.GetUser().Claims.FirstOrDefault(x => x.Type == "IdUsuario").Value;
+
+            List<ListaPIResponseModel> lista = new List<ListaPIResponseModel>();
+
+            var procedureParams = new Dictionary<string, object>()
+            {
+                {"@usuario", usuario}
+            };
+
+            lista = this._dbUtils.ExecuteStoredProc<ListaPIResponseModel>("lista_pi_generadas", procedureParams);
+
+            return lista;
+        }
+
+        /// <summary>
+        /// Eliminar PI
+        /// </summary>
+        /// param name="idResumenCompraPI">Id del resumen de pi</param>
+        /// <returns>retorna respuesta generica sp</returns>
+        public SPResponseGeneric EliminarPI(int idResumenCompraPI)
+        {
+
+            var procedureParams = new Dictionary<string, object>()
+            {
+                {"@id_resumen_compra_pi", idResumenCompraPI}
+            };
+
+            var respuesta = this._dbUtils.ExecuteStoredProc<SPResponseGeneric>("desactivar_pi", procedureParams);
+
+            return respuesta[0];
         }
 
         #endregion PI

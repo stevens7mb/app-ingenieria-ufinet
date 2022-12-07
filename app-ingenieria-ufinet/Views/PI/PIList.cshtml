@@ -32,10 +32,12 @@
                         <table class="datatables-basic table" id="pi-table">
                             <thead>
                                 <tr>
-                                    <th>ID Tipo Herraje</th>
-                                    <th class="text-truncate">Tipo Herraje</th>
-                                    <th>Precio</th>
-                                    <th>Tipo Bobina FO</th>
+                                    <th>Id PI</th>
+                                    <th>NumPI</th>
+                                    <th class="text-truncate">Nombre PI</th>
+                                    <th>Fecha Generacion</th>
+                                    <th>Estado</th>
+                                    <th>Total PI</th>
                                     <th class="cell-fit">Actions</th>
                                 </tr>
                             </thead>
@@ -385,47 +387,32 @@
                 "dom": 'rtip',
                 "pageLength": 5,
                 "ajax": {
-                    "url": "@Url.Action("ListaTiposHerrajes", "Parametrization")",
+                    "url": "@Url.Action("ListadoPIGeneradas", "PI")",
                     "type": "GET",
                     "dataType": "json"
                 },
                 "order": [[0, "desc"]],
                 columns: [
-                    { "data": "idTipoHerraje" },
-                    { "data": "tipoHerrajeDesc" },
-                    {
-                        "render": function (data, type, row) {
-                            return row.moneda + row.precio
-                        }
-                    },
-                    {
-                        "data": "tipoBobinaFO",
-                        "className": "dropdown",
-                    },
+                    { "data": "idPIResumenCompra" },
+                    { "data": "numPI" },
+                    { "data": "nombrePI" },
+                    { "data": "fechaGeneracion" },
+                    { "data": "estadoPI" },
+                    //{
+                    //    "render": function (data, type, row) {
+                    //        return row.moneda + row.precio
+                    //    }
+                    //},
+                    { "data": "totalPI" },
                     {
                         'defaultContent': null,
                         'render': function (data, type, row) {
-                            return '<div class="d-flex"> <button type="button" class="btn btn-icon btn-danger mx-1" id="' + row.idTipoHerraje + '" onclick="EliminarTipo(this.id)" data-toggle="tooltip" data-placement="left" title="Eliminar"> <i class="fa fa-trash-o"></i> </button> </div>'
+                            return '<div class="d-flex"> <button type="button" class="btn btn-icon btn-info mx-1" id="' + row.idPIResumenCompra + '" onclick="detallesPI(this.id)" data-toggle="tooltip" data-placement="left" title="Ver"> <i data-feather="eye"></i></i> </button> <button type="button" class="btn btn-icon btn-danger mx-1" id="' + row.idPIResumenCompra + '" onclick="eliminarPI(this.id)" data-toggle="tooltip" data-placement="left" title="Eliminar"> <i data-feather="trash"></i> </button> </div>'
                         }
                     }
                 ],
-                initComplete: function () {
-                    this.api().columns('.dropdown').every(function () {
-                        var column = this;
-                        var select = $('<select class="form-control"><option value=""></option></select>')
-                            .appendTo($("#filtro").empty())
-                            .on('change', function () {
-                                var val = $.fn.dataTable.util.escapeRegex(
-                                    $(this).val()
-                                );
-                                column
-                                    .search(val ? '^' + val + '$' : '', true, false)
-                                    .draw();
-                            });
-                        column.data().unique().sort().each(function (d, j) {
-                            select.append('<option value="' + d + '">' + d + '</option>')
-                        });
-                    });
+                drawCallback: function (settings) {
+                    feather.replace();
                 }
             });
 
@@ -884,6 +871,66 @@
                         text: "Error en el Servidor" + result.responseText,
                         icon: "error"
                     })
+                }
+            });
+        }
+
+        //////////////////////////////////VER PI///////////////////////////////////////////////////
+
+        //////////////////////////////////ELIMINAR PI//////////////////////////////////////////////
+        function eliminarPI(id){
+             Swal.fire({
+                title: "¿Eliminar PI?",
+                text: "¿Está seguro que desea eliminar PI? con id: " + id,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si, Eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    //Modal Loading
+                    $('body').loadingModal({
+                        position: 'auto',
+                        text: 'Cargando',
+                        color: '#fff',
+                        opacity: '0.7',
+                        backgrundColor: 'rgb(0,0,0)',
+                        animation: 'doubleBounce'
+                    });
+
+                    $.ajax({
+                    url: "@Url.Action("EliminarPI", "PI")",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({idResumenCompraPI: id}),
+                    dataType: "json",
+                    success: function (result) {
+                        //show Alert
+                        Swal.fire({
+                            title: 'PI',
+                            text: result.mensaje,
+                            icon: result.tipo
+                        })
+
+                        //reload table
+                        var table = $('#pi-table').DataTable();
+                        table.ajax.reload();
+                        //hidemodal loading
+                        $('body').loadingModal('destroy');
+                    },
+                    error: function (result) {
+                        //show Alert
+                        Swal.fire({
+                            title: "HA OCURRIDO UN ERROR",
+                            text: "Error en el Servidor" + result.responseText,
+                            icon: "error"
+                        });
+                        //hidemodal loading
+                        $('body').loadingModal('destroy');
+                    }
+            });
                 }
             });
         }

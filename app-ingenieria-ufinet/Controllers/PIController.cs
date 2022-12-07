@@ -2,6 +2,7 @@
 using app_ingenieria_ufinet.Models.Parametrization.BobinaFO;
 using app_ingenieria_ufinet.Models.Parametrization.BobinFO;
 using app_ingenieria_ufinet.Models.PI;
+using app_ingenieria_ufinet.Models.User;
 using app_ingenieria_ufinet.Repositories.Parametrization;
 using app_ingenieria_ufinet.Repositories.PI;
 using Microsoft.AspNetCore.Mvc;
@@ -59,6 +60,24 @@ namespace app_ingenieria_ufinet.Controllers
         {
 
             CrearPIResponseModel result = this._piRepository.CrearNuevoPI(request);
+
+            return Json(result);
+        }
+
+        [HttpGet]
+        public JsonResult ListadoPIGeneradas()
+        {
+
+            List<ListaPIResponseModel> result = this._piRepository.ListadoPIGeneradas();
+
+            return Json(new { data = result });
+        }
+
+        [HttpPost]
+        public JsonResult EliminarPI([FromBody] PIRequestId request)
+        { 
+
+            SPResponseGeneric result = this._piRepository.EliminarPI(request.idResumenCompraPI);
 
             return Json(result);
         }
