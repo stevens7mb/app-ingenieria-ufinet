@@ -82,7 +82,7 @@
                                             <div class="col-md-3">
                                                 <label>Numero de PI: </label>
                                                 <div class="mb-1">
-                                                    <input type="text" id="numPI" name="numPI" placeholder="Numero de PI" class="form-control">
+                                                    <input type="number" id="numPI" name="numPI" placeholder="Numero de PI" class="form-control">
                                                 </div>
                                             </div>
                                         </div>
@@ -108,19 +108,19 @@
                                             <div class="col-md-2">
                                                 <div class="mb-1">
                                                     <label class="form-label" for="first-name-column">Total PI</label>
-                                                    <input type="text" id="totalPI" name="totalPI" placeholder="Total PI" class="form-control">
+                                                    <input type="number" id="totalPI" name="totalPI" placeholder="Total PI" class="form-control">
                                                 </div>
                                             </div>
                                             <div class="col-md-2">
                                                 <div class="mb-1">
                                                     <label class="form-label" for="first-name-column">Incurrido</label>
-                                                    <input type="text" id="incurrido" name="incurrido" placeholder="Incurrido" class="form-control">
+                                                    <input type="number" id="incurrido" name="incurrido" placeholder="Incurrido" class="form-control">
                                                 </div>
                                             </div>
                                             <div class="col-md-2">
                                                 <div class="mb-1">
                                                     <label class="form-label" for="first-name-column">Pendiente Incurrir</label>
-                                                    <input type="text" id="pendienteIncurrir" name="pendienteIncurrir" placeholder="Pendiente" class="form-control" readonly>
+                                                    <input type="number" id="pendienteIncurrir" name="pendienteIncurrir" placeholder="Pendiente" class="form-control" readonly>
                                                 </div>
                                             </div>
                                         </div>
@@ -229,7 +229,7 @@
                         <div class="col-md-3">
                             <div class="mb-1">
                                 <label class="form-label">Cantidad Fibra Mts.</label>
-                                <input id="distancia" name="distancia" class="form-control" type="text" />
+                                <input id="distancia" name="distancia" class="form-control" type="number" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -278,7 +278,6 @@
                                                     <th>ID Tipo Herraje</th>
                                                     <th class="text-truncate">Tipo Herraje</th>
                                                     <th>Precio</th>
-                                                    <th>Formula</th>
                                                     <th>Cantidad</th>
                                                 </tr>
                                             </thead>
@@ -300,6 +299,162 @@
     </div>
 </div>
 <!-- /Add New Customer Sidebar -->
+
+<!-- SECCION PARA VER TODO BLOQUEADO BEGIN-->
+<!-- Modal Agregar PI Ver-->
+<div class="modal fade" id="modalAgregarPIV" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalFullTitle">Detalle de PI</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-pi" name="form-pi">
+                    <section class="invoice-add-wrapper">
+                        <div class="row invoice-add">
+                            <!-- Invoice Add Left starts -->
+                            <div class="col-xl-9 col-md-8 col-12">
+                                <div class="card invoice-preview-card">
+                                    <!-- Header starts -->
+                                    <div class="card-body invoice-padding pb-0">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="logo-wrapper">
+                                                    <h3 class="text-primary invoice-logo">Vista PI</h3>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>Nombre de PI: </label>
+                                                <div class="mb-1">
+                                                    <input type="text" id="nombrePIV" name="nombrePIV" placeholder="Nombre de PI" class="form-control" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label>Numero de PI: </label>
+                                                <div class="mb-1">
+                                                    <input type="text" id="numPIV" name="numPIV" placeholder="Numero de PI" class="form-control" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <div class="mb-1">
+                                                    <label class="form-label">Fecha Solicitud</label>
+                                                    <input id="fechaSolicitudV" name="fechaSolicitudV" class="form-control" type="date" readonly/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="mb-1">
+                                                    <label class="form-label">Fecha OC</label>
+                                                    <input id="fechaOCV" name="fechaOCV" class="form-control" type="date" readonly/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="mb-1">
+                                                    <label class="form-label">Fecha BodegaGT</label>
+                                                    <input id="fechaBodegaSucursalV" name="fechaBodegaSucursalV" class="form-control" type="date" readonly/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="mb-1">
+                                                    <label class="form-label" for="first-name-column">Total PI</label>
+                                                    <input type="text" id="totalPIV" name="totalPIV" placeholder="Total PI" class="form-control" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="mb-1">
+                                                    <label class="form-label" for="first-name-column">Incurrido</label>
+                                                    <input type="text" id="incurridoV" name="incurridoV" placeholder="Incurrido" class="form-control" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="mb-1">
+                                                    <label class="form-label" for="first-name-column">Pendiente Incurrir</label>
+                                                    <input type="text" id="pendienteIncurrirV" name="pendienteIncurrirV" placeholder="Pendiente" class="form-control" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Header ends -->
+
+                                    <hr class="invoice-spacing" />
+
+
+                                    <div class="card-body invoice-padding">
+                                        <div class="col-md-12">
+                                            <div class="card">
+                                                <div class="card-content">
+                                                    <div class="card-body">
+                                                        <table class="datatables-basic table" id="pi-table-fo-V" name="pi-table-fo">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>ID Tipo Fibra</th>
+                                                                    <th class="text-truncate">Tipo Fibra</th>
+                                                                    <th>Total Fibra</th>
+                                                                    <th>Total Herrajes</th>
+                                                                    <th class="cell-fit">Actions</th>
+                                                                </tr>
+                                                            </thead>
+                                                        </table>
+                                                        <div id="alert-table-fo-V" class="alert alert-warning fade show" role="alert" style="display:none">
+                                                            <strong>No hay FO</strong> Debe de haber por lo menos una fo para poder guardar la PI
+                                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="mb-2">
+                                            <label for="note" class="form-label fw-bold">Comentario:</label>
+                                            <textarea class="form-control" rows="2" id="comentarioV" name="comentarioV" readonly></textarea>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <!-- Invoice Add Left ends -->
+                            <!-- Invoice Add Right starts -->
+                            <div class="col-xl-3 col-md-4 col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h3 class="text-primary invoice-logo">RESUMEN PI</h3>
+                                        <div class="col-md-12 d-flex justify-content-center">
+                                            <div class="invoice-total-wrapper">
+                                                <div class="invoice-total-item">
+                                                    <p class="invoice-total-title">Total Herrajes:</p>
+                                                    <p class="invoice-total-amount" id="granTotalHerrajesV">$0</p>
+                                                </div>
+                                                <div class="invoice-total-item">
+                                                    <p class="invoice-total-title">Total Fibras:</p>
+                                                    <p class="invoice-total-amount" id="granTotalFibrasV">$0</p>
+                                                </div>
+                                                <hr class="my-50" />
+                                                <div class="invoice-total-item">
+                                                    <p class="invoice-total-title">Total:</p>
+                                                    <p class="invoice-total-amount" id="granTotalV">$0</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Invoice Add Right ends -->
+                        </div>
+                    </section>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END: Modal Agregar PI Ver-->
+<!-- SECCION PARA VER TODO BLOQUEADO END-->
 
 <!-- END: Content-->
 
@@ -563,16 +718,15 @@
                                     { "data": "idTipoHerraje" },
                                     { "data": "tipoHerraje" },
                                     { "data": "precio" },
-                                    { "data": "formula" },
                                     {
                                         "render": function (data, type, row) {
                                             return 0 + row.formulaOut
                                         }
                                     }
                                 ],
-                                columnDefs: [
-                                    { width: "5%", targets: 0 }
-                                ],
+                                //columnDefs: [
+                                //    { width: "5%", targets: 0 }
+                                //],
                             });
                         }  
                         //termina cargar herrajes tabla
@@ -810,7 +964,7 @@
                 fechaBodegaSucursal: "Agregue fecha",
                 totalPI: "Agregue total",
                 incurrido: "Agregue incurrido",
-                pendienteIncurrir: "Agruegue pendiente incurrir",
+                pendienteIncurrir: "Agregue pendiente incurrir",
                 table_required: "No se han agregado fibras a la PI"
             },
             submitHandler: function (form) {
@@ -834,6 +988,15 @@
         });
 
         function guardarPI(){
+            //Modal Loading
+            $('body').loadingModal({
+                position: 'auto',
+                text: 'Cargando',
+                color: '#fff',
+                opacity: '0.7',
+                backgrundColor: 'rgb(0,0,0)',
+                animation: 'doubleBounce'
+            });
             let header = new encabezado(
                 $("#numPI").val(),
                 $("#nombrePI").val(),
@@ -863,6 +1026,11 @@
                         icon: result.result
                     })
                     $('#modalAgregarPI').modal('hide');
+                    //reload table
+                    var table = $('#pi-table').DataTable();
+                    table.ajax.reload();
+                    //hidemodal loading
+                    $('body').loadingModal('destroy');
                 },
                 error: function (result) {
                     //show Alert
@@ -871,6 +1039,8 @@
                         text: "Error en el Servidor" + result.responseText,
                         icon: "error"
                     })
+                    //hidemodal loading
+                    $('body').loadingModal('destroy');
                 }
             });
         }
@@ -930,9 +1100,13 @@
                         //hidemodal loading
                         $('body').loadingModal('destroy');
                     }
+                });
+            }
             });
-                }
-            });
+        }
+
+        function detallesPI(id){
+            $('#modalAgregarPIV').modal('show');
         }
 
     </script>

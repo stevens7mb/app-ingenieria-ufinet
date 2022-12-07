@@ -94,7 +94,7 @@ namespace app_ingenieria_ufinet.Repositories.PI
             response.herrajes = resultCalcHerrajes;
             response.TotalHerrajes = totalHerrajes;
             response.TotalBobina = totalBobina;
-            response.CantidadBobinas = cantidadBobinas;
+            response.CantidadBobinas = Math.Ceiling(cantidadBobinas);
 
             //respuesta de metodo
             return response;
