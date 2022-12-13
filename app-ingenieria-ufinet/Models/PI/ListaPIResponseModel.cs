@@ -7,6 +7,7 @@
         public string NombrePI { get; set; }
         public DateTime? FechaGeneracion { get; set; }
         public string EstadoPI { get; set; }
+        public string Usuario { get; set; }
         public decimal TotalPI { get; set; }
     }
 }

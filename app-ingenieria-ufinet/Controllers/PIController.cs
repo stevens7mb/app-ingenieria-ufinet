@@ -81,5 +81,19 @@ namespace app_ingenieria_ufinet.Controllers
 
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult CargarDetallesPI([FromBody] PIRequestId request)
+        {
+            DetallesPIResponseModel result = new DetallesPIResponseModel();
+
+            var resumen = this._piRepository.CargarDetallesPIResumen(request.idResumenCompraPI);
+            var fos = this._piRepository.CargarDetallesPIFO(request.idResumenCompraPI);
+
+            result.detallesResumenPI = resumen;
+            result.detallesFO = fos;
+
+            return Json(result);
+        }
     }
 }

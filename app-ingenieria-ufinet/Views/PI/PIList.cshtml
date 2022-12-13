@@ -17,7 +17,7 @@
 <!-- Basic table -->
 <section id="basic-datatable">
     <div class="row">
-        <div class="col-12">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">LISTADO DE PI</h4>
@@ -29,19 +29,23 @@
                 </div>
                 <div class="card-content">
                     <div class="card-body">
-                        <table class="datatables-basic table" id="pi-table">
-                            <thead>
-                                <tr>
-                                    <th>Id PI</th>
-                                    <th>NumPI</th>
-                                    <th class="text-truncate">Nombre PI</th>
-                                    <th>Fecha Generacion</th>
-                                    <th>Estado</th>
-                                    <th>Total PI</th>
-                                    <th class="cell-fit">Actions</th>
-                                </tr>
-                            </thead>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table zero-configuration" id="pi-table">
+                                <thead>
+                                    <tr>
+                                        <th>Id PI</th>
+                                        <th>NumPI</th>
+                                        <th class="text-truncate">Nombre PI</th>
+                                        <th>Fecha Generacion</th>
+                                        <th>Hora</th>
+                                        <th>Usuario</th>
+                                        <th>Estado</th>
+                                        <th>Total PI</th>
+                                        <th class="cell-fit">Actions</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -386,7 +390,7 @@
                                             <div class="card">
                                                 <div class="card-content">
                                                     <div class="card-body">
-                                                        <table class="datatables-basic table" id="pi-table-fo-V" name="pi-table-fo">
+                                                        <table class="datatables-basic table" id="pi-table-fo-v" name="pi-table-fo-v">
                                                             <thead>
                                                                 <tr>
                                                                     <th>ID Tipo Fibra</th>
@@ -485,6 +489,7 @@
     <script src="~/Template/app-assets/vendors/js/forms/repeater/jquery.repeater.min.js"></script>
     <!-- END: Page Vendor JS-->
 @*    <script src="~/Template/app-assets/js/scripts/pages/app-invoice.js"></script>*@
+    <script src="~/Template/app-assets/vendors/js/extensions/moment.min.js"></script>
 
     <script>
         //DEFINICIONES Y VARIABLES
@@ -499,6 +504,7 @@
         var fibras = [];
         var modoEditarModalFO = false;
         var fibraEditar = [];
+        var detallesPIVer;
 
         function herraje(idTipoHerraje, cantidadHerrajes, precioUnitarioHerraje) {
             this.idTipoHerraje = idTipoHerraje,
@@ -551,14 +557,27 @@
                     { "data": "idPIResumenCompra" },
                     { "data": "numPI" },
                     { "data": "nombrePI" },
-                    { "data": "fechaGeneracion" },
+                    {
+                        "render": function (data, type, row) {
+                            return moment(row.fechaGeneracion).format('DD-MM-YYYY');
+                        }
+                    },
+                    {
+                        "render": function (data, type, row) {
+                            return moment(row.fechaGeneracion).format('hh:mm:ss a');
+                        }
+                    },
+                    { "data": "usuario" },
                     { "data": "estadoPI" },
                     //{
                     //    "render": function (data, type, row) {
                     //        return row.moneda + row.precio
                     //    }
                     //},
-                    { "data": "totalPI" },
+                    { 
+                        "data": "totalPI",
+                        "render" : $.fn.dataTable.render.number( ',', '.', 2, '$')
+                    },
                     {
                         'defaultContent': null,
                         'render': function (data, type, row) {
@@ -1020,17 +1039,26 @@
                 data: request,
                 dataType: "json",
                 success: function (result) {
-                    Swal.fire({
-                        title: "PI GUARDADA",
-                        text: "Se ha guardado correctamente la PI",
-                        icon: result.result
-                    })
-                    $('#modalAgregarPI').modal('hide');
-                    //reload table
-                    var table = $('#pi-table').DataTable();
-                    table.ajax.reload();
-                    //hidemodal loading
-                    $('body').loadingModal('destroy');
+                    if(result.result ==="success"){
+                        Swal.fire({
+                            title: "PI GUARDADA",
+                            text: "Se ha guardado correctamente la PI",
+                            icon: result.result
+                        })
+                        $('#modalAgregarPI').modal('hide');
+                        //reload table
+                        var table = $('#pi-table').DataTable();
+                        table.ajax.reload();
+                        //hidemodal loading
+                        $('body').loadingModal('destroy');
+                    }
+                    else{
+                        Swal.fire({
+                            title: "PI ERROR",
+                            text: "Ha ocurrido un error se revierte PI",
+                            icon: result.result
+                        })
+                    }
                 },
                 error: function (result) {
                     //show Alert
@@ -1106,7 +1134,86 @@
         }
 
         function detallesPI(id){
-            $('#modalAgregarPIV').modal('show');
+            $.ajax({
+                url: "@Url.Action("CargarDetallesPI", "PI")",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({ idResumenCompraPI: id }),
+                dataType: "json",
+                success: function (result) {
+
+                    //Se guarda en variable global pi en observacion
+                    detallesPIVer = "";
+                    detallesPIVer = result;
+
+                    //Resumen cargar datos
+                    $("#nombrePIV").val(result.detallesResumenPI.nombrePI);
+                    $("#numPIV").val(result.detallesResumenPI.numPI);
+                    $("#fechaSolicitudV").val(moment(result.detallesResumenPI.fechaSolicitud).format('YYYY-MM-DD'));
+                    $("#fechaOCV").val(moment(result.detallesResumenPI.fechaOC).format('YYYY-MM-DD'));
+                    $("#fechaBodegaSucursalV").val(moment(result.detallesResumenPI.fechaBodegaSucursal).format('YYYY-MM-DD'));
+                    $("#totalPIV").val(result.detallesResumenPI.totalPIResumenCompra);
+                    $("#incurridoV").val(result.detallesResumenPI.incurrido);
+                    $("#pendienteIncurrirV").val(result.detallesResumenPI.pendienteIncurrir);
+                    $("#granTotalHerrajesV").text(result.detallesResumenPI.totalPIHerrajes);
+                    $("#granTotalFibrasV").text(result.detallesResumenPI.totalPIFO);                
+                    $("#granTotalV").text(result.detallesResumenPI.totalPI);   
+                    $("#comentarioV").text(result.detallesResumenPI.comentarioPI); 
+                    $('#modalAgregarPIV').modal('show');
+
+                    //Cargar Datos Datatables Fibras
+                    if ( $.fn.dataTable.isDataTable('#pi-table-fo-v')) {
+                        $('#pi-table-fo-v').DataTable().clear(); //se limpia tabla
+                        $('#pi-table-fo-v').DataTable().rows.add(result.detallesFO).draw(); //se llena con datos
+                    }
+                    else{ //primera instancia tabla
+                        $('#pi-table-fo-v').DataTable({
+                            "language": { "url": "https://cdn.datatables.net/plug-ins/1.12.1/i18n/es-ES.json" },
+                            "dom": 'rtip',
+                            "pageLength" : 5,
+                            "data" : result.detallesFO,
+                            "order": [[0, "desc"]],
+                            columns: [
+                                { "data": "idTipoBobinaFO" },
+                                { "data": "tipoBobinaFO" },
+                                { "data": "totalDetalleFOPI" },
+                                { "data": "totalHerrajes" },
+                                {
+                                    'defaultContent': null,
+                                    'render': function (data, type, row) {
+                                        return '<div class="d-flex"> <button disabled type="button" class="btn btn-icon btn-info mx-1" id="' + row.idTipoBobinaFO + '" onclick="detallesFOV(this.id)" data-toggle="tooltip" data-placement="left" title="Ver"> <i data-feather="eye"></i></i> </button> </div>'
+                                    }
+                                }
+                            ],
+                            drawCallback: function (settings) {
+                                feather.replace();
+                            }
+                        });
+                    }
+
+                    //reload table
+                    var table = $('#pi-table').DataTable();
+                    table.ajax.reload();
+                    //hidemodal loading
+                    $('body').loadingModal('destroy');
+                },
+                error: function (result) {
+                    //show Alert
+                    Swal.fire({
+                        title: "HA OCURRIDO UN ERROR",
+                        text: "Error en el Servidor" + result.responseText,
+                        icon: "error"
+                    });
+                    //hidemodal loading
+                    $('body').loadingModal('destroy');
+                }
+            });
+        }
+
+        function detallesFOV(id){
+            console.log(detallesPIVer)
+            var fibraVer = detallesPIVer.detallesFO.filter((obj) => obj.idTipoBobinaFO === id);
+            console.log(fibraVer)
         }
 
     </script>
