@@ -20,7 +20,7 @@
     <meta name="description" content="Esta es una app para administracion de fo y herrajes">
     <meta name="keywords" content="app, ingenieria, ufinet">
     <meta name="author" content="PIXINVENT">
-    <title>App Ingeniería UFINET</title>
+    <title>App Ingeniería Ufinet</title>
     <link rel="apple-touch-icon" href="~/Template/app-assets/images/icons/apple-safari.png">
     <link rel="shortcut icon" type="image/x-icon" href="~/img/Layout/server_ufi.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500;1,600" rel="stylesheet">
@@ -111,7 +111,7 @@
                                 </g>
                             </svg>*@
                         </span>
-                        <h2 class="brand-text">UFINET</h2>
+                        <h2 class="brand-text">Ufinet</h2>
                     </a>
                 </li>
                 <li class="nav-item nav-toggle"><a class="nav-link modern-nav-toggle pe-0" data-bs-toggle="collapse"><i class="d-block d-xl-none text-primary toggle-icon font-medium-4" data-feather="x"></i><i class="d-none d-xl-block collapse-toggle-icon font-medium-4  text-primary" data-feather="disc" data-ticon="disc"></i></a></li>
@@ -123,52 +123,6 @@
                 <li class=" navigation-header">
                     <span>Modulos</span>
                 </li>
-                @if (rolesUsuario.Contains("Admin") || rolesUsuario.Contains("Usuario"))
-                {
-                    <li class=" nav-item">
-                        <a class="d-flex align-items-center" href="#"><i data-feather="credit-card"></i><span class="menu-title text-truncate" data-i18n="Page Layouts">PI</span>@*<span class="badge badge-light-danger rounded-pill ms-auto me-1">2</span>*@</a>
-                        <ul class="menu-content">
-                            @if (rolesUsuario.Contains("Admin") || rolesUsuario.Contains("Usuario"))
-                            {
-                                <li class="@(ViewContext.RouteData.Values["Controller"].ToString() + ViewContext.RouteData.Values["Action"].ToString() == "PIPIList" ? "active nav-item" : "nav-item")">
-                                    <a class="d-flex align-items-center" href="@Url.Action("PIList", "PI")"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Shop">Generacion de PI</span></a>
-                                </li>
-                            }
-                            @if (rolesUsuario.Contains("Admin"))
-                            {
-                                <li class="@(ViewContext.RouteData.Values["Controller"].ToString() + ViewContext.RouteData.Values["Action"].ToString() == "PIConsolidacionPI" ? "active nav-item" : "nav-item")">
-                                    <a class="d-flex align-items-center" href="@Url.Action("ConsolidacionPI", "PI")"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Shop">Consolidacion de PI</span></a>
-                                </li>
-                            }
-                            @if (rolesUsuario.Contains("Admin"))
-                            {
-                                <li class="@(ViewContext.RouteData.Values["Controller"].ToString() + ViewContext.RouteData.Values["Action"].ToString() == "PIPIProcesadas" ? "active nav-item" : "nav-item")">
-                                    <a class="d-flex align-items-center" href="@Url.Action("PIProcesadas", "PI")"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Shop">PI Procesadas</span></a>
-                                </li>
-                            }
-                        </ul>
-                    </li>
-                }
-                @if (rolesUsuario.Contains("Admin"))
-                {
-                    <li class=" nav-item">
-                        <a class="d-flex align-items-center" href="#"><i data-feather="layout"></i><span class="menu-title text-truncate" data-i18n="Page Layouts">Parametrización</span>@*<span class="badge badge-light-danger rounded-pill ms-auto me-1">2</span>*@</a>
-                        <ul class="menu-content">
-                            <li class="@(ViewContext.RouteData.Values["Controller"].ToString() + ViewContext.RouteData.Values["Action"].ToString() == "ParametrizationTipoBobinaFo" ? "active nav-item" : "nav-item")">
-                                <a class="d-flex align-items-center" href="@Url.Action("TipoBobinaFo", "Parametrization")"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Shop">Tipos Bobinas FO</span></a>
-                            </li>
-                            <li class="@(ViewContext.RouteData.Values["Controller"].ToString() + ViewContext.RouteData.Values["Action"].ToString() == "ParametrizationTipoHerraje" ? "active nav-item" : "nav-item")">
-                                <a class="d-flex align-items-center" href="@Url.Action("TipoHerraje", "Parametrization")"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Details">Tipos Herrajes</span></a>
-                            </li>
-                        </ul>
-                    </li>
-                }
-                @if (rolesUsuario.Contains("Admin"))
-                {
-                    <li class="@(ViewContext.RouteData.Values["Controller"].ToString() + ViewContext.RouteData.Values["Action"].ToString() == "UserUsuario" ? "active nav-item" : "nav-item")">
-                        <a class="d-flex align-items-center" href="@Url.Action("Usuario", "User")"> <i data-feather="user"></i><span class="menu-title text-truncate" data-i18n="User">Usuarios</span></a>
-                    </li>
-                }
                 @if (rolesUsuario.Contains("Admin"))
                 {
                     <li class=" nav-item">
@@ -189,6 +143,52 @@
                         </ul>
                     </li>
                 }
+                @if (rolesUsuario.Contains("Admin") || rolesUsuario.Contains("Usuario"))
+                {
+                    <li class=" nav-item">
+                        <a class="d-flex align-items-center" href="#"><i data-feather="file-text"></i><span class="menu-title text-truncate" data-i18n="Page Layouts">Gestión PI</span>@*<span class="badge badge-light-danger rounded-pill ms-auto me-1">2</span>*@</a>
+                        <ul class="menu-content">
+                            @if (rolesUsuario.Contains("Admin") || rolesUsuario.Contains("Usuario"))
+                            {
+                                <li class="@(ViewContext.RouteData.Values["Controller"].ToString() + ViewContext.RouteData.Values["Action"].ToString() == "PIPIList" ? "active nav-item" : "nav-item")">
+                                    <a class="d-flex align-items-center" href="@Url.Action("PIList", "PI")"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Shop">Generación de PI</span></a>
+                                </li>
+                            }
+                            @if (rolesUsuario.Contains("Admin"))
+                            {
+                                <li class="@(ViewContext.RouteData.Values["Controller"].ToString() + ViewContext.RouteData.Values["Action"].ToString() == "PIConsolidacionPI" ? "active nav-item" : "nav-item")">
+                                    <a class="d-flex align-items-center" href="@Url.Action("ConsolidacionPI", "PI")"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Shop">Consolidación de PI</span></a>
+                                </li>
+                            }
+                            @if (rolesUsuario.Contains("Admin"))
+                            {
+                                <li class="@(ViewContext.RouteData.Values["Controller"].ToString() + ViewContext.RouteData.Values["Action"].ToString() == "PIPIProcesadas" ? "active nav-item" : "nav-item")">
+                                    <a class="d-flex align-items-center" href="@Url.Action("PIProcesadas", "PI")"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Shop">Estado PI</span></a>
+                                </li>
+                            }
+                        </ul>
+                    </li>
+                }
+                @if (rolesUsuario.Contains("Admin"))
+                {
+                    <li class=" nav-item">
+                        <a class="d-flex align-items-center" href="#"><i data-feather="filter"></i><span class="menu-title text-truncate" data-i18n="Page Layouts">Parametrización</span>@*<span class="badge badge-light-danger rounded-pill ms-auto me-1">2</span>*@</a>
+                        <ul class="menu-content">
+                            <li class="@(ViewContext.RouteData.Values["Controller"].ToString() + ViewContext.RouteData.Values["Action"].ToString() == "ParametrizationTipoBobinaFo" ? "active nav-item" : "nav-item")">
+                                <a class="d-flex align-items-center" href="@Url.Action("TipoBobinaFo", "Parametrization")"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Shop">Tipos Bobinas FO</span></a>
+                            </li>
+                            <li class="@(ViewContext.RouteData.Values["Controller"].ToString() + ViewContext.RouteData.Values["Action"].ToString() == "ParametrizationTipoHerraje" ? "active nav-item" : "nav-item")">
+                                <a class="d-flex align-items-center" href="@Url.Action("TipoHerraje", "Parametrization")"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Details">Tipos Herrajes</span></a>
+                            </li>
+                        </ul>
+                    </li>
+                }
+                @if (rolesUsuario.Contains("Admin"))
+                {
+                    <li class="@(ViewContext.RouteData.Values["Controller"].ToString() + ViewContext.RouteData.Values["Action"].ToString() == "UserUsuario" ? "active nav-item" : "nav-item")">
+                        <a class="d-flex align-items-center" href="@Url.Action("Usuario", "User")"> <i data-feather="user"></i><span class="menu-title text-truncate" data-i18n="User">Usuarios</span></a>
+                    </li>
+                }
             </ul>
         </div>
     </div>
@@ -204,7 +204,7 @@
                 <div class="content-header-left col-md-9 col-12 mb-2">
                     <div class="row breadcrumbs-top">
                         <div class="col-12">
-                            <h2 class="content-header-title float-start mb-0">app-ingeniería-ufinet</h2>
+                            <h2 class="content-header-title float-start mb-0">Ingeniería Ufinet</h2>
                         </div>
                     </div>
                 </div>
@@ -231,7 +231,7 @@
     <!-- BEGIN: Footer-->
     <footer class="footer footer-static footer-light">
         <p class="clearfix blue-grey lighten-2 mb-0">
-            <span class="float-md-left d-block d-md-inline-block mt-25">COPYRIGHT &copy; 2022<a class="text-bold-800 grey darken-2" href="https://1.envato.market/pixinvent_portfolio" target="_blank">,</a>All rights Reserved</span>
+            <span class="float-md-left d-block d-md-inline-block mt-25">Copyright Ingeniería Ufinet &copy; 2023<a class="text-bold-800 grey darken-2" href="" target="_blank">,</a> Todos los derechos reservados</span>
             <button class="btn btn-primary btn-icon scroll-top" type="button"><i class="feather icon-arrow-up"></i></button>
         </p>
     </footer>
