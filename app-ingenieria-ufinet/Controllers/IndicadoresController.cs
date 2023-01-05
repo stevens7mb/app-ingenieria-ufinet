@@ -58,5 +58,29 @@ namespace app_ingenieria_ufinet.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult DetallesFactibilidad([FromBody] FactibilidadRequestModel factibilidad)
+        {
+            FactibilidadDetailsModel result = this._indicadorRepository.DetallesFactibilidad((int)factibilidad.IdFactibilidad);
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult EditarFactibilidad([FromBody] FactibilidadRequestModel factibilidad)
+        {
+            SPResponseGeneric result = this._indicadorRepository.EditarFactibilidad(factibilidad);
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult DesactivarFactibilidad([FromBody] FactibilidadRequestModel factibilidad)
+        {
+            SPResponseGeneric result = this._indicadorRepository.DesactivarFactibilidad(factibilidad);
+
+            return Json(result);
+        }
+
     }
 }
