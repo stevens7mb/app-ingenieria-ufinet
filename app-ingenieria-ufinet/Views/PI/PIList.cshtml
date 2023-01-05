@@ -124,7 +124,7 @@
                                             <div class="col-md-2">
                                                 <div class="mb-1">
                                                     <label class="form-label" for="first-name-column">Pendiente Incurrir</label>
-                                                    <input type="number" id="pendienteIncurrir" name="pendienteIncurrir" placeholder="Pendiente" class="form-control" readonly>
+                                                    <input type="text" id="pendienteIncurrir" name="pendienteIncurrir" placeholder="Pendiente" class="form-control" readonly>
                                                 </div>
                                             </div>
                                         </div>
@@ -599,8 +599,14 @@
                 columns: [
                     { "data": "idTipoBobinaFO" },
                     { "data": "tipoBobinaFO" },
-                    { "data": "totalDetalleFOPI" },
-                    { "data": "totalHerrajes" },
+                    { 
+                        "data": "totalDetalleFOPI",
+                        "render": $.fn.dataTable.render.number(',', '.', 2, '$')
+                    },
+                    {
+                        "data": "totalHerrajes",
+                        "render": $.fn.dataTable.render.number(',', '.', 2, '$')
+                    },
                     {
                         'defaultContent': null,
                         'render': function (data, type, row) {
@@ -636,7 +642,7 @@
             var incurrido = $("#incurrido").val();
             
             if(total != null && incurrido != null){
-                $("#pendienteIncurrir").val(total - incurrido);
+                $("#pendienteIncurrir").val(formatMoney(total - incurrido));
             }
         })
 
@@ -653,7 +659,7 @@
                 dataType: "json",
                 success: function (result) {
                     $("#distanciaBobina").val(result.distanciaBobina);
-                    $("#precioUnidadMedida").val(result.precio);
+                    $("#precioUnidadMedida").val(formatMoney(result.precio));
                     //Se guarda en variables para utilizar 
                     distanciaBobina = 0;
                     precioBobinaMetro = 0;
@@ -702,7 +708,7 @@
                             idTipoBobinaFO: $("#selectTipoBobinaFO").val(),
                             distancia: $("#distancia").val(),
                             distanciaBobina: $("#distanciaBobina").val(),
-                            precio: $("#precioUnidadMedida").val()
+                            precio: formatDecimal($("#precioUnidadMedida").val()) //precioBobinaMetro
                         }
                     );
 
@@ -736,7 +742,10 @@
                                 columns: [
                                     { "data": "idTipoHerraje" },
                                     { "data": "tipoHerraje" },
-                                    { "data": "precio" },
+                                    { 
+                                        "data": "precio",
+                                        "render": $.fn.dataTable.render.number(',', '.', 2, '$')
+                                    },
                                     {
                                         "render": function (data, type, row) {
                                             return 0 + row.formulaOut
@@ -750,8 +759,8 @@
                         }  
                         //termina cargar herrajes tabla
                         //asigna totales
-                        $("#totalBobina").val(result.totalBobina);
-                        $("#totalHerrajes").val(result.totalHerrajes);
+                        $("#totalBobina").val(formatMoney(result.totalBobina));
+                        $("#totalHerrajes").val(formatMoney(result.totalHerrajes));
                         //guarda en variables globales 
                         totalBobina = 0;
                         totalHerrajes = 0;
@@ -951,9 +960,9 @@
             total = totalHerrajes + totalFibras; 
 
             //Se setea en valores de vista
-            $("#granTotalHerrajes").text(totalHerrajes);
-            $("#granTotalFibras").text(totalFibras);
-            $("#granTotal").text(total);
+            $("#granTotalHerrajes").text(formatMoney(totalHerrajes));
+            $("#granTotalFibras").text(formatMoney(totalFibras));
+            $("#granTotal").text(formatMoney(total));
         }
 
         //////////////////////////////////GUARDAR PI///////////////////////////////////////////////////
@@ -1024,10 +1033,10 @@
                 $("#fechaBodegaSucursal").val(),
                 $("#totalPI").val(),
                 $("#incurrido").val(),
-                $("#pendienteIncurrir").val(),
-                $("#granTotalFibras").text(),
-                $("#granTotalHerrajes").text(),
-                $("#granTotal").text()
+                formatDecimal($("#pendienteIncurrir").val()),
+                formatDecimal($("#granTotalFibras").text()),
+                formatDecimal($("#granTotalHerrajes").text()),
+                formatDecimal($("#granTotal").text())
             );
 
             var request = JSON.stringify({ "PIResumenCompraRequest": header, "PIDetalleFORequest": fibras });
@@ -1152,12 +1161,12 @@
                     $("#fechaSolicitudV").val(moment(result.detallesResumenPI.fechaSolicitud).format('YYYY-MM-DD'));
                     $("#fechaOCV").val(moment(result.detallesResumenPI.fechaOC).format('YYYY-MM-DD'));
                     $("#fechaBodegaSucursalV").val(moment(result.detallesResumenPI.fechaBodegaSucursal).format('YYYY-MM-DD'));
-                    $("#totalPIV").val(result.detallesResumenPI.totalPIResumenCompra);
-                    $("#incurridoV").val(result.detallesResumenPI.incurrido);
-                    $("#pendienteIncurrirV").val(result.detallesResumenPI.pendienteIncurrir);
-                    $("#granTotalHerrajesV").text(result.detallesResumenPI.totalPIHerrajes);
-                    $("#granTotalFibrasV").text(result.detallesResumenPI.totalPIFO);                
-                    $("#granTotalV").text(result.detallesResumenPI.totalPI);   
+                    $("#totalPIV").val(formatMoney(result.detallesResumenPI.totalPIResumenCompra));
+                    $("#incurridoV").val(formatMoney(result.detallesResumenPI.incurrido));
+                    $("#pendienteIncurrirV").val(formatMoney(result.detallesResumenPI.pendienteIncurrir));
+                    $("#granTotalHerrajesV").text(formatMoney(result.detallesResumenPI.totalPIHerrajes));
+                    $("#granTotalFibrasV").text(formatMoney(result.detallesResumenPI.totalPIFO));                
+                    $("#granTotalV").text(formatMoney(result.detallesResumenPI.totalPI));   
                     $("#comentarioV").text(result.detallesResumenPI.comentarioPI); 
                     $('#modalAgregarPIV').modal('show');
 
@@ -1176,8 +1185,14 @@
                             columns: [
                                 { "data": "idTipoBobinaFO" },
                                 { "data": "tipoBobinaFO" },
-                                { "data": "totalDetalleFOPI" },
-                                { "data": "totalHerrajes" },
+                                { 
+                                    "data": "totalDetalleFOPI",
+                                    "render": $.fn.dataTable.render.number(',', '.', 2, '$')
+                                },
+                                { 
+                                    "data": "totalHerrajes",
+                                    "render": $.fn.dataTable.render.number(',', '.', 2, '$')
+                                },
                                 {
                                     'defaultContent': null,
                                     'render': function (data, type, row) {
@@ -1215,6 +1230,19 @@
             var fibraVer = detallesPIVer.detallesFO.filter((obj) => obj.idTipoBobinaFO === id);
             console.log(fibraVer)
         }
+
+        function formatMoney(amount) {
+            let newStr = "$"+amount.toFixed(2);
+
+            return newStr;
+        };
+
+        function formatDecimal(amount){
+            let str = amount;
+            let newStr = str.replace(/[^\d.]/g, '');
+            return newStr;
+        }
+
 
     </script>
 }
