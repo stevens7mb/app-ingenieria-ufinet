@@ -1,4 +1,5 @@
 using app_ingenieria_ufinet.Data;
+using app_ingenieria_ufinet.Repositories.Indicador;
 using app_ingenieria_ufinet.Repositories.Login;
 using app_ingenieria_ufinet.Repositories.Parametrization;
 using app_ingenieria_ufinet.Repositories.PI;
@@ -26,6 +27,7 @@ builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IDatabaseUtils, DatabaseUtils>();
 builder.Services.AddTransient<IParametrizationRepository, ParametrizationRepository>();
 builder.Services.AddTransient<IPIRepository, PIRepository>();
+builder.Services.AddTransient<IIndicadorRepository, IndicadorRepository>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<IUserService, UserService>();
 

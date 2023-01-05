@@ -4,10 +4,9 @@
 <!--Bootstrap Datatable-->
 <link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/tables/datatable/dataTables.bootstrap5.min.css">
 <link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/tables/datatable/responsive.bootstrap5.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.3.2/css/buttons.dataTables.min.css">
 <link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/tables/datatable/buttons.bootstrap5.min.css">
 <link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/tables/datatable/rowGroup.bootstrap5.min.css">
-<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/pickers/flatpickr/flatpickr.min.css">
-
 <link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/forms/select/select2.min.css">
 <link href="~/css/jquery.loadingmodal.css" rel="stylesheet" />
 
@@ -18,21 +17,21 @@
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">Factibilidades</h4>
-                    <button type="button" id="addType" name="addType" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalAgregarTipo" onclick="ResetModal()">
+                    <button type="button" id="addFactibilidad" name="addFactibilidad" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalAgregarFactibilidad" onclick="ResetModal()">
                         Agregar Estudio
                     </button>
                 </div>
                 <div class="card-content">
                     <div class="card-body card-dashboard">
                         <div class="table-responsive col-md-12">
-                            <table class="table zero-configuration" id="typesTable">
+                            <table class="table zero-configuration" id="factibilidadesTable">
                                 <thead>
                                     <tr>
                                         <th>Ticket</th>
                                         <th>Detalle</th>
-                                        <th>BW</th>
                                         <th>Cliente</th>
                                         <th>KAM</th>
+                                        <th>BW</th>
                                         <th>Fecha Solicitud</th>
                                         <th>Fecha Respuesta</th>
                                         <th>Estado</th>
@@ -41,6 +40,7 @@
                                         <th>Sitio Sin Cobertura</th>
                                         <th>Sitios analizados</th>
                                         <th>Ingeniero</th>
+                                        <th>Acción</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -53,6 +53,154 @@
         </div>
     </div>
 </section>
+
+<!-- Modal Agregar Factibilidad -->
+<div class="modal fade fade text-start" id="modalAgregarFactibilidad" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel33"> Agregar un Estudio </h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="ResetModal()" id="closeModalAgregarFactibilidad">
+                    @* <span aria-hidden="true">&times;</span>*@
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-factibilidad" name="form-factibilidad" method="post">
+                    <div class="modal-body">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>Detalle: </label>
+                                    <div class="mb-1">
+                                        <input type="text" id="Estudio" name="Estudio" placeholder="Detalle Estudio" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>Ticket: </label>
+                                    <div class="mb-1">
+                                        <input type="number" id="Ticket" name="Ticket" placeholder="Ingrese Ticket" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Cliente: </label>
+                                    <div class="mb-1">
+                                        <select class="form-control col-md-12" id="selectCliente" name="selectCliente">
+                                            <option value="">Seleccione una opción</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>KAM: </label>
+                                    <div class="mb-1">
+                                        <select class="form-control col-md-12" id="selectKAM" name="selectKAM">
+                                            <option value="">Seleccione una opción</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>BW: </label>
+                                    <div class="mb-1">
+                                        <input type="number" id="BW" name="BW" placeholder="Ancho de Banda" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Fecha Solicitud</label>
+                                    <div class="mb-1">
+                                        <input id="fechaSolicitud" name="fechaSolicitud" class="form-control" type="datetime-local" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Fecha Respuesta</label>
+                                    <div class="mb-1">
+                                        <input id="fechaRespuesta" name="fechaRespuesta" class="form-control" type="datetime-local" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>Sitios Con Cobertura: </label>
+                                    <div class="mb-1">
+                                        <input type="number" id="SitioConCobertura" name="SitioConCobertura" placeholder="Sitios Con Cobertura" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Sitios Con Cobertura Parcial: </label>
+                                    <div class="mb-1">
+                                        <input type="number" id="SitioConCoberturaParcial" name="SitioConCoberturaParcial" placeholder="Sitios Con Cobertura Parcial" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Sitios Sin Cobertura: </label>
+                                    <div class="mb-1">
+                                        <input type="number" id="SitioSinCobertura" name="SitioSinCobertura" placeholder="Sitios Sin Cobertura" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" id="btnGuardarFactibilidad">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Agregar Factibilidad Fin -->
+
+<!-- Modal Editar Usuario -->
+<div class="modal fade text-start" id="modalEditarUsuario" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel33"> Editar Usuario </h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="ResetModalEditar()" id="closeModalEditarUsuario">
+                    @*<span aria-hidden="true">&times;</span>*@
+                </button>
+            </div>
+            <form id="form-user-edit" name="form-user-edit" method="post">
+                <div class="modal-body">
+                    <label>Usuario: </label>
+                    <div class="form-group">
+                        <input type="text" id="Usuarioe" name="Usuarioe" placeholder="Identificador de Usuario" class="form-control" disabled>
+                    </div>
+                    <label>Password: </label>
+                    <div class="form-group">
+                        <input type="password" id="Contraseñae" name="Contraseñae" placeholder="Password" class="form-control">
+                    </div>
+                    <label>Nombre: </label>
+                    <div class="form-group">
+                        <input type="text" id="Nombree" name="Nombree" placeholder="Nombre" class="form-control">
+                    </div>
+                    <label>Email: </label>
+                    <div class="form-group">
+                        <input type="text" id="Correoe" name="Correoe" placeholder="Correo" class="form-control">
+                    </div>
+                    <label>Sucursal: </label>
+                    <div class="form-group col-md-12">
+                        <select class="select2 form-select" style="width: 100%" id="selectSucursalese" name="selectSucursalese" disabled>
+                            <option value="">Seleccione</option>
+                        </select>
+                    </div>
+                    <label>Roles: </label>
+                    <div class="form-group col-md-12">
+                        <select class="select2 form-select" style="width: 100%" multiple="multiple" id="selectRolese" name="selectRolese">
+                        </select>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" id="btnGuardarUsuarioe">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Modal Editar Usuario Fin -->
 @section Scripts {
     <!-- Bootstrap datatable -->
     <script src="~/Template/app-assets/vendors/js/tables/datatable/jquery.dataTables.min.js"></script>
@@ -67,7 +215,6 @@
     <script src="~/Template/app-assets/vendors/js/tables/datatable/buttons.html5.min.js"></script>
     <script src="~/Template/app-assets/vendors/js/tables/datatable/buttons.print.min.js"></script>
     <script src="~/Template/app-assets/vendors/js/tables/datatable/dataTables.rowGroup.min.js"></script>
-    <script src="~/Template/app-assets/vendors/js/pickers/flatpickr/flatpickr.min.js"></script>
     <!-- end Bootstrap datatable -->
     <script src="~/Template/app-assets/vendors/js/forms/select/select2.full.min.js"></script>
     <script src="~/Template/app-assets/js/scripts/forms/form-select2.js"></script>
@@ -76,4 +223,207 @@
     <script src="~/js/jquery.loadingModal.js"></script>
     <!-- Alertas-->
     <script src="~/js/sweetalert2.all.min.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+
+            $('#factibilidadesTable').DataTable({
+                "language": { "url": "https://cdn.datatables.net/plug-ins/1.12.1/i18n/es-ES.json" },
+                "ajax": {
+                    "url": "@Url.Action("ListaFactibilidades", "Indicadores")",
+                    "type": "GET",
+                    "dataType": "json"
+                },
+                "order": [[0, "desc"]],
+                dom: 'Bfrtip',
+                buttons: [
+                    'excelHtml5'
+                ],
+                columns: [
+                    { "data": "ticket" },
+                    { "data": "estudio" },
+                    { "data": "cliente" },
+                    { "data": "kam" },
+                    { "data": "bw" },
+                    { "data": "fechaSolicitud" },
+                    { "data": "fechaRespuesta" },
+                    { "data": "estado" },
+                    { "data": "sitioConCobertura" },
+                    { "data": "sitioConCoberturaParcial" },
+                    { "data": "sitioSinCobertura" },
+                    { "data": "sitiosAnalizados" },
+                    { "data": "ingeniero" },
+                    {
+                        'defaultContent': null,
+                        'render': function (data, type, row) {
+                            return '<div class="d-flex"> <button type="button" class="btn btn-icon btn-warning mx-1" id="' + row.idFactibilidad + '" onclick="detallesUsuario(this.id)" data-toggle="tooltip" data-placement="left" title="Modificar"> <i data-feather="edit"></i></i> </button> <button type="button" class="btn btn-icon btn-danger mx-1" id="' + row.idFactibilidad + '" onclick="EliminarUsuario(this.id)" data-toggle="tooltip" data-placement="left" title="Eliminar"> <i data-feather="trash"></i> </button> </div>'
+                        }
+                    }
+                ],
+                rowCallback: function (row, data) {
+                    if (data.estado === 'Activo') {
+                        $($(row).find("td")[7]).css("color", "green");
+                    }
+                    else {
+                        $($(row).find("td")[7]).css("color", "#E60026");
+                    }
+                },
+                drawCallback: function (settings) {
+                    feather.replace();
+                }
+            });
+
+            cargarSelect();
+
+        });
+
+        function cargarSelect() {
+            //Clientes
+            $.get("@Url.Action("selectClientes","Indicadores")", function (data) {
+
+                $("#selectCliente").empty();
+
+                $.each(data, function (index, row) {
+                    $("#selectCliente").append("<option value='" + row.idCliente + "'>" + row.nombre + "</option>")
+
+                });
+                $("#selectCliente").append("<option selected disabled hidden value='0'>" + "Por Favor Seleccione cliente" + "</option>");
+            });
+
+            //KAMs
+            $.get("@Url.Action("selectKAM","Indicadores")", function (data) {
+
+                $("#selectKAM").empty();
+
+                $.each(data, function (index, row) {
+                    $("#selectKAM").append("<option value='" + row.idKAM + "'>" + row.nombre + "</option>")
+
+                });
+                $("#selectKAM").append("<option selected disabled hidden value='0'>" + "Por Favor Seleccione KAM" + "</option>");
+            });
+
+        }
+
+        //VALIDACION DE FORMULARIOS
+
+        $("#form-factibilidad").validate({
+            rules: {
+                Estudio: "required",
+                Ticket: "required",
+                selectCliente: "required",
+                selectKAM: "required",
+                BW: "required",
+                fechaSolicitud: "required",
+                fechaRespuesta: "required",
+                SitioConCobertura: "required",
+                SitioConCoberturaParcial: "required",
+                SitioSinCobertura: "required"
+            },
+            messages: {
+                Estudio: "Ingrese Detalle",
+                Ticket: "Ingrese Ticket",
+                selectCliente: "Seleccione Cliente",
+                selectKAM: "Seleccione KAM",
+                BW: "Ingrese BW",
+                fechaSolicitud: "Seleccione Fecha Solicitud",
+                fechaRespuesta: "Seleccione Fecha Respuesta",
+                SitiosConCobertura: "Ingrese Sitios CC",
+                SitioConCoberturaParcial: "Ingrese Sitios CCP",
+                SitioSinCobertura: "Ingrese Sitios SC"
+            },
+            submitHandler: function (form) {
+                event.preventDefault();
+                agregarFactibilidad();
+            }
+        });
+
+        //FUNCIONES
+
+        function ResetModal() {
+            var validator = $("#modalAgregarFactibilidad").validate();
+            validator.resetForm();
+            $("#Estudio").val("");
+            $("#Ticket").val("");
+            $("#selectCliente").val(0);
+            $("#selectKAM").val(0);
+            $("#BW").val("");
+            $("#fechaSolicitud").val("");
+            $("#fechaRespuesta").val("");
+            $("#SitioConCobertura").val("");
+            $("#SitioConCoberturaParcial").val("");
+            $("#SitioSinCobertura").val("");
+        }
+
+        function agregarFactibilidad() {
+            //mensaje carga
+            $('body').loadingModal({
+                position: 'auto',
+                text: 'Cargando',
+                color: '#fff',
+                opacity: '0.7',
+                backgrundColor: 'rgb(0,0,0)',
+                animation: 'doubleBounce'
+            });
+
+            //objeto
+            var estudio = $("#Estudio").val();
+            var ticket = $("#Ticket").val();
+            var cliente = $("#selectCliente").val();
+            var kam = $("#selectKAM").val();
+            var bw = $("#BW").val();
+            var fechaSolicitud = $("#fechaSolicitud").val();
+            var fechaRespuesta = $("#fechaRespuesta").val();
+            var sitioConCobertura = $("#SitioConCobertura").val();
+            var sitioConCoberturaParcial = $("#SitioConCoberturaParcial").val();
+            var sitioSinCobertura = $("#SitioSinCobertura").val();
+
+            var parametros = JSON.stringify({ 
+                Estudio: estudio, 
+                Ticket: ticket,
+                Cliente: cliente,
+                KAM: kam,
+                BW: bw,
+                FechaSolicitud: fechaSolicitud,
+                FechaRespuesta: fechaRespuesta,
+                SitioConCobertura : sitioConCobertura,
+                SitioConCoberturaParcial: sitioConCoberturaParcial,
+                SitioSinCobertura: sitioSinCobertura
+            });
+
+            $.ajax({
+                url: "@Url.Action("CrearFactibilidad", "Indicadores")",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: parametros,
+                dataType: "json",
+                success: function (result) {
+                    //show Alert
+                    Swal.fire({
+                        title: 'Crear Factibilidad',
+                        text: result.mensaje,
+                        icon: result.tipo
+                    })
+                    //$("#modalAgregarUsuario").modal('hide');
+                    $('#closeModalAgregarFactibilidad').trigger("click");
+
+                    //reload table
+                    var table = $('#factibilidadesTable').DataTable();
+                    table.ajax.reload();
+                    //hidemodal loading
+                    $('body').loadingModal('destroy');
+                },
+                error: function (result) {
+                    Swal.fire({
+                        title: 'Crear Factibilidad',
+                        text: result.Mensaje,
+                        icon: result.Tipo
+                    })
+                    //hidemodal loading
+                    $('body').loadingModal('destroy');
+
+                }
+            });
+        }
+    </script>
 }
