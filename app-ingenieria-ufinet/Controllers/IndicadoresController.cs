@@ -50,6 +50,14 @@ namespace app_ingenieria_ufinet.Controllers
             return Json(result);
         }
 
+        [HttpGet]
+        public JsonResult selectTiposServicios()
+        {
+            List<TipoServicioModel> result = this._indicadorRepository.TiposServicios();
+
+            return Json(result);
+        }
+
         [HttpPost]
         public JsonResult CrearFactibilidad([FromBody] FactibilidadRequestModel factibilidad)
         {

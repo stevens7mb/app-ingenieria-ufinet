@@ -16,5 +16,6 @@
         public int SitioSinCobertura { get; set; }
         public int SitiosAnalizados { get; set; }
         public string Ingeniero { get; set; }
+        public string TipoServicio { get; set; }
     }
 }

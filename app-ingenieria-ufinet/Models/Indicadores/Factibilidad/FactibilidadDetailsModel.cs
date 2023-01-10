@@ -15,5 +15,6 @@
         public int SitioConCoberturaParcial { get; set; }
         public int SitioSinCobertura { get; set; }
         public int IdIngeniero { get; set; }
+        public int IdTipoServicio { get; set; }
     }
 }

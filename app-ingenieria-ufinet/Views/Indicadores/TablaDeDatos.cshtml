@@ -28,7 +28,7 @@
                                 <thead>
                                     <tr>
                                         <th>Ticket</th>
-                                        <th>Detalle</th>
+                                        <th>Tipo de Servicio</th>
                                         <th>Cliente</th>
                                         <th>KAM</th>
                                         <th>BW</th>
@@ -140,6 +140,16 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>Tipo de Servicio: </label>
+                                    <div class="mb-1">
+                                        <select class="form-control col-md-12" id="selectTipoServicio" name="selectTipoServicio">
+                                            <option value="">Seleccione una opción</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -240,6 +250,16 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>Tipo de Servicio: </label>
+                                    <div class="mb-1">
+                                        <select class="form-control col-md-12" id="selectTipoServicioe" name="selectTipoServicioe">
+                                            <option value="">Seleccione una opción</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -287,13 +307,13 @@
                     "dataType": "json"
                 },
                 "order": [[0, "desc"]],
-                dom: 'Bfrtip',
+                dom: 'lBfrtip',
                 buttons: [
-                    'excelHtml5'
+                    { extend: 'excel', className: 'btn btn-success' }
                 ],
                 columns: [
                     { "data": "ticket" },
-                    { "data": "estudio" },
+                    { "data": "tipoServicio" },
                     { "data": "cliente" },
                     { "data": "kam" },
                     { "data": "bw" },
@@ -358,6 +378,20 @@
                 $("#selectKAM").append("<option selected disabled hidden value='0'>" + "Por Favor Seleccione KAM" + "</option>");
             });
 
+            //Tipos de Servicio
+            $.get("@Url.Action("selectTiposServicios","Indicadores")", function (data) {
+
+                $("#selectTipoServicio").empty();
+                $("#selectTipoServicioe").empty();
+
+                $.each(data, function (index, row) {
+                    $("#selectTipoServicio").append("<option value='" + row.idTipoServicio+ "'>" + row.tipoServicio + "</option>");
+                    $("#selectTipoServicioe").append("<option value='" + row.idTipoServicio + "'>" + row.tipoServicio + "</option>")
+
+                });
+                $("#selectTipoServicio").append("<option selected disabled hidden value='0'>" + "Por Favor Seleccione Tipo Servicio" + "</option>");
+            });
+
         }
 
         //VALIDACION DE FORMULARIOS
@@ -373,7 +407,8 @@
                 fechaRespuesta: "required",
                 SitioConCobertura: "required",
                 SitioConCoberturaParcial: "required",
-                SitioSinCobertura: "required"
+                SitioSinCobertura: "required",
+                selectTipoServicio: "required"
             },
             messages: {
                 Estudio: "Ingrese Detalle",
@@ -385,7 +420,8 @@
                 fechaRespuesta: "Seleccione Fecha Respuesta",
                 SitioConCobertura: "Ingrese Sitios CC",
                 SitioConCoberturaParcial: "Ingrese Sitios CCP",
-                SitioSinCobertura: "Ingrese Sitios SC"
+                SitioSinCobertura: "Ingrese Sitios SC",
+                selectTipoServicio: "Ingrese Tipo servicio"
             },
             submitHandler: function (form) {
                 event.preventDefault();
@@ -405,7 +441,8 @@
                 fechaRespuestae: "required",
                 SitioConCoberturae: "required",
                 SitioConCoberturaParciale: "required",
-                SitioSinCoberturae: "required"
+                SitioSinCoberturae: "required",
+                selectTipoServicioe: "required"
             },
             messages: {
                 Estudioe: "Ingrese Detalle",
@@ -417,7 +454,8 @@
                 fechaRespuestae: "Seleccione Fecha Respuesta",
                 SitioConCoberturae: "Ingrese Sitios CC",
                 SitioConCoberturaParciale: "Ingrese Sitios CCP",
-                SitioSinCoberturae: "Ingrese Sitios SC"
+                SitioSinCoberturae: "Ingrese Sitios SC",
+                selectTipoServicioe: "Ingrese Tipo servicio"
             },
             submitHandler: function (form) {
                 event.preventDefault();
@@ -440,6 +478,7 @@
             $("#SitioConCobertura").val("");
             $("#SitioConCoberturaParcial").val("");
             $("#SitioSinCobertura").val("");
+            $("#selectTipoServicio").val(0);
         }
 
         function ResetModalEditar() {
@@ -455,6 +494,7 @@
             $("#SitioConCoberturae").val("");
             $("#SitioConCoberturaParciale").val("");
             $("#SitioSinCoberturae").val("");
+            $("#selectTipoServicioe").val(0);
         }
 
         function agregarFactibilidad() {
@@ -479,6 +519,7 @@
             var sitioConCobertura = $("#SitioConCobertura").val();
             var sitioConCoberturaParcial = $("#SitioConCoberturaParcial").val();
             var sitioSinCobertura = $("#SitioSinCobertura").val();
+            var tipoServicio = $("#selectTipoServicio").val();
 
             var parametros = JSON.stringify({ 
                 Estudio: estudio, 
@@ -490,7 +531,8 @@
                 FechaRespuesta: fechaRespuesta,
                 SitioConCobertura : sitioConCobertura,
                 SitioConCoberturaParcial: sitioConCoberturaParcial,
-                SitioSinCobertura: sitioSinCobertura
+                SitioSinCobertura: sitioSinCobertura,
+                IdTipoServicio: tipoServicio
             });
 
             $.ajax({
@@ -558,6 +600,7 @@
                     $("#SitioConCoberturae").val(result.sitioConCobertura);
                     $("#SitioConCoberturaParciale").val(result.sitioConCoberturaParcial);
                     $("#SitioSinCoberturae").val(result.sitioSinCobertura);
+                    $("#selectTipoServicioe").val(result.idTipoServicio);
 
                     $("#modalEditarFactibilidad").modal("show")
 
@@ -600,6 +643,7 @@
             var sitioConCobertura = $("#SitioConCoberturae").val();
             var sitioConCoberturaParcial = $("#SitioConCoberturaParciale").val();
             var sitioSinCobertura = $("#SitioSinCoberturae").val();
+            var tipoServicio = $("#selectTipoServicioe").val();
 
             var parametros = JSON.stringify({ 
                 IdFactibilidad: id, 
@@ -612,7 +656,8 @@
                 FechaRespuesta: fechaRespuesta,
                 SitioConCobertura : sitioConCobertura,
                 SitioConCoberturaParcial: sitioConCoberturaParcial,
-                SitioSinCobertura: sitioSinCobertura
+                SitioSinCobertura: sitioSinCobertura,
+                IdTipoServicio: tipoServicio
             });
 
             $.ajax({

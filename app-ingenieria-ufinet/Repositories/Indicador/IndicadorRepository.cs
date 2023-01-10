@@ -54,6 +54,13 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
         /// </summary>
         /// <returns>retorna respuesta de sp eliminar factibilidad</returns>
         SPResponseGeneric DesactivarFactibilidad(FactibilidadRequestModel factiblidad);
+
+
+        /// <summary>
+        /// Obtener lista de tipos de servicio
+        /// </summary>
+        /// <returns>retorna lista de los tipos de servicio</returns>
+        List<TipoServicioModel> TiposServicios();
     }
 
     /// <summary>
@@ -131,7 +138,8 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
                 {"@sitio_con_cobertura", factiblidad.SitioConCobertura},
                 {"@sitio_con_cobertura_parcial", factiblidad.SitioConCoberturaParcial},
                 {"@sitio_sin_cobertura", factiblidad.SitioSinCobertura},
-                {"@usuario", usuario}
+                {"@usuario", usuario},
+                {"@tipo_servicio", factiblidad.IdTipoServicio}
             };
 
             var result = this._dbUtils.ExecuteStoredProc<SPResponseGeneric>("crear_factibilidad", procedureParams);
@@ -177,7 +185,8 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
                 {"@sitio_con_cobertura", factiblidad.SitioConCobertura},
                 {"@sitio_con_cobertura_parcial", factiblidad.SitioConCoberturaParcial},
                 {"@sitio_sin_cobertura", factiblidad.SitioSinCobertura},
-                {"@usuario", usuario}
+                {"@usuario", usuario},
+                {"@tipo_servicio", factiblidad.IdTipoServicio}
             };
 
             var result = this._dbUtils.ExecuteStoredProc<SPResponseGeneric>("editar_factibilidad", procedureParams);
@@ -200,6 +209,20 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
             var result = this._dbUtils.ExecuteStoredProc<SPResponseGeneric>("desactivar_factibilidad", procedureParams);
 
             return result[0];
+        }
+
+        /// <summary>
+        /// Obtener lista de tipos de servicio
+        /// </summary>
+        /// <returns>retorna lista de los tipos de servicio</returns>
+        public List<TipoServicioModel> TiposServicios()
+        {
+
+            var procedureParams = new Dictionary<string, object>() {};
+
+            var result = this._dbUtils.ExecuteStoredProc<TipoServicioModel>("lista_tipos_servicios", procedureParams);
+
+            return result;
         }
 
     }
