@@ -28,6 +28,7 @@
                                 <thead>
                                     <tr>
                                         <th>Ticket</th>
+                                        <th>Detalle</th>
                                         <th>Tipo de Servicio</th>
                                         <th>Cliente</th>
                                         <th>KAM</th>
@@ -313,10 +314,11 @@
                 ],
                 columns: [
                     { "data": "ticket" },
+                    { "data": "estudio" },
                     { "data": "tipoServicio" },
                     { "data": "cliente" },
                     { "data": "kam" },
-                    { "data": "bw" },
+                    { "data": "bw", render: $.fn.dataTable.render.number( ',', '.', 0)},
                     { "data": "fechaSolicitud" },
                     { "data": "fechaRespuesta" },
                     { "data": "estado" },
