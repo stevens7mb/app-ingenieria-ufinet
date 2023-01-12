@@ -1,5 +1,6 @@
 ﻿using app_ingenieria_ufinet.Data;
 using app_ingenieria_ufinet.Models.Commons;
+using app_ingenieria_ufinet.Models.Indicadores.Dashboard;
 using app_ingenieria_ufinet.Models.Indicadores.Factibilidad;
 using app_ingenieria_ufinet.Models.Login;
 using app_ingenieria_ufinet.Models.User;
@@ -61,6 +62,14 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
         /// </summary>
         /// <returns>retorna lista de los tipos de servicio</returns>
         List<TipoServicioModel> TiposServicios();
+
+        /// <summary>
+        /// Obtiene las respuestas de los procedimientos almacenados para las estadisticas del dashboard, dinamico.
+        /// </summary>
+        /// <param name="Anio">Año desde el que se desea obtener estadisticas</param>
+        /// <param name="Mes">Mes desde el que se desea obtener estadisticad</param>
+        /// <returns>retorna lista de los tipos de servicio</returns>
+        DashboardModel DatosDashboard(DashboardRequestModel request);
     }
 
     /// <summary>
@@ -221,6 +230,51 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
             var procedureParams = new Dictionary<string, object>() {};
 
             var result = this._dbUtils.ExecuteStoredProc<TipoServicioModel>("lista_tipos_servicios", procedureParams);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Obtiene las respuestas de los procedimientos almacenados para las estadisticas del dashboard, dinamico.
+        /// </summary>
+        /// <param name="Anio">Año desde el que se desea obtener estadisticas</param>
+        /// <param name="Mes">Mes desde el que se desea obtener estadisticad</param>
+        /// <returns>retorna lista de los tipos de servicio</returns>
+        public DashboardModel DatosDashboard(DashboardRequestModel request)
+        {
+            //tipos de servicios
+            List<TipoServicioModel> servicios = TiposServicios();
+            
+            //Parametros comunes sps
+            var procedureParams = new Dictionary<string, object>()
+            {
+                {"@mes", request.Mes == 0 ? null : request.Mes},
+                {"@anio", request.Anio == 0 ? null : request.Anio}
+            };
+
+            //Datos de Estudios por Ingenieros
+            var estudiosPorIngenieros = this._dbUtils.ExecuteStoredProc<FactibilidadesPorIngenieroModel>("dashboard_lista_fact_ingeniero", procedureParams);
+
+            //Datos de Estudios por Clientes
+            var estudiosPorClientes = this._dbUtils.ExecuteStoredProc<FactibilidadesClientesModel>("dashboard_lista_fact_clientes", procedureParams);
+
+            //Datos de Estudios BW
+            var estudiosBW = this._dbUtils.ExecuteStoredProc<FactibilidadesAnchoBandaModel>("dashboard_fact_bw", procedureParams);
+
+            //Datos de Estudios Sitios Totales
+            var estudiosSitiosTotales = this._dbUtils.ExecuteStoredProc<SitiosTotalesModel>("dashboard_fact_sitios_totales", procedureParams);
+
+            //Modelo de respuesta
+            DashboardModel result = new DashboardModel();
+
+            result.CantidadEstudiosTotales = estudiosPorIngenieros != null && estudiosPorIngenieros.Count > 0 ? estudiosPorIngenieros.Sum(x => x.CantidadEstudios) : 0;
+            result.NombreIngeniero = estudiosPorIngenieros != null && estudiosPorIngenieros.Count > 0 ? estudiosPorIngenieros.FirstOrDefault().Ingeniero : "";
+            result.CantidadEstudiosIngeniero = estudiosPorIngenieros  != null && estudiosPorIngenieros.Count > 0 ? estudiosPorIngenieros.FirstOrDefault().CantidadEstudios : 0;
+            result.SitiosTotales = estudiosSitiosTotales != null && estudiosSitiosTotales.Count > 0 ? estudiosSitiosTotales.FirstOrDefault().SitiosTotales : 0;
+            result.CantidadTiposServicio = servicios.Count();
+            result.AnchoDeBanda = estudiosBW != null && estudiosBW.Count > 0 ? estudiosBW.FirstOrDefault().AnchoDeBanda : 0;
+            result.FactibilidadesPorIngeniero = estudiosPorIngenieros;
+            result.RankingClientes = estudiosPorClientes;
 
             return result;
         }

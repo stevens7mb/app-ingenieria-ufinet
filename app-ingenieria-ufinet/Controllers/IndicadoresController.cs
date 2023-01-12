@@ -1,4 +1,5 @@
 ﻿using app_ingenieria_ufinet.Models.Commons;
+using app_ingenieria_ufinet.Models.Indicadores.Dashboard;
 using app_ingenieria_ufinet.Models.Indicadores.Factibilidad;
 using app_ingenieria_ufinet.Models.User;
 using app_ingenieria_ufinet.Repositories.Indicador;
@@ -86,6 +87,14 @@ namespace app_ingenieria_ufinet.Controllers
         public JsonResult DesactivarFactibilidad([FromBody] FactibilidadRequestModel factibilidad)
         {
             SPResponseGeneric result = this._indicadorRepository.DesactivarFactibilidad(factibilidad);
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult DatosDashboard([FromBody] DashboardRequestModel request)
+        {
+            DashboardModel result = this._indicadorRepository.DatosDashboard(request);
 
             return Json(result);
         }
