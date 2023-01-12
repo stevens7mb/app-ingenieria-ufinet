@@ -957,7 +957,7 @@
                 $("#sitiosTotales").text(result.cantidadEstudiosTotales.toLocaleString());
                 $("#totalClientes").text(result.rankingClientes.length.toLocaleString());
                 $("#cantidadTiposServicio").text(result.cantidadTiposServicio);
-                $("#anchoDeBanda").text(result.anchoDeBanda.toLocaleString());
+                $("#anchoDeBanda").text(result.anchoDeBanda.toLocaleString()+' Mbps');
                 cargarDatatableRanking(result.rankingClientes);
                 //hidemodal loading
                 $('body').loadingModal('destroy');
