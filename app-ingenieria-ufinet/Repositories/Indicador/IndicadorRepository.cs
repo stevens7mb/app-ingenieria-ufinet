@@ -264,16 +264,25 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
             //Datos de Estudios Sitios Totales
             var estudiosSitiosTotales = this._dbUtils.ExecuteStoredProc<SitiosTotalesModel>("dashboard_fact_sitios_totales", procedureParams);
 
+            //Datos de Estudios por KAMs
+            var estudiosPorKams = this._dbUtils.ExecuteStoredProc<FactibilidadesPorKamModel>("dashboard_lista_fact_kams", procedureParams);
+
             //Modelo de respuesta
             DashboardModel result = new DashboardModel();
 
             result.CantidadEstudiosTotales = estudiosPorIngenieros != null && estudiosPorIngenieros.Count > 0 ? estudiosPorIngenieros.Sum(x => x.CantidadEstudios) : 0;
             result.NombreIngeniero = estudiosPorIngenieros != null && estudiosPorIngenieros.Count > 0 ? estudiosPorIngenieros.FirstOrDefault().Ingeniero : "";
+            result.NombreKam = estudiosPorKams != null && estudiosPorKams.Count > 0 ? estudiosPorKams.FirstOrDefault().Kam : "";
             result.CantidadEstudiosIngeniero = estudiosPorIngenieros  != null && estudiosPorIngenieros.Count > 0 ? estudiosPorIngenieros.FirstOrDefault().CantidadEstudios : 0;
+            result.CantidadEstudiosKam = estudiosPorKams != null && estudiosPorKams.Count > 0 ? estudiosPorKams.FirstOrDefault().CantidadEstudios : 0;
             result.SitiosTotales = estudiosSitiosTotales != null && estudiosSitiosTotales.Count > 0 ? estudiosSitiosTotales.FirstOrDefault().SitiosTotales : 0;
+            result.SitiosConCobertura = estudiosSitiosTotales != null && estudiosSitiosTotales.Count > 0 ? estudiosSitiosTotales.FirstOrDefault().SitiosConCobertura : 0;
+            result.SitiosConCoberturaParcial = estudiosSitiosTotales != null && estudiosSitiosTotales.Count > 0 ? estudiosSitiosTotales.FirstOrDefault().SitiosConCoberturaParcial : 0;
+            result.SitiosSinCobertura = estudiosSitiosTotales != null && estudiosSitiosTotales.Count > 0 ? estudiosSitiosTotales.FirstOrDefault().SitiosSinCobertura : 0;
             result.CantidadTiposServicio = servicios.Count();
             result.AnchoDeBanda = estudiosBW != null && estudiosBW.Count > 0 ? estudiosBW.FirstOrDefault().AnchoDeBanda : 0;
             result.FactibilidadesPorIngeniero = estudiosPorIngenieros;
+            result.FactibilidadesPorKam = estudiosPorKams;
             result.RankingClientes = estudiosPorClientes;
 
             return result;

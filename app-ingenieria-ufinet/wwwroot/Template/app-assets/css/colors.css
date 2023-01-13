@@ -1190,7 +1190,7 @@ input:focus ~ .bg-info {
   color: #ff9f43 !important; }
 
 .bg-light-warning {
-  background: rgba(255, 159, 67, 0.12) !important;
+  background: rgb(255, 216, 0.12) !important;
   color: #ff9f43 !important; }
 
 .bg-light-warning.fc-h-event, .bg-light-warning.fc-v-event {

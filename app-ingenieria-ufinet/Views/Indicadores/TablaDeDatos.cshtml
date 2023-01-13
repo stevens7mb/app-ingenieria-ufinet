@@ -24,7 +24,7 @@
                 <div class="card-content">
                     <div class="card-body card-dashboard">
                         <div class="table-responsive col-md-12">
-                            <table class="table zero-configuration" id="factibilidadesTable">
+                            <table class="table zero-configuration nowrap" id="factibilidadesTable">
                                 <thead>
                                     <tr>
                                         <th>Ticket</th>
@@ -336,11 +336,20 @@
                 ],
                 rowCallback: function (row, data) {
                     if (data.estado === 'Activo') {
-                        $($(row).find("td")[7]).css("color", "green");
+                        $($(row).find("td")[8]).css("color", "green");
                     }
                     else {
-                        $($(row).find("td")[7]).css("color", "#E60026");
+                        $($(row).find("td")[8]).css("color", "#E60026");
                     }
+                    //Colocar color a Sitios
+                    //Sitios Con Cobertura
+                    $($(row).find("td")[9]).css("color", "#43F30B");
+                    //Sitios Con Cobertura Parcial
+                    $($(row).find("td")[10]).css("color", "#F8E207");
+                    //Sitios Sin Cobertura
+                    $($(row).find("td")[11]).css("color", "#F80719");
+                    //Sitios Totales
+                    $($(row).find("td")[12]).css("color", "#DE07F8");
                 },
                 drawCallback: function (settings) {
                     feather.replace();
