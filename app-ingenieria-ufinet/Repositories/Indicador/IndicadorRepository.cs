@@ -5,6 +5,10 @@ using app_ingenieria_ufinet.Models.Indicadores.Factibilidad;
 using app_ingenieria_ufinet.Models.Login;
 using app_ingenieria_ufinet.Models.User;
 using app_ingenieria_ufinet.Utils;
+using System.Collections.Generic;
+using System.Data;
+using System.Diagnostics;
+using System.Drawing.Drawing2D;
 
 namespace app_ingenieria_ufinet.Repositories.Indicador
 {
@@ -248,7 +252,8 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
             //Parametros comunes sps
             var procedureParams = new Dictionary<string, object>()
             {
-                {"@mes", request.Mes == 0 ? null : request.Mes},
+                {"@mes_desde", request.MesDesde == 0 ? null : request.MesDesde},
+                {"@mes_hasta", request.MesHasta == 0 ? null : request.MesHasta},
                 {"@anio", request.Anio == 0 ? null : request.Anio}
             };
 
@@ -267,6 +272,16 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
             //Datos de Estudios por KAMs
             var estudiosPorKams = this._dbUtils.ExecuteStoredProc<FactibilidadesPorKamModel>("dashboard_lista_fact_kams", procedureParams);
 
+            //Datos de indicadores de desempeño por año
+            List<IndicadoresDesempeModel> indicadoresDesempeño = new List<IndicadoresDesempeModel>();
+
+            var procedureParamsIndicadores = new Dictionary<string, object>()
+            {
+                {"@anio", request.Anio == 0 ? null : request.Anio}
+            };
+
+            indicadoresDesempeño = this._dbUtils.ExecuteStoredProc<IndicadoresDesempeModel>("dashboard_indicadores_desemp_anio_unif", procedureParamsIndicadores);
+
             //Modelo de respuesta
             DashboardModel result = new DashboardModel();
 
@@ -284,9 +299,11 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
             result.FactibilidadesPorIngeniero = estudiosPorIngenieros;
             result.FactibilidadesPorKam = estudiosPorKams;
             result.RankingClientes = estudiosPorClientes;
+            result.IndicadoresDesemp = indicadoresDesempeño;
+            result.RankingClientesGrafica = estudiosPorClientes.OrderByDescending(x => x.CantidadEstudios).Take(10).ToList();
+            result.RankingKamsGrafica = estudiosPorKams.OrderByDescending(x => x.CantidadEstudios).Take(10).ToList();
 
             return result;
         }
-
     }
 }

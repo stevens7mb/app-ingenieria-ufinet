@@ -3,6 +3,7 @@
     public class DashboardRequestModel
     {
         public int Anio { get; set; }
-        public int Mes { get; set; }
+        public int MesDesde { get; set; }
+        public int MesHasta { get; set; }
     }
 }

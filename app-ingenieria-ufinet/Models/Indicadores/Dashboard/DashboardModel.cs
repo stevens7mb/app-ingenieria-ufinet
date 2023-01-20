@@ -16,5 +16,8 @@
         public List<FactibilidadesPorIngenieroModel> FactibilidadesPorIngeniero { get; set; }
         public List<FactibilidadesClientesModel> RankingClientes { get; set; }
         public List<FactibilidadesPorKamModel> FactibilidadesPorKam { get; set; }
+        public List<IndicadoresDesempeModel> IndicadoresDesemp { get; set; }
+        public List<FactibilidadesClientesModel> RankingClientesGrafica { get; set; }
+        public List<FactibilidadesPorKamModel> RankingKamsGrafica { get; set; }
     }
 }

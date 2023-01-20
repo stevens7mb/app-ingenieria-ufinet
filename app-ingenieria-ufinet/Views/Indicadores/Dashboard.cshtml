@@ -37,9 +37,9 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <label>Mes: </label>
+                    <label>Mes Desde: </label>
                     <div class="mb-1">
-                        <select class="form-select col-md-12" id="selectMes" name="selectMes">
+                        <select class="form-select col-md-12" id="selectMesDesde" name="selectMesDesde">
                             <option value="0">Seleccione una opción</option>
                             <option value="1">Enero</option>
                             <option value="2">Febrero</option>
@@ -55,6 +55,30 @@
                             <option value="12">Diciembre</option>
                         </select>
                     </div>
+                </div>
+                <div class="col-md-4">
+                    <label>Mes Hasta: </label>
+                    <div class="mb-1">
+                        <select class="form-select col-md-12" id="selectMesHasta" name="selectMesHasta">
+                            <option value="0">Seleccione una opción</option>
+                            <option value="1">Enero</option>
+                            <option value="2">Febrero</option>
+                            <option value="3">Marzo</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Mayo</option>
+                            <option value="6">Junio</option>
+                            <option value="7">Julio</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Septiembre</option>
+                            <option value="10">Octubre</option>
+                            <option value="11">Noviembre</option>
+                            <option value="12">Diciembre</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
                 </div>
                 <div class="col-md-4">
                     <label></label>
@@ -260,6 +284,49 @@
         <!--/ Transaction Card -->
     </div>
 
+    <div class="row match-height">
+        <div class="col-lg-12 col-md-6 col-12">
+            <div class="card card-transaction">
+                <div class="card-header">
+                    <div class="col-md-12">
+                        <h4 class="card-title">INDICADORES DE DESEMPEÑO ANUAL(por defecto actual)</h4>
+                        <div style="height: 20px">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive col-md-12">
+                        <table class="table zero-configuration" id="indicadoresDRTable">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Mes</th>
+                                    <th>% Número de sitios de micro enlaces con cobertura</th>
+                                    <th>% Número de sitios de micro enlaces con posible cobertura</th>
+                                    <th>% Número de sitios de micro enlaces sin cobertura</th>
+                                    <th>Numero de sitios totales</th>
+                                    <th>Numero de estudios totales</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row match-height">
+        <div class="col-lg-6 col-md-6 col-12">
+            <div id="chartContainer"></div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-12">
+            <div id="chartContainerKam"></div>
+        </div>
+    </div>
+
+
 
 </section>
 <!-- Dashboard Ecommerce ends -->
@@ -287,715 +354,13 @@
     <script src="~/js/jquery.loadingModal.js"></script>
     <!-- Alertas-->
     <script src="~/js/sweetalert2.all.min.js"></script>
-
-    <script src="~/Template/app-assets/vendors/js/charts/apexcharts.js"></script>
+    <!-- Graficas-->
+    <script src="~/js/jquery.canvasjs.min.js"></script>
 
 @*<script src="~/Template/app-assets/js/scripts/pages/dashboard-ecommerce.js"></script>*@
 
 <script>
-    /*=========================================================================================
-    File Name: dashboard-ecommerce.js
-    Description: dashboard ecommerce page content with Apexchart Examples
-    ----------------------------------------------------------------------------------------
-    Item Name: Vuexy  - Vuejs, HTML & Laravel Admin Dashboard Template
-    Author: PIXINVENT
-    Author URL: http://www.themeforest.net/user/pixinvent
-    ==========================================================================================*/
-
-    $(window).on('load', function () {
-
-
-        'use strict';
-
-        var $barColor = '#f3f3f3';
-        var $trackBgColor = '#EBEBEB';
-        var $textMutedColor = '#b9b9c3';
-        var $budgetStrokeColor2 = '#dcdae3';
-        var $goalStrokeColor2 = '#51e5a8';
-        var $strokeColor = '#ebe9f1';
-        var $textHeadingColor = '#5e5873';
-        var $earningsStrokeColor2 = '#28c76f66';
-        var $earningsStrokeColor3 = '#28c76f33';
-
-        var $statisticsOrderChart = document.querySelector('#statistics-order-chart');
-        var $statisticsProfitChart = document.querySelector('#statistics-profit-chart');
-        var $earningsChart = document.querySelector('#earnings-chart');
-        var $revenueReportChart = document.querySelector('#revenue-report-chart');
-        var $budgetChart = document.querySelector('#budget-chart');
-        var $browserStateChartPrimary = document.querySelector('#browser-state-chart-primary');
-        var $browserStateChartWarning = document.querySelector('#browser-state-chart-warning');
-        var $browserStateChartSecondary = document.querySelector('#browser-state-chart-secondary');
-        var $browserStateChartInfo = document.querySelector('#browser-state-chart-info');
-        var $browserStateChartDanger = document.querySelector('#browser-state-chart-danger');
-        var $goalOverviewChart = document.querySelector('#goal-overview-radial-bar-chart');
-
-        var statisticsOrderChartOptions;
-        var statisticsProfitChartOptions;
-        var earningsChartOptions;
-        var revenueReportChartOptions;
-        var budgetChartOptions;
-        var browserStatePrimaryChartOptions;
-        var browserStateWarningChartOptions;
-        var browserStateSecondaryChartOptions;
-        var browserStateInfoChartOptions;
-        var browserStateDangerChartOptions;
-        var goalOverviewChartOptions;
-
-        var statisticsOrderChart;
-        var statisticsProfitChart;
-        var earningsChart;
-        var revenueReportChart;
-        var budgetChart;
-        var browserStatePrimaryChart;
-        var browserStateDangerChart;
-        var browserStateInfoChart;
-        var browserStateSecondaryChart;
-        var browserStateWarningChart;
-        var goalOverviewChart;
-        var isRtl = $('html').attr('data-textdirection') === 'rtl';
-
-        // On load Toast
-
-        //------------ Statistics Bar Chart ------------
-        //----------------------------------------------
-        statisticsOrderChartOptions = {
-            chart: {
-                height: 70,
-                type: 'bar',
-                stacked: true,
-                toolbar: {
-                    show: false
-                }
-            },
-            grid: {
-                show: false,
-                padding: {
-                    left: 0,
-                    right: 0,
-                    top: -15,
-                    bottom: -15
-                }
-            },
-            plotOptions: {
-                bar: {
-                    horizontal: false,
-                    columnWidth: '20%',
-                    startingShape: 'rounded',
-                    colors: {
-                        backgroundBarColors: [$barColor, $barColor, $barColor, $barColor, $barColor],
-                        backgroundBarRadius: 5
-                    }
-                }
-            },
-            legend: {
-                show: false
-            },
-            dataLabels: {
-                enabled: false
-            },
-            colors: [window.colors.solid.warning],
-            series: [
-                {
-                    name: '2020',
-                    data: [45, 85, 65, 45, 65]
-                }
-            ],
-            xaxis: {
-                labels: {
-                    show: false
-                },
-                axisBorder: {
-                    show: false
-                },
-                axisTicks: {
-                    show: false
-                }
-            },
-            yaxis: {
-                show: false
-            },
-            tooltip: {
-                x: {
-                    show: false
-                }
-            }
-        };
-        statisticsOrderChart = new ApexCharts($statisticsOrderChart, statisticsOrderChartOptions);
-        statisticsOrderChart.render();
-
-        //------------ Statistics Line Chart ------------
-        //-----------------------------------------------
-        statisticsProfitChartOptions = {
-            chart: {
-                height: 160,
-                type: 'line',
-                toolbar: {
-                    show: false
-                },
-                zoom: {
-                    enabled: false
-                }
-            },
-            grid: {
-                borderColor: $trackBgColor,
-                strokeDashArray: 8,
-                xaxis: {
-                    lines: {
-                        show: true
-                    }
-                },
-                yaxis: {
-                    lines: {
-                        show: false
-                    }
-                },
-                padding: {
-                    top: -30,
-                    bottom: -10
-                }
-            },
-            stroke: {
-                width: 7
-            },
-            colors: [window.colors.solid.info],
-            series: [
-                {
-                    name: "Venta",
-                    data: [1,2,3,4]
-                }
-            ],
-            markers: {
-                size: 4,
-                colors: window.colors.solid.info,
-                strokeColors: window.colors.solid.info,
-                strokeWidth: 2,
-                strokeOpacity: 1,
-                strokeDashArray: 0,
-                fillOpacity: 1,
-                discrete: [
-                    {
-                        seriesIndex: 0,
-                        dataPointIndex: 9,
-                        fillColor: '#ffffff',
-                        strokeColor: window.colors.solid.info,
-                        size: 5
-                    }
-                ],
-                shape: 'circle',
-                radius: 2,
-                hover: {
-                    size: 3
-                }
-            },
-            xaxis: {
-                labels: {
-                    show: true,
-                    style: {
-                        fontSize: '0px'
-                    }
-                },
-                axisBorder: {
-                    show: false
-                },
-                axisTicks: {
-                    show: false
-                }
-            },
-            yaxis: {
-                show: false
-            },
-            tooltip: {
-                x: {
-                    show: true
-                }
-            }
-        };
-        statisticsProfitChart = new ApexCharts($statisticsProfitChart, statisticsProfitChartOptions);
-        statisticsProfitChart.render();
-
-        //--------------- Earnings Chart ---------------
-        //----------------------------------------------
-        earningsChartOptions = {
-            chart: {
-                type: 'donut',
-                height: 120,
-                toolbar: {
-                    show: false
-                }
-            },
-            dataLabels: {
-                enabled: false
-            },
-            series: [53, 16, 31],
-            legend: { show: false },
-            comparedResult: [2, -3, 8],
-            labels: ['App', 'Service', 'Product'],
-            stroke: { width: 0 },
-            colors: [$earningsStrokeColor2, $earningsStrokeColor3, window.colors.solid.success],
-            grid: {
-                padding: {
-                    right: -20,
-                    bottom: -8,
-                    left: -20
-                }
-            },
-            plotOptions: {
-                pie: {
-                    startAngle: -10,
-                    donut: {
-                        labels: {
-                            show: true,
-                            name: {
-                                offsetY: 15
-                            },
-                            value: {
-                                offsetY: -15,
-                                formatter: function (val) {
-                                    return parseInt(val) + '%';
-                                }
-                            },
-                            total: {
-                                show: true,
-                                offsetY: 15,
-                                label: 'App',
-                                formatter: function (w) {
-                                    return '53%';
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            responsive: [
-                {
-                    breakpoint: 1325,
-                    options: {
-                        chart: {
-                            height: 100
-                        }
-                    }
-                },
-                {
-                    breakpoint: 1200,
-                    options: {
-                        chart: {
-                            height: 120
-                        }
-                    }
-                },
-                {
-                    breakpoint: 1045,
-                    options: {
-                        chart: {
-                            height: 100
-                        }
-                    }
-                },
-                {
-                    breakpoint: 992,
-                    options: {
-                        chart: {
-                            height: 120
-                        }
-                    }
-                }
-            ]
-        };
-        earningsChart = new ApexCharts($earningsChart, earningsChartOptions);
-        earningsChart.render();
-
-        //------------ Revenue Report Chart ------------
-        //----------------------------------------------
-        revenueReportChartOptions = {
-            chart: {
-                height: 230,
-                stacked: true,
-                type: 'bar',
-                toolbar: { show: false }
-            },
-            plotOptions: {
-                bar: {
-                    columnWidth: '17%',
-                    endingShape: 'rounded'
-                },
-                distributed: true
-            },
-            colors: [window.colors.solid.primary, window.colors.solid.warning],
-            series: [
-                {
-                    name: 'Earning',
-                    data: [95, 177, 284, 256, 105, 63, 168, 218, 72]
-                },
-                {
-                    name: 'Expense',
-                    data: [-145, -80, -60, -180, -100, -60, -85, -75, -100]
-                }
-            ],
-            dataLabels: {
-                enabled: false
-            },
-            legend: {
-                show: false
-            },
-            grid: {
-                padding: {
-                    top: -20,
-                    bottom: -10
-                },
-                yaxis: {
-                    lines: { show: false }
-                }
-            },
-            xaxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
-                labels: {
-                    style: {
-                        colors: $textMutedColor,
-                        fontSize: '0.86rem'
-                    }
-                },
-                axisTicks: {
-                    show: false
-                },
-                axisBorder: {
-                    show: false
-                }
-            },
-            yaxis: {
-                labels: {
-                    style: {
-                        colors: $textMutedColor,
-                        fontSize: '0.86rem'
-                    }
-                }
-            }
-        };
-        revenueReportChart = new ApexCharts($revenueReportChart, revenueReportChartOptions);
-        revenueReportChart.render();
-
-        //---------------- Budget Chart ----------------
-        //----------------------------------------------
-        budgetChartOptions = {
-            chart: {
-                height: 80,
-                toolbar: { show: false },
-                zoom: { enabled: false },
-                type: 'line',
-                sparkline: { enabled: true }
-            },
-            stroke: {
-                curve: 'smooth',
-                dashArray: [0, 5],
-                width: [2]
-            },
-            colors: [window.colors.solid.primary, $budgetStrokeColor2],
-            series: [
-                {
-                    data: [61, 48, 69, 52, 60, 40, 79, 60, 59, 43, 62]
-                },
-                {
-                    data: [20, 10, 30, 15, 23, 0, 25, 15, 20, 5, 27]
-                }
-            ],
-            tooltip: {
-                enabled: false
-            }
-        };
-        budgetChart = new ApexCharts($budgetChart, budgetChartOptions);
-        budgetChart.render();
-
-        //------------ Browser State Charts ------------
-        //----------------------------------------------
-
-        // State Primary Chart
-        browserStatePrimaryChartOptions = {
-            chart: {
-                height: 30,
-                width: 30,
-                type: 'radialBar'
-            },
-            grid: {
-                show: false,
-                padding: {
-                    left: -15,
-                    right: -15,
-                    top: -12,
-                    bottom: -15
-                }
-            },
-            colors: [window.colors.solid.primary],
-            series: [54.4],
-            plotOptions: {
-                radialBar: {
-                    hollow: {
-                        size: '22%'
-                    },
-                    track: {
-                        background: $trackBgColor
-                    },
-                    dataLabels: {
-                        showOn: 'always',
-                        name: {
-                            show: false
-                        },
-                        value: {
-                            show: false
-                        }
-                    }
-                }
-            },
-            stroke: {
-                lineCap: 'round'
-            }
-        };
-        browserStatePrimaryChart = new ApexCharts($browserStateChartPrimary, browserStatePrimaryChartOptions);
-        browserStatePrimaryChart.render();
-
-        // State Warning Chart
-        browserStateWarningChartOptions = {
-            chart: {
-                height: 30,
-                width: 30,
-                type: 'radialBar'
-            },
-            grid: {
-                show: false,
-                padding: {
-                    left: -15,
-                    right: -15,
-                    top: -12,
-                    bottom: -15
-                }
-            },
-            colors: [window.colors.solid.warning],
-            series: [6.1],
-            plotOptions: {
-                radialBar: {
-                    hollow: {
-                        size: '22%'
-                    },
-                    track: {
-                        background: $trackBgColor
-                    },
-                    dataLabels: {
-                        showOn: 'always',
-                        name: {
-                            show: false
-                        },
-                        value: {
-                            show: false
-                        }
-                    }
-                }
-            },
-            stroke: {
-                lineCap: 'round'
-            }
-        };
-        browserStateWarningChart = new ApexCharts($browserStateChartWarning, browserStateWarningChartOptions);
-        browserStateWarningChart.render();
-
-        // State Secondary Chart 1
-        browserStateSecondaryChartOptions = {
-            chart: {
-                height: 30,
-                width: 30,
-                type: 'radialBar'
-            },
-            grid: {
-                show: false,
-                padding: {
-                    left: -15,
-                    right: -15,
-                    top: -12,
-                    bottom: -15
-                }
-            },
-            colors: [window.colors.solid.secondary],
-            series: [14.6],
-            plotOptions: {
-                radialBar: {
-                    hollow: {
-                        size: '22%'
-                    },
-                    track: {
-                        background: $trackBgColor
-                    },
-                    dataLabels: {
-                        showOn: 'always',
-                        name: {
-                            show: false
-                        },
-                        value: {
-                            show: false
-                        }
-                    }
-                }
-            },
-            stroke: {
-                lineCap: 'round'
-            }
-        };
-        browserStateSecondaryChart = new ApexCharts($browserStateChartSecondary, browserStateSecondaryChartOptions);
-        browserStateSecondaryChart.render();
-
-        // State Info Chart
-        browserStateInfoChartOptions = {
-            chart: {
-                height: 30,
-                width: 30,
-                type: 'radialBar'
-            },
-            grid: {
-                show: false,
-                padding: {
-                    left: -15,
-                    right: -15,
-                    top: -12,
-                    bottom: -15
-                }
-            },
-            colors: [window.colors.solid.info],
-            series: [4.2],
-            plotOptions: {
-                radialBar: {
-                    hollow: {
-                        size: '22%'
-                    },
-                    track: {
-                        background: $trackBgColor
-                    },
-                    dataLabels: {
-                        showOn: 'always',
-                        name: {
-                            show: false
-                        },
-                        value: {
-                            show: false
-                        }
-                    }
-                }
-            },
-            stroke: {
-                lineCap: 'round'
-            }
-        };
-        browserStateInfoChart = new ApexCharts($browserStateChartInfo, browserStateInfoChartOptions);
-        browserStateInfoChart.render();
-
-        // State Danger Chart
-        browserStateDangerChartOptions = {
-            chart: {
-                height: 30,
-                width: 30,
-                type: 'radialBar'
-            },
-            grid: {
-                show: false,
-                padding: {
-                    left: -15,
-                    right: -15,
-                    top: -12,
-                    bottom: -15
-                }
-            },
-            colors: [window.colors.solid.danger],
-            series: [8.4],
-            plotOptions: {
-                radialBar: {
-                    hollow: {
-                        size: '22%'
-                    },
-                    track: {
-                        background: $trackBgColor
-                    },
-                    dataLabels: {
-                        showOn: 'always',
-                        name: {
-                            show: false
-                        },
-                        value: {
-                            show: false
-                        }
-                    }
-                }
-            },
-            stroke: {
-                lineCap: 'round'
-            }
-        };
-        browserStateDangerChart = new ApexCharts($browserStateChartDanger, browserStateDangerChartOptions);
-        browserStateDangerChart.render();
-
-        //------------ Goal Overview Chart ------------
-        //---------------------------------------------
-        goalOverviewChartOptions = {
-            chart: {
-                height: 245,
-                type: 'radialBar',
-                sparkline: {
-                    enabled: true
-                },
-                dropShadow: {
-                    enabled: true,
-                    blur: 3,
-                    left: 1,
-                    top: 1,
-                    opacity: 0.1
-                }
-            },
-            colors: [$goalStrokeColor2],
-            plotOptions: {
-                radialBar: {
-                    offsetY: -10,
-                    startAngle: -150,
-                    endAngle: 150,
-                    hollow: {
-                        size: '77%'
-                    },
-                    track: {
-                        background: $strokeColor,
-                        strokeWidth: '50%'
-                    },
-                    dataLabels: {
-                        name: {
-                            show: false
-                        },
-                        value: {
-                            color: $textHeadingColor,
-                            fontSize: '2.86rem',
-                            fontWeight: '600'
-                        }
-                    }
-                }
-            },
-            fill: {
-                type: 'gradient',
-                gradient: {
-                    shade: 'dark',
-                    type: 'horizontal',
-                    shadeIntensity: 0.5,
-                    gradientToColors: [window.colors.solid.success],
-                    inverseColors: true,
-                    opacityFrom: 1,
-                    opacityTo: 1,
-                    stops: [0, 100]
-                }
-            },
-            series: [1,2,3,4,5],
-            stroke: {
-                lineCap: 'round'
-            },
-            grid: {
-                padding: {
-                    bottom: 30
-                }
-            }
-        };
-        goalOverviewChart = new ApexCharts($goalOverviewChart, goalOverviewChartOptions);
-        goalOverviewChart.render();
-    });
-
+    
     function cargarDashboard(){
         //mensaje carga
         $('body').loadingModal({
@@ -1008,11 +373,13 @@
         });
 
         var anio = $("#Anio").val();
-        var mes = $("#selectMes").val();
+        var mesDesde = $("#selectMesDesde").val();
+        var mesHasta = $("#selectMesHasta").val();
 
         var parametros = JSON.stringify({ 
             Anio: anio == "" | anio == NaN ? 0 : parseInt(anio), 
-            Mes: mes == "" | mes == NaN ? 0 : parseInt(mes)
+            MesDesde: mesDesde == "" | mesDesde == NaN ? 0 : parseInt(mesDesde),
+            MesHasta: mesHasta == "" | mesHasta == NaN ? 0 : parseInt(mesHasta)
         });
 
         $.ajax({
@@ -1022,17 +389,57 @@
             data: parametros,
             dataType: "json",
             success: function (result) {
-                $("#estudiosTotales").text(result.cantidadEstudiosTotales);
-                $("#nombreKAM").text(result.nombreKam);
-                $("#cantidadKAM").text(result.cantidadEstudiosKam.toLocaleString());
-                $("#sitiosTotales").text(result.sitiosTotales.toLocaleString());
-                $("#sitiosConCobertura").text(result.sitiosConCobertura.toLocaleString());
-                $("#sitiosConCoberturaParcial").text(result.sitiosConCoberturaParcial.toLocaleString());
-                $("#sitiosSinCobertura").text(result.sitiosSinCobertura.toLocaleString());
-                $("#totalClientes").text(result.rankingClientes.length.toLocaleString());
-                $("#cantidadTiposServicio").text(result.cantidadTiposServicio);
-                $("#anchoDeBanda").text(result.anchoDeBanda.toLocaleString()+' Mbps');
-                cargarDatatableRanking(result.rankingClientes);
+                try {
+                    console.log(result)
+                    $("#estudiosTotales").text(result.cantidadEstudiosTotales);
+                    $("#nombreKAM").text(result.nombreKam);
+                    $("#cantidadKAM").text(result.cantidadEstudiosKam.toLocaleString());
+                    $("#sitiosTotales").text(result.sitiosTotales.toLocaleString());
+                    $("#sitiosConCobertura").text(result.sitiosConCobertura.toLocaleString());
+                    $("#sitiosConCoberturaParcial").text(result.sitiosConCoberturaParcial.toLocaleString());
+                    $("#sitiosSinCobertura").text(result.sitiosSinCobertura.toLocaleString());
+                    $("#totalClientes").text(result.rankingClientes.length.toLocaleString());
+                    $("#cantidadTiposServicio").text(result.cantidadTiposServicio);
+                    $("#anchoDeBanda").text(result.anchoDeBanda.toLocaleString() + ' Mbps');
+                    if (result.rankingClientes.length > 0) {
+                        cargarDatatableRanking(result.rankingClientes);
+                    }
+                    else{
+                        if ($.fn.dataTable.isDataTable('#rankingClientesTable')) {
+                            $('#rankingClientesTable').DataTable().clear(); //se limpia tabla
+                            $('#rankingClientesTable').DataTable().draw(); //se llena con datos
+                        }
+                    }
+                    if (result.rankingClientesGrafica.length > 0) {
+                        $("#chartContainer").show();
+                        cargarPieClientes(result.rankingClientesGrafica);
+                    }
+                    else{
+                        $("#chartContainer").hide();
+                    }
+                    if (result.rankingKamsGrafica.length > 0) {
+                        $("#chartContainerKam").show();
+                        cargarBarKam(result.rankingKamsGrafica);
+                    }
+                    else
+                    {
+                        $("#chartContainerKam").hide();
+                    }
+                    if (result.indicadoresDesemp.length > 0) {
+                        cargarDatatableIndicadoresDR(result.indicadoresDesemp);
+                    }
+                    else{
+                        if ($.fn.dataTable.isDataTable('#indicadoresDRTable')) {
+                            $('#indicadoresDRTable').DataTable().clear(); //se limpia tabla
+                            $('#indicadoresDRTable').DataTable().draw(); //se llena con datos
+                        }
+                    }
+                } catch (error) {
+                    console.error(error);
+                    $('body').loadingModal('destroy');
+                    // Expected output: ReferenceError: nonExistentFunction is not defined
+                    // (Note: the exact output may be browser-dependent)
+                }
                 //hidemodal loading
                 $('body').loadingModal('destroy');
             },
@@ -1040,7 +447,7 @@
                 Swal.fire({
                     title: 'Error al obtener datos',
                     text: result.Mensaje == null ? "Error en servidor" : result.Mensaje,
-                    icon: error
+                    icon: "error"
                 })
                 //hidemodal loading
                 $('body').loadingModal('destroy');
@@ -1085,6 +492,92 @@
     $("#btnDatosDashboard").click(function(){
         cargarDashboard();
     }); 
+
+    function cargarPieClientes(ranking){
+        var options = {
+            animationEnabled: true,
+            title: {
+                text: "TOP 10 Clientes Estudios"
+            },
+            data: [{
+                type: "doughnut",
+                innerRadius: "40%",
+                showInLegend: true,
+                legendText: "{label}",
+                indexLabel: "{label}: #percent%",
+                dataPoints: [
+                    { label: ranking[0].cliente, y: ranking[0].cantidadEstudios },
+                    { label: ranking[1].cliente, y: ranking[1].cantidadEstudios },
+                    { label: ranking[2].cliente, y: ranking[2].cantidadEstudios },
+                    { label: ranking[3].cliente, y: ranking[3].cantidadEstudios },
+                    { label: ranking[4].cliente, y: ranking[4].cantidadEstudios },
+                    { label: ranking[5].cliente, y: ranking[5].cantidadEstudios },
+                    { label: ranking[6].cliente, y: ranking[6].cantidadEstudios },
+                    { label: ranking[7].cliente, y: ranking[7].cantidadEstudios },
+                    { label: ranking[8].cliente, y: ranking[8].cantidadEstudios },
+                    { label: ranking[9].cliente, y: ranking[9].cantidadEstudios }
+                ]
+            }]
+        };
+        $("#chartContainer").CanvasJSChart(options);
+    }
+
+    function cargarBarKam(ranking) {
+        var options = {
+            animationEnabled: true,
+            title: {
+                text: "TOP 10 KAMS"
+            },
+            data: [{
+                type: "column",
+                dataPoints: [
+                    { label: ranking[0].kam, y: ranking[0].cantidadEstudios },
+                    { label: ranking[1].kam, y: ranking[1].cantidadEstudios },
+                    { label: ranking[2].kam, y: ranking[2].cantidadEstudios },
+                    { label: ranking[3].kam, y: ranking[3].cantidadEstudios },
+                    { label: ranking[4].kam, y: ranking[4].cantidadEstudios },
+                    { label: ranking[5].kam, y: ranking[5].cantidadEstudios },
+                    { label: ranking[6].kam, y: ranking[6].cantidadEstudios },
+                    { label: ranking[7].kam, y: ranking[7].cantidadEstudios },
+                    { label: ranking[8].kam, y: ranking[8].cantidadEstudios },
+                    { label: ranking[9].kam, y: ranking[9].cantidadEstudios }
+                ]
+            }]
+        };
+        $("#chartContainerKam").CanvasJSChart(options);
+    }
+
+    function cargarDatatableIndicadoresDR(datatable) {
+        if ($.fn.dataTable.isDataTable('#indicadoresDRTable')) {
+            $('#indicadoresDRTable').DataTable().clear(); //se limpia tabla
+            $('#indicadoresDRTable').DataTable().rows.add(datatable).draw(); //se llena con datos
+        }
+        else { //primera instancia tabla
+            $('#indicadoresDRTable').DataTable({
+                "language": { "url": "https://cdn.datatables.net/plug-ins/1.12.1/i18n/es-ES.json" },
+                data: datatable,
+                "order": [[0, "asc"]],
+                searching: false,
+                columns: [
+                    { "data": "correlativo" },
+                    {
+                        'defaultContent': null,
+                        'render': function (data, type, row) {
+                            return '<div class="d-flex"> <button disabled type="button" class="btn btn-icon btn-warning mx-1" id="' + row.mes + '" data-toggle="tooltip" data-placement="left" title="Mes"> <i data-feather="calendar"></i></i> </button> ' + row.mes + ' </div>'
+                        }
+                    },
+                    { "data": "sitiosConCoberturaP"},
+                    { "data": "sitiosConCoberturaParcialP"},
+                    { "data": "sitiosSinCoberturaP"},
+                    { "data": "sitiosTotales" },
+                    { "data": "estudiosTotales" }
+                ],
+                drawCallback: function (settings) {
+                    feather.replace();
+                }
+            });
+        }
+    }
 
 </script>
 <!-- END: Page Vendor JS-->
