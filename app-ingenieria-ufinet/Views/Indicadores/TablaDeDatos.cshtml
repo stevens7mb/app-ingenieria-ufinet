@@ -302,9 +302,18 @@
 
             $('#factibilidadesTable').DataTable({
                 "language": { "url": "https://cdn.datatables.net/plug-ins/1.12.1/i18n/es-ES.json" },
+                processing: true,
+                serverSide: true,
+                searching: true,
+                ordering: true,
+                paging: true,
+                lengthMenu: [
+                    [10, 25, 50, 100, -1],
+                    ['10', '25', '50', '100', 'Todo']
+                ],
                 "ajax": {
-                    "url": "@Url.Action("ListaFactibilidades", "Indicadores")",
-                    "type": "GET",
+                    "url": "@Url.Action("ListaFactibilidadesPaginate", "Indicadores")",
+                    "type": "POST",
                     "dataType": "json"
                 },
                 "order": [[0, "desc"]],

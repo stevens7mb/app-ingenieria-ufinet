@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="DataBase\Stored Procedure\" />
     <Folder Include="wwwroot\img\Home\Login\" />
   </ItemGroup>
 

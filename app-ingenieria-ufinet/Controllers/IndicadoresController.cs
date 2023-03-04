@@ -1,4 +1,5 @@
 ﻿using app_ingenieria_ufinet.Models.Commons;
+using app_ingenieria_ufinet.Models.Commons.DataTablePaginate;
 using app_ingenieria_ufinet.Models.Indicadores.Dashboard;
 using app_ingenieria_ufinet.Models.Indicadores.Factibilidad;
 using app_ingenieria_ufinet.Models.User;
@@ -33,6 +34,28 @@ namespace app_ingenieria_ufinet.Controllers
             List<FactibilidadModel> result = this._indicadorRepository.ListaFactibilidades();
 
             return Json(new { data = result });
+        }
+
+        [HttpPost]
+        public DataTableResponse<FactibilidadPaginateModel> ListaFactibilidadesPaginate()
+        {
+            var request = new DataTableRequest();
+
+            request.Draw = Convert.ToInt32(Request.Form["draw"].FirstOrDefault());
+            request.Start = Convert.ToInt32(Request.Form["start"].FirstOrDefault());
+            request.Length = Convert.ToInt32(Request.Form["length"].FirstOrDefault());
+            request.Search = new DataTableSearch()
+            {
+                Value = Request.Form["search[value]"].FirstOrDefault()
+            };
+            request.Order = new DataTableOrder[] {
+            new DataTableOrder()
+            {
+                Dir = Request.Form["order[0][dir]"].FirstOrDefault(),
+                Column = Convert.ToInt32(Request.Form["order[0][column]"].FirstOrDefault())
+            }};
+
+            return _indicadorRepository.ListaFactibilidadesPaginate(request);
         }
 
         [HttpGet]

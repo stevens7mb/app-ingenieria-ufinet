@@ -1,5 +1,6 @@
 ﻿using app_ingenieria_ufinet.Data;
 using app_ingenieria_ufinet.Models.Commons;
+using app_ingenieria_ufinet.Models.Commons.DataTablePaginate;
 using app_ingenieria_ufinet.Models.Indicadores.Dashboard;
 using app_ingenieria_ufinet.Models.Indicadores.Factibilidad;
 using app_ingenieria_ufinet.Models.Login;
@@ -22,6 +23,14 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
         /// </summary>
         /// <returns>retorna una lista de factibilidades</returns>
         List<FactibilidadModel> ListaFactibilidades();
+
+        /// <summary>
+        /// Obtiene la lista de las factibilidades de forma paginada
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        DataTableResponse<FactibilidadPaginateModel> ListaFactibilidadesPaginate(DataTableRequest request);
 
         /// <summary>
         /// Obtiene la lista de clientes
@@ -103,6 +112,52 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
             var result = this._dbUtils.ExecuteStoredProc<FactibilidadModel>("lista_factibilidades", procedureParams);
 
             return result;
+        }
+
+        /// <summary>
+        /// Obtiene la lista de las factibilidades de forma paginada
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public DataTableResponse<FactibilidadPaginateModel> ListaFactibilidadesPaginate(DataTableRequest request)
+        {
+
+            var req = new DataTablePaginateRequest()
+            {
+                PageNo = Convert.ToInt32(request.Start / request.Length),
+                PageSize = request.Length,
+                SortColumn = request.Order[0].Column,
+                SortDirection = request.Order[0].Dir,
+                SearchValue = request.Search != null ? request.Search.Value.Trim() : ""
+            };
+
+            try
+            {
+                var procedureParams = new Dictionary<string, object>()
+                {
+                    {"@SearchValue", req.SearchValue},
+                    {"@PageNo", req.PageNo},
+                    {"@PageSize", req.PageSize },
+                    {"@SortColumn", req.SortColumn },
+                    {"@SortDirection", req.SortDirection}
+                };
+
+                var result = this._dbUtils.ExecuteStoredProc<FactibilidadPaginateModel>("lista_factibilidades_paginate", procedureParams);
+                
+                return new DataTableResponse<FactibilidadPaginateModel>()
+                {
+                    Draw = request.Draw,
+                    RecordsTotal = result[0].TotalCount,
+                    RecordsFiltered = result[0].FilteredCount,
+                    Data = result.ToArray(),
+                    Error = ""
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
         }
 
         /// <summary>
