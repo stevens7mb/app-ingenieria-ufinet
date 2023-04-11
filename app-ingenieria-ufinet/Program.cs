@@ -34,7 +34,7 @@ builder.Services.AddTransient<IUserService, UserService>();
 //Auth
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(50);
+    options.IdleTimeout = TimeSpan.FromMinutes(120);
 });
 builder.Services.AddAuthentication(options =>
 {

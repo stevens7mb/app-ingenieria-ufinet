@@ -126,6 +126,26 @@
                 @if (rolesUsuario.Contains("Admin"))
                 {
                     <li class=" nav-item">
+                        <a class="d-flex align-items-center" href="#"><i data-feather="file-plus"></i><span class="menu-title text-truncate" data-i18n="Page Layouts">Servicios Activos</span>@*<span class="badge badge-light-danger rounded-pill ms-auto me-1">2</span>*@</a>
+                        <ul class="menu-content">
+                            @if (rolesUsuario.Contains("Admin"))
+                            {
+                                <li class="@(ViewContext.RouteData.Values["Controller"].ToString() + ViewContext.RouteData.Values["Action"].ToString() == "ActiveServicesTablaDatos" ? "active nav-item" : "nav-item")">
+                                    <a class="d-flex align-items-center" href="@Url.Action("TablaDatos", "ActiveServices")"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Shop">Tabla De Datos</span></a>
+                                </li>
+                            }
+                            @if (rolesUsuario.Contains("Admin"))
+                            {
+                                <li class="@(ViewContext.RouteData.Values["Controller"].ToString() + ViewContext.RouteData.Values["Action"].ToString() == "ActiveServicesDashboard" ? "active nav-item" : "nav-item")">
+                                    <a class="d-flex align-items-center" href="@Url.Action("Dashboard", "ActiveServices")"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Shop">DashBoard</span></a>
+                                </li>
+                            }
+                        </ul>
+                    </li>
+                }
+                @if (rolesUsuario.Contains("Admin"))
+                {
+                    <li class=" nav-item">
                         <a class="d-flex align-items-center" href="#"><i data-feather="pie-chart"></i><span class="menu-title text-truncate" data-i18n="Page Layouts">Indicadores DR</span>@*<span class="badge badge-light-danger rounded-pill ms-auto me-1">2</span>*@</a>
                         <ul class="menu-content">
                             @if (rolesUsuario.Contains("Admin"))
