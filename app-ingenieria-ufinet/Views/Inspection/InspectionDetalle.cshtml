@@ -1,0 +1,169 @@
+﻿@model app_ingenieria_ufinet.Models.Inspection.InspectionDoneModel
+
+@{
+    Layout = "_Layout";
+}
+<!--Bootstrap Datatable-->
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/tables/datatable/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/tables/datatable/responsive.bootstrap5.min.css">
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/tables/datatable/buttons.bootstrap5.min.css">
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/tables/datatable/rowGroup.bootstrap5.min.css">
+@*<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/pickers/flatpickr/flatpickr.min.css">*@
+
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/forms/select/select2.min.css">
+<link href="~/css/jquery.loadingmodal.css" rel="stylesheet" />
+
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/css/pages/app-invoice.css">
+
+<!-- BEGIN: Content-->
+<!-- Basic table -->
+<section id="basic-datatable">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Inspeccion @Model.datosIndividuales.IdServicioNuevo</h4>
+                </div>
+                <div class="card-content">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="form-group col-md-3">
+                                <label for="IdInspeccionTrabajo">Id Inspeccion Trabajo</label>
+                                <input type="text" class="form-control" id="IdInspeccionTrabajo" value="@Model.datosIndividuales.IdInspeccionTrabajo" disabled>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="IdServicioNuevo">Id Servicio</label>
+                                <input type="text" class="form-control" id="IdServicioNuevo" value="@Model.datosIndividuales.IdServicioNuevo" disabled>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="Contrata">Contrata</label>
+                                <input type="text" class="form-control" id="Contrata" value="@Model.datosIndividuales.Contrata" disabled>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="Tecnico">Tecnico</label>
+                                <input type="text" class="form-control" id="Tecnico" value="@Model.datosIndividuales.Tecnico" disabled>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-3">
+                                <label for="Ingeniero">Ingeniero</label>
+                                <input type="text" class="form-control" id="Ingeniero" value="@Model.datosIndividuales.Ingeniero" disabled>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="FechaInspeccion">Fecha Inspeccion</label>
+                                <input type="text" class="form-control" id="FechaInspeccion" value="@Model.datosIndividuales.FechaInspeccion" disabled>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="UsuarioInspeccion">Usuario Inspeccion</label>
+                                <input type="text" class="form-control" id="UsuarioInspeccion" value="@Model.datosIndividuales.UsuarioInspeccion" disabled>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="Estado">Estado</label>
+                                <input type="text" class="form-control" id="Estado" value="@Model.datosIndividuales.Estado" disabled>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Tareas y Respuestas</h4>
+                </div>
+                <div class="card-content">
+                    <div class="card-body">
+                        @foreach (var categoria in Model.categorias)
+                        {
+                            <h4>@categoria.Categoria</h4>
+
+                            <div class="row">
+                                @foreach (var (pregunta, correlativo) in categoria.preguntas.Select((p, i) => (p, i + 1)))
+                                {
+                                    <div class="form-group col-md-12">
+                                        <label>@correlativo - @pregunta.Tarea</label>
+                                        <label style="font-weight:bold">@pregunta.Respuesta</label>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--/ Basic table -->
+<!-- END: Content-->
+@section Scripts {
+    <!-- Bootstrap datatable -->
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/jquery.dataTables.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/dataTables.bootstrap5.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/dataTables.responsive.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/responsive.bootstrap5.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/datatables.checkboxes.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/datatables.buttons.min.js"></script>
+    @*<script src="~/Template/app-assets/vendors/js/tables/datatable/jszip.min.js"></script>*@
+    @*<script src="~/Template/app-assets/vendors/js/tables/datatable/pdfmake.min.js"></script>*@
+    @*<script src="~/Template/app-assets/vendors/js/tables/datatable/vfs_fonts.js"></script>*@
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/buttons.html5.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/buttons.print.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/dataTables.rowGroup.min.js"></script>
+    @*    <script src="~/Template/app-assets/vendors/js/pickers/flatpickr/flatpickr.min.js"></script>*@
+    <!-- end Bootstrap datatable -->
+    <script src="~/Template/app-assets/vendors/js/forms/select/select2.full.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/forms/validation/jquery.validate.min.js"></script>
+    <!-- Mensaje cargando-->
+    <script src="~/js/jquery.loadingModal.js"></script>
+    <!-- Alertas-->
+    <script src="~/js/sweetalert2.all.min.js"></script>
+
+    <!-- Agregar page-->
+    <script src="~/Template/app-assets/vendors/js/forms/repeater/jquery.repeater.min.js"></script>
+    <!-- END: Page Vendor JS-->
+    @*    <script src="~/Template/app-assets/js/scripts/pages/app-invoice.js"></script>*@
+    <script src="~/Template/app-assets/vendors/js/extensions/moment.min.js"></script>
+
+    <script>
+
+        //Cargar Pagina
+        $(document).ready(function () {
+
+            //$('#inspection-table').DataTable({
+            //    "language": { "url": "https://cdn.datatables.net/plug-ins/1.12.1/i18n/es-ES.json" },
+            //    "dom": 'rtip',
+            //    "pageLength": 5,
+            //    "ajax": {
+            //        "url": "@Url.Action("ListaInspeccionesRealizadas", "Inspection")",
+            //        "type": "GET",
+            //        "dataType": "json"
+            //    },
+            //    "order": [[0, "desc"]],
+            //    columns: [
+            //        { "data": "idInspeccionTrabajo" },
+            //        { "data": "idServicioNuevo" },
+            //        { "data": "contrata" },
+            //        { "data": "tecnico" },
+            //        { "data": "ingeniero" },
+            //        {
+            //            "render": function (data, type, row) {
+            //                return moment(row.fechaInspeccion).format('DD-MM-YYYY');
+            //            }
+            //        },
+            //        { "data": "usuarioInspeccion" },
+            //        {
+            //            'defaultContent': null,
+            //            'render': function (data, type, row) {
+            //                return '<div class="d-flex"> <button type="button" class="btn btn-icon btn-info mx-1" id="' + row.idInspeccionTrabajo + '" onclick="detallesPI(this.id)" data-toggle="tooltip" data-placement="left" title="Ver"> <i data-feather="eye"></i></i> </button> </div>'
+            //            }
+            //        }
+            //    ],
+            //    drawCallback: function (settings) {
+            //        feather.replace();
+            //    }
+            //});
+        });
+    </script>
+}

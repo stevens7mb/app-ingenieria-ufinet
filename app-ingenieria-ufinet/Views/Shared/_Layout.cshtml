@@ -140,6 +140,12 @@
                                     <a class="d-flex align-items-center" href="@Url.Action("Dashboard", "ActiveServices")"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Shop">DashBoard</span></a>
                                 </li>
                             }
+                            @if (rolesUsuario.Contains("Admin"))
+                            {
+                                <li class="@(ViewContext.RouteData.Values["Controller"].ToString() + ViewContext.RouteData.Values["Action"].ToString() == "InspectionInspection" ? "active nav-item" : "nav-item")">
+                                    <a class="d-flex align-items-center" href="@Url.Action("Inspection", "Inspection")"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Shop">Inspecciones</span></a>
+                                </li>
+                            }
                         </ul>
                     </li>
                 }
