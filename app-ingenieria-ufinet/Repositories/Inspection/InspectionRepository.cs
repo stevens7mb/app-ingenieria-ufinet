@@ -1,5 +1,7 @@
 ﻿
 
+using app_ingenieria_ufinet.Models.Commons;
+using app_ingenieria_ufinet.Models.Indicadores.Factibilidad;
 using app_ingenieria_ufinet.Models.Inspection;
 using app_ingenieria_ufinet.Models.Parametrization.BobinFO;
 using app_ingenieria_ufinet.Utils;
@@ -24,6 +26,44 @@ namespace app_ingenieria_ufinet.Repositories.Inspection
         /// <param name="id"></param>
         /// <returns></returns>
         InspectionDoneModel ObtenerInspeccionPorId(int id);
+
+        /// <summary>
+        /// Devuelve un listado de las asignaciones creadas
+        /// </summary>
+        /// <returns></returns>
+        List<AsignationModel> ListaAsignaciones();
+
+        /// <summary>
+        /// Retorna lista de tecnicos activos
+        /// </summary>
+        /// <returns></returns>
+        List<ActiveTechnical> ListaTecnicosActivos();
+
+        /// <summary>
+        /// Retorna lista de contratistas
+        /// </summary>
+        /// <returns></returns>
+        List<ContratistModel> ListaContratistas();
+
+        /// <summary>
+        /// Retorna una lista de ingenieros
+        /// </summary>
+        /// <returns></returns>
+        List<EngineerModel> ListaIngenieros();
+
+        /// <summary>
+        /// Crea una nueva asignacion que se mostrará en asignaciones y en app móvil
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        SPResponseGeneric CrearAsignacion(AsignationRequestModel request);
+
+        /// <summary>
+        /// Elimina una asignación permanentemente
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        SPResponseGeneric EliminarAsignacion(AsignationRequestModel request);
     }
     #endregion interface
 
@@ -93,6 +133,95 @@ namespace app_ingenieria_ufinet.Repositories.Inspection
             return inspection;
         }
 
+        /// <summary>
+        /// Devuelve un listado de las asignaciones creadas
+        /// </summary>
+        /// <returns></returns>
+        public List<AsignationModel> ListaAsignaciones()
+        {
+            var procedureParams = new Dictionary<string, object>() { };
+
+            var result = this._dbUtils.ExecuteStoredProc<AsignationModel>("lista_asignaciones_inspeccion", procedureParams);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Retorna lista de tecnicos activos
+        /// </summary>
+        /// <returns></returns>
+        public List<ActiveTechnical> ListaTecnicosActivos()
+        {
+            var procedureParams = new Dictionary<string, object>() { };
+
+            var result = this._dbUtils.ExecuteStoredProc<ActiveTechnical>("lista_tecnicos_activos", procedureParams);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Retorna lista de contratistas
+        /// </summary>
+        /// <returns></returns>
+        public List<ContratistModel> ListaContratistas()
+        {
+            var procedureParams = new Dictionary<string, object>() { };
+
+            var result = this._dbUtils.ExecuteStoredProc<ContratistModel>("lista_contratistas", procedureParams);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Retorna una lista de ingenieros
+        /// </summary>
+        /// <returns></returns>
+        public List<EngineerModel> ListaIngenieros()
+        {
+            var procedureParams = new Dictionary<string, object>() { };
+
+            var result = this._dbUtils.ExecuteStoredProc<EngineerModel>("lista_ingenieros", procedureParams);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Crea una nueva asignacion que se mostrará en asignaciones y en app móvil
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public SPResponseGeneric CrearAsignacion(AsignationRequestModel request)
+        {
+            var procedureParams = new Dictionary<string, object>()
+            {
+                {"@id_servicio_nuevo", request.IdServicioNuevo},
+                {"@id_cliente", request.IdCliente },
+                {"@id_tecnico", request.IdTecnico },
+                {"@id_contrata", request.IdContrata },
+                {"@id_ingeniero", request.IdIngeniero}
+            };
+
+            var result = this._dbUtils.ExecuteStoredProc<SPResponseGeneric>("crear_asignacion", procedureParams);
+
+            return result[0];
+        }
+
+        /// <summary>
+        /// Elimina una asignación permanentemente
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public SPResponseGeneric EliminarAsignacion(AsignationRequestModel request)
+        {
+            var procedureParams = new Dictionary<string, object>()
+            {
+                {"@id_servicio_nuevo", request.IdServicioNuevo}
+            };
+
+            var result = this._dbUtils.ExecuteStoredProc<SPResponseGeneric>("eliminar_asignacion", procedureParams);
+
+            return result[0];
+        }
         #endregion
     }
 }

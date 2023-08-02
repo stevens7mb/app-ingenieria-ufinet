@@ -5,7 +5,7 @@ GO
 CREATE PROCEDURE dbo.lista_inspecciones_trabajo
 AS
 BEGIN
-	  	SELECT
+	SELECT
 		IdInspeccionTrabajo,
 		IdServicioActivo,
 		IdServicioNuevo,

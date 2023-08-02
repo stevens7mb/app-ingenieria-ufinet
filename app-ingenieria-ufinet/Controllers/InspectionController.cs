@@ -1,4 +1,6 @@
-﻿using app_ingenieria_ufinet.Models.Inspection;
+﻿using app_ingenieria_ufinet.Models.Commons;
+using app_ingenieria_ufinet.Models.Indicadores.Factibilidad;
+using app_ingenieria_ufinet.Models.Inspection;
 using app_ingenieria_ufinet.Models.PI;
 using app_ingenieria_ufinet.Repositories.Inspection;
 using app_ingenieria_ufinet.Repositories.Parametrization;
@@ -28,6 +30,16 @@ namespace app_ingenieria_ufinet.Controllers
 
             return View(result);
         }
+
+        public IActionResult Asignation()
+        {
+            return View();
+        }
+
+        public IActionResult InspectionSupervition()
+        {
+            return View();
+        }
         #endregion
 
         #region metodos data
@@ -38,6 +50,55 @@ namespace app_ingenieria_ufinet.Controllers
             List<InspectionIndividualModel> result = this._inspectionRepository.ListaInspeccionesRealizadas();
 
             return Json(new { data = result });
+        }
+
+        [HttpGet]
+        public JsonResult ListaAsignaciones()
+        {
+
+            List<AsignationModel> result = this._inspectionRepository.ListaAsignaciones();
+
+            return Json(new { data = result });
+        }
+
+        [HttpGet]
+        public JsonResult SelectTecnicos()
+        {
+            List<ActiveTechnical> result = this._inspectionRepository.ListaTecnicosActivos();
+
+            return Json(result);
+        }
+
+        [HttpGet]
+        public JsonResult SelectContratistas()
+        {
+            List<ContratistModel> result = this._inspectionRepository.ListaContratistas().Where(x => x.Estado == -1).ToList();
+
+            return Json(result);
+        }
+
+        [HttpGet]
+        public JsonResult SelectIngenieros()
+        {
+            List<EngineerModel> result = this._inspectionRepository.ListaIngenieros().Where(x => x.Estado == -1).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CrearAsignacion([FromBody] AsignationRequestModel request)
+        {
+            SPResponseGeneric result = this._inspectionRepository.CrearAsignacion(request);
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult EliminarAsignacion([FromBody] AsignationRequestModel request)
+        {
+            SPResponseGeneric result = this._inspectionRepository.EliminarAsignacion(request);
+
+            return Json(result);
         }
         #endregion
     }
