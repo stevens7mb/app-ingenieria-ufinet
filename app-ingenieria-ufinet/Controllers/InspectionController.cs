@@ -40,6 +40,13 @@ namespace app_ingenieria_ufinet.Controllers
         {
             return View();
         }
+
+        public IActionResult InspectionSupervitionDetail(int id)
+        {
+            var result = this._inspectionRepository.ObtenerInspeccionPorId(id);
+
+            return View(result);
+        }
         #endregion
 
         #region metodos data
@@ -99,6 +106,13 @@ namespace app_ingenieria_ufinet.Controllers
             SPResponseGeneric result = this._inspectionRepository.EliminarAsignacion(request);
 
             return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CrearSupervision([FromBody] InspectionSupervitionDoneRequest request)
+        {
+            var prueba = "";
+            return Json(prueba);
         }
         #endregion
     }

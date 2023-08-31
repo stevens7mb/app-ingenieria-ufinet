@@ -78,13 +78,21 @@
                         @foreach (var categoria in Model.categorias)
                         {
                             <h4>@categoria.Categoria</h4>
-
                             <div class="row">
                                 @foreach (var (pregunta, correlativo) in categoria.preguntas.Select((p, i) => (p, i + 1)))
                                 {
-                                    <div class="form-group col-md-12">
-                                        <label>@correlativo - @pregunta.Tarea</label>
-                                        <label style="font-weight:bold">@pregunta.Respuesta</label>
+                                    <div class="col-md-8">
+                                        <div class="form-group">
+                                            <label>@correlativo - @pregunta.Tarea</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label style="font-weight:bold">@pregunta.Respuesta</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <hr />
                                     </div>
                                 }
                             </div>
