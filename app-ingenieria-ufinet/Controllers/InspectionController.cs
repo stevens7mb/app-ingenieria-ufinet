@@ -109,10 +109,20 @@ namespace app_ingenieria_ufinet.Controllers
         }
 
         [HttpPost]
-        public JsonResult CrearSupervision([FromBody] InspectionSupervitionDoneRequest request)
+        public JsonResult CrearSupervisionRechazar([FromBody] InspectionSupervitionDoneRequest request)
         {
-            var prueba = "";
-            return Json(prueba);
+
+            SPResponseGenericWithVal result = this._inspectionRepository.CrearSupervision(false, request);
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CrearSupervisionAceptar([FromBody] InspectionSupervitionDoneRequest request)
+        {
+            SPResponseGenericWithVal result = this._inspectionRepository.CrearSupervision(true, request);
+
+            return Json(result);
         }
         #endregion
     }

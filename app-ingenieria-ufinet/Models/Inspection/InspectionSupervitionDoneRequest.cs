@@ -16,7 +16,8 @@
 
     public class InspectionSupervitionDoneRequest
     {
-        public int idInspeccion { get; set; }
+        public int idInspeccionTrabajo { get; set; }
+        public string idServicioNuevo { get; set; }
         public List<Category> categorias { get; set; }
     }
 }

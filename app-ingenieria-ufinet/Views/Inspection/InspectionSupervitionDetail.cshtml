@@ -100,7 +100,7 @@
                                 {
                                     <div class="row div-pregunta">
                                         <input class="id-categoria-tarea" value="@pregunta.IdCategoriaTarea" hidden />
-                                        <input class="id-tarea" value="@pregunta.Tarea" hidden />
+                                        <input class="id-tarea" value="@pregunta.IdTarea" hidden />
                                         <input class="id-respuesta" value="@pregunta.Respuesta" hidden />
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -185,12 +185,40 @@
                 buttonsStyling: false
             }).then(function (result) {
                 if (result.value) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Unsubscribed!',
-                        text: 'Your subscription cancelled successfully.',
-                        customClass: {
-                            confirmButton: 'btn btn-success'
+                    var request = {
+                        idInspeccionTrabajo: $("#IdInspeccionTrabajo").val(),
+                        idServicioNuevo: $("#IdServicioNuevo").val(),
+                        categorias: null
+                    };
+
+                    $.ajax({
+                        url: "@Url.Action("CrearSupervisionAceptar", "Inspection")",
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(request),
+                        dataType: "json",
+                        success: function (result) {
+                            //show Alert
+                            Swal.fire({
+                                title: 'Crear Supervisión',
+                                text: result.mensaje,
+                                icon: result.tipo
+                            }).then((result) => {
+                                window.location.href = '/Inspection/InspectionSupervition';
+                            });
+
+                            //hidemodal loading
+                            $('body').loadingModal('destroy');
+                        },
+                        error: function (result) {
+                            Swal.fire({
+                                title: 'Crear Supervisión',
+                                text: result.Mensaje,
+                                icon: result.Tipo
+                            })
+                            //hidemodal loading
+                            $('body').loadingModal('destroy');
+
                         }
                     });
                 }
@@ -252,15 +280,16 @@
 
                     if (Array.isArray(preguntasConObservacion) && preguntasConObservacion.length > 0) {
                         var request = {
-                            IdInspeccionTrabajo: $("#IdInspeccionTrabajo").val(),
+                            idInspeccionTrabajo: $("#IdInspeccionTrabajo").val(),
+                            idServicioNuevo: $("#IdServicioNuevo").val(),
                             categorias: preguntasConObservacion
                         };
 
                         $.ajax({
-                            url: "@Url.Action("CrearSupervision", "Inspection")",
+                            url: "@Url.Action("CrearSupervisionRechazar", "Inspection")",
                             type: "POST",
                             contentType: "application/json; charset=utf-8",
-                            data: request,
+                            data: JSON.stringify(request),
                             dataType: "json",
                             success: function (result) {
                                 //show Alert
@@ -268,7 +297,9 @@
                                     title: 'Crear Supervisión',
                                     text: result.mensaje,
                                     icon: result.tipo
-                                })
+                                }).then((result) => {
+                                    window.location.href = '/Inspection/InspectionSupervition';
+                                });
 
                                 //hidemodal loading
                                 $('body').loadingModal('destroy');
@@ -284,8 +315,6 @@
 
                             }
                         });
-
-
                     } else {
                         Swal.fire({
                             icon: 'warning',

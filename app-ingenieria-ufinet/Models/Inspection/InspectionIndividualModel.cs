@@ -3,7 +3,6 @@
     public class InspectionIndividualModel
     {
         public int IdInspeccionTrabajo { get; set; }
-        public int IdServicioActivo { get; set; }
         public string IdServicioNuevo { get; set; }
         public string Contrata { get; set; }    
         public string Tecnico { get; set; }

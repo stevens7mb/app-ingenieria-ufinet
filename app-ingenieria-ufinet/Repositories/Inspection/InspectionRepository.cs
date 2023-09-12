@@ -64,6 +64,14 @@ namespace app_ingenieria_ufinet.Repositories.Inspection
         /// <param name="request"></param>
         /// <returns></returns>
         SPResponseGeneric EliminarAsignacion(AsignationRequestModel request);
+
+        /// <summary>
+        /// Crea Supervision, ya sea aceptada o rechazada
+        /// </summary>
+        /// <param name="accept"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        SPResponseGenericWithVal CrearSupervision(bool accept, InspectionSupervitionDoneRequest request);
     }
     #endregion interface
 
@@ -73,10 +81,12 @@ namespace app_ingenieria_ufinet.Repositories.Inspection
     public class InspectionRepository : IInspectionRepository
     {
         private IDatabaseUtils _dbUtils;
+        private IUserService _userService;
 
-        public InspectionRepository(IDatabaseUtils dbUtils)
+        public InspectionRepository(IDatabaseUtils dbUtils, IUserService userService)
         {
             this._dbUtils = dbUtils ?? throw new ArgumentNullException(nameof(dbUtils));
+             _userService = userService;
         }
 
         #region Inspeccion
@@ -221,6 +231,63 @@ namespace app_ingenieria_ufinet.Repositories.Inspection
             var result = this._dbUtils.ExecuteStoredProc<SPResponseGeneric>("eliminar_asignacion", procedureParams);
 
             return result[0];
+        }
+
+        /// <summary>
+        /// Crea Supervision, ya sea aceptada o rechazada
+        /// </summary>
+        /// <param name="accept"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public SPResponseGenericWithVal CrearSupervision(bool accept, InspectionSupervitionDoneRequest request)
+        {
+            var usuario = _userService.GetUser().Claims.FirstOrDefault(x => x.Type == "IdUsuario").Value;
+            List<SPResponseGenericWithVal> result = new List<SPResponseGenericWithVal>();
+
+            //Aceptar
+            if(accept){
+                var procedureParams = new Dictionary<string, object>()
+                {
+                    {"@id_inspeccion_trabajo", request.idInspeccionTrabajo},
+                    {"@id_servicio_nuevo", request.idServicioNuevo},
+                    {"@usuario", usuario }
+                };
+
+                result = this._dbUtils.ExecuteStoredProc<SPResponseGenericWithVal>("sup_acept_inspection_by_id", procedureParams);
+            }
+            //Rechazar la supervision, enviar a otro estado.
+            else{
+                //Principal
+                var procedureParams = new Dictionary<string, object>()
+                {
+                    {"@id_inspeccion_trabajo", request.idInspeccionTrabajo},
+                    {"@id_servicio_nuevo", request.idServicioNuevo},
+                    {"@usuario", usuario }
+                };
+                result = this._dbUtils.ExecuteStoredProc<SPResponseGenericWithVal>("sup_reject_inspection_by_id", procedureParams);
+
+                //Detalle cada tarea supervisada.
+                var answers = request.categorias
+                                        .SelectMany(categoria => categoria.preguntas)
+                                        .Where(pregunta => !string.IsNullOrEmpty(pregunta.observacion));
+
+                if(answers != null){
+                    foreach (var answer in answers)
+                    {
+                        var procedureParamsAnsw = new Dictionary<string, object>()
+                        {
+                            {"@id_supervision", result.FirstOrDefault().Id},
+                            {"@id_inspeccion_trabajo_tarea", answer.idTarea},
+                            {"@observaciones", answer.observacion }
+                        };
+
+                        var resultAnswers = this._dbUtils.ExecuteStoredProc<SPResponseGeneric>("sup_reject_inspection_by_id_detail", procedureParamsAnsw);
+                    }
+
+                }
+            }
+            
+            return result.FirstOrDefault();
         }
         #endregion
     }
