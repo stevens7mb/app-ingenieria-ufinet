@@ -1,0 +1,1317 @@
+﻿@using Microsoft.AspNetCore.Mvc.Rendering
+@using app_ingenieria_ufinet.Data
+@{
+    Layout = "_Layout";
+}
+
+<!--Bootstrap Datatable-->
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/tables/datatable/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/tables/datatable/responsive.bootstrap5.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.3.2/css/buttons.dataTables.min.css">
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/tables/datatable/buttons.bootstrap5.min.css">
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/tables/datatable/rowGroup.bootstrap5.min.css">
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/forms/select/select2.min.css">
+<link href="~/css/jquery.loadingmodal.css" rel="stylesheet" />
+<style>
+    /* Estilo para los mensajes de error */
+    .error-validate {
+        color: #4ec4e6;
+        border-color: #7367f0 !important;
+    }
+
+    /*Avatar de list group*/
+    .avatar-initial {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 40px; /* Ancho del avatar */
+        height: 40px; /* Altura del avatar */
+        border-radius: 50%; /* Redondez del avatar */
+        color: #fff; /* Color del texto de las iniciales */
+        font-size: 20px; /* Tamaño de fuente de las iniciales */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
+        transition: background-color 0.3s ease; /* Transición de color de fondo */
+    }
+
+    /*Backdrop de canvas*/
+    .offcanvas-backdrop {
+        z-index: 1055;
+    }
+
+    /*Canvas bitacora*/
+    #canvas-binnacle-top{
+        z-index: 1056;
+    }
+</style>
+
+<!-- Zero configuration table -->
+<section id="basic-datatable">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Service Desk Creación</h4>
+                    <button type="button" id="addTicket" name="addTicket" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalAddTicket" onclick="cleanModal('modalAddTicket')">
+                        Crear Ticket
+                    </button>
+                </div>
+                <div class="card-content">
+                    <div class="card-body card-dashboard">
+                        <div class="table-responsive col-md-12">
+                            <table class="table zero-configuration nowrap" id="tickets-table">
+                                <thead>
+                                    <tr>
+                                        <th>Ticket</th>
+                                        <th>Nombre</th>
+                                        <th>Creado Por</th>
+                                        <th>Asignador</th>
+                                        <th>Fecha Creación</th>
+                                        <th>Tipo Incidencia</th>
+                                        <th>Asignado A</th>
+                                        <th>Estado</th>
+                                        <th>Accion</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal Agregar Ticket -->
+<div class="modal fade fade text-start" id="modalAddTicket" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel33"> Creación de Ticket </h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="cleanModal('modalAddTicket')" id="closeModalAddTicket">
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-ticket" name="form-ticket" method="post">
+                    <div class="modal-body">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>Título de Ticket: </label>
+                                    <div class="mb-1">
+                                        <input type="text" id="ticketName" name="ticketName" placeholder="Ingrese Nombre Ticket" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Coordenadas: </label>
+                                    <div class="mb-1">
+                                        <input type="text" id="coordinate" name="coordinate" placeholder="Ingrese Coordenadas" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Departamento: </label>
+                                    <div class="mb-1">
+                                        <select class="form-control col-md-12" id="selectState" name="selectState">
+                                            <option value="">Seleccione una opción</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>Municipio: </label>
+                                    <div class="mb-1">
+                                        <select class="form-control col-md-12" id="selectMunicipality" name="selectMunicipality">
+                                            <option value="">Seleccione una opción</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Dirección: </label>
+                                    <div class="mb-1">
+                                        <input type="text" id="address" name="address" placeholder="Ingrese Dirección" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Nivel de Prioridad: </label>
+                                    <div class="mb-1">
+                                        <select class="form-control col-md-12" id="selectPriority" name="selectPriority">
+                                            <option value="">Seleccione una opción</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">           
+                                <div class="col-md-4">
+                                    <label>Tipo de Incidente: </label>
+                                    <div class="mb-1">
+                                        <select class="form-control col-md-12" id="selectIncidentType" name="selectIncidentType">
+                                            <option value="">Seleccione una opción</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Causa Primaria: </label>
+                                    <div class="mb-1">
+                                        <select class="form-control col-md-12" id="selectPrimaryCause" name="selectPrimaryCause">
+                                            <option value="">Seleccione una opción</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Elemento Afectado: </label>
+                                    <div class="mb-1">
+                                        <select class="form-control col-md-12" id="selectAffectedElement" name="selectAffectedElement">
+                                            <option value="">Seleccione una opción</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <label class="form-label" for="summaryTicket">Detalles de la falla / Resumen Ticket</label>
+                                    <textarea name="summaryTicket" class="form-control" id="summaryTicket" rows="4" placeholder="Ingrese detalles de la falla"></textarea>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="card-body">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <h1 class="white col-md-10">Seleccionar Archivo</h1>
+                                        </div>
+
+                                        <img src="~/img/ServiceDesk/pdf.svg" height="50" width="50" />
+                                        <p class="white">Debe de Seleccionar un Archivo PDF, con el formato preestablecido.</p>
+                                    </div>
+                                    <input class="form-control form-control-lg btn-primary" id="pdfFileTicket" name="pdfFileTicket" type="file" accept=".pdf">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="btn-save-ticket">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Agregar Ticket Fin -->
+
+<!-- Canvas bitacora-->
+<div class="offcanvas offcanvas-top" tabindex="-1" id="canvas-binnacle-top" aria-labelledby="offcanvasTopLabel" data-bs-backdrop="true">
+    <div class="offcanvas-header">
+        <h5 id="offcanvasTopLabel" class="offcanvas-title">Por favor Ingrese el comentario para la bitácora</h5>
+        <button id="canvas-binnacle-top-button-close" type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="container">
+            <form id="form-binnacle" name="form-binnacle" method="post">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="ticketNameDetail">Comentario:</label>
+                            <textarea name="binnacleCommentary" class="form-control" id="binnacleCommentary" rows="2"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <!-- Agregamos un margen superior a la fila -->
+                    <div class="col-md-12">
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-primary me-2" id="btn-save-binnacle">Guardar</button>
+                            <button type="button" class="btn btn-label-secondary" data-bs-dismiss="offcanvas">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Canvas bitacora fin-->
+
+<!-- Modal Informacion Ticket -->
+<div class="modal fade fade text-start" id="modalInformationTicket" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+        <div class="modal-content h-100">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel33"> Ticket </h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="ResetModal()" id="closeModalEditarFactibilidad">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-body">
+                    <div class="col-md-12">
+                        <div class="card text-center">
+                            <div class="card-header">
+                                <ul class="nav nav-pills card-header-pills" role="tablist">
+                                    <li class="nav-item">
+                                        <button id="btn-tab-detail" type="button" class="nav-link active" data-bs-toggle="tab" data-bs-target="#nav-ticket-detail" role="tab">Detalles Ticket</button>
+                                    </li>
+                                    <li class="nav-item">
+                                        <button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#nav-ticket-assignee" role="tab">Asignar</button>
+                                    </li>
+                                    <li class="nav-item">
+                                        <button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#nav-binnacle" role="tab">Bitacora</button>
+                                    </li>
+                                    <li class="nav-item">
+                                        <button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#nav-status" role="tab">Estados</button>
+                                    </li>
+                                    <li class="nav-item">
+                                        <button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#nav-finish" role="tab">Finalizar</button>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="card-body">
+                                <div class="tab-content p-0">
+                                    <div class="tab-pane fade show active" id="nav-ticket-detail" role="tabpanel">
+                                        <h4 class="card-title">DETALLES DEL TICKET</h4>
+                                        <h4 id="ticketCodeTitle" class="card-title"></h4>
+                                        <span id="createdDateTime" class="text-muted"></span>
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="ticketNameDetail">Título Ticket:</label>
+                                                        <input type="text" id="ticketNameDetail" name="ticketNameDetail" class="form-control" disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="ticketStatus">Estado Ticket:</label>
+                                                        <input type="text" id="ticketStatus" name="ticketStatus" class="form-control" disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label for="priority">Prioridad:</label>
+                                                        <input type="text" id="priority" name="priority" class="form-control" disabled>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="createdByDetail">Creado Por:</label>
+                                                        <input type="text" id="createdByDetail" name="createdByDetail" class="form-control" disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="assigneeByDetail">Asignado Por:</label>
+                                                        <input type="text" id="assigneeByDetail" name="assigneeByDetail" class="form-control" disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="assigneeFor">Asignado A:</label>
+                                                        <input type="text" id="assigneeFor" name="assigneeFor" class="form-control" disabled>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="coordinate">Coordenadas:</label>
+                                                        <input type="text" id="coordinateDetail" name="coordinateDetail" class="form-control"disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="municipality">Municipio:</label>
+                                                        <input type="text" id="municipality" name="municipality" class="form-control" disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="state">Departamento:</label>
+                                                        <input type="text" id="state" name="state" class="form-control" disabled>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="region">Region:</label>
+                                                        <input type="text" id="region" name="region" class="form-control" disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <div class="form-group">
+                                                        <label for="addressDetail">Dirección:</label>
+                                                        <input type="text" id="addressDetail" name="addressDetail" class="form-control" disabled>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="incidentType">Tipo de Incidente:</label>
+                                                        <input type="text" id="incidentType" name="incidentType" class="form-control" disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="primaryCause">Causa Primaria:</label>
+                                                        <input type="text" id="primaryCause" name="primaryCause" class="form-control" disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="affectedElement">Elemento Afectado:</label>
+                                                        <input type="text" id="affectedElement" name="affectedElement" class="form-control" disabled>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label for="summaryTicket">Detalles de la falla / Resumen Ticket</label>
+                                                    <textarea name="failDetail" class="form-control" id="failDetail" rows="4" disabled></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="container col-md-8 pt-4">
+                                            <h4>Archivos Asociados</h4>
+                                            <ul id="fileList" class="list-group">
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="nav-ticket-assignee" role="tabpanel">
+                                        <div class="container mt-5">
+                                            <div class="row justify-content-center">
+                                                <div class="col-md-6">
+                                                    <div class="card">
+                                                        <div class="card-body">
+                                                            <form id="ticket-assign-form" name="ticket-assign-form" method="post">
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <h6>Ticket actualmente asignado a:</h6>
+                                                                        <div class="mb-1">
+                                                                            <h5 id="currentAssignee"></h5>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <label>Tipo de Ingeniero: </label>
+                                                                        <div class="mb-1">
+                                                                            <select class="form-select" id="selectEngineerType" name="selectEngineerType">
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <label>Asignar a: </label>
+                                                                        <div class="mb-1">
+                                                                            <select class="form-select" id="selectEngineerToAssign" name="selectEngineerToAssign">
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <button type="button" id="btn-assign-ticket" class="btn btn-primary"><span data-feather="check-circle"></span> Asignar</button>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="nav-binnacle" role="tabpanel">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h4 class="card-title">Bitacora de eventos</h4>
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#canvas-binnacle-top" aria-controls="offcanvasTop">
+                                                <i data-feather="plus"></i>
+                                            </button>
+                                        </div>
+                                        <div class="list-group" id="list-group-binnacles" style="max-height: 60vh; overflow-y: auto;">
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="nav-status" role="tabpanel">
+                                        <h4 class="card-title">Estados del Ticket</h4>
+                                        <div class="table-responsive overflow-auto" style="max-height: 80vh;">
+                                            <table class="table table-striped" id="table-status-ticket">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Estado</th>
+                                                        <th>Cambiado Por</th>
+                                                        <th>Fecha Cambio de Estado</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="table-border-bottom-0">
+                                                    <tr>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="nav-finish" role="tabpanel">
+                                        <h4 class="card-title">Finalización de Ticket</h4>
+                                        <form id="form-ticket-finalize" name="form-ticket-finalize" method="post">
+                                            <div class="modal-body">
+                                                <div class="col-md-12">
+                                                    <h5>Título del ticket</h5>
+                                                    <div class="row"> 
+                                                        <div class="col-md-3">
+                                                            <label>Visita Técnica Requerida: </label>
+                                                            <div class="mb-1">
+                                                                <select class="form-control col-md-12" id="selectRequiredVisit" name="selectRequiredVisit">
+                                                                    <option value="">-- Seleccione un item --</option>
+                                                                    <option value="-1">Sí</option>
+                                                                    <option value="0">No</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <label>Desplazamiento de Brigada: </label>
+                                                            <div class="mb-1">
+                                                                <select class="form-control col-md-12" id="selectBrigadeMov" name="selectBrigadeMov">
+                                                                    <option value="">-- Seleccione un item --</option>
+                                                                    <option value="-1">Sí</option>
+                                                                    <option value="0">No</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <label>Cambio en Topología de Red: </label>
+                                                            <div class="mb-1">
+                                                                <select class="form-control col-md-12" id="selectTopology" name="selectTopology">
+                                                                    <option value="">-- Seleccione un item --</option>
+                                                                    <option value="-1">Sí</option>
+                                                                    <option value="0">No</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <label>Tipo de Solucion: </label>
+                                                            <div class="mb-1">
+                                                                <select class="form-control col-md-12" id="selectSolutionType" name="selectSolutionType">
+                                                                    <option value="">Seleccione una opción</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-3">
+                                                            <label>Confirmado Por: </label>
+                                                            <div class="mb-1">
+                                                                <select class="form-control col-md-12" id="selectConfirmedBy" name="selectConfirmedBy">
+                                                                    <option value="">Seleccione una opción</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <label for="workDone">Trabajos realizados</label>
+                                                            <textarea name="workDone" class="form-control" id="workDone" rows="4" placeholder="Ingrese trabajos realizados"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <label for="summaryIncident">Resumen Incidencia</label>
+                                                            <textarea name="summaryIncident" class="form-control" id="summaryIncident" rows="4" placeholder="Ingrese detalles de la incidencia"></textarea>
+                                                        </div>
+                                                    </div>                                   
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-primary" id="btn-finish-ticket">Finalizar Ticket</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal modal Informacion Ticket Fin -->
+
+<!--Toast notification-->
+<div class="bs-toast toast fade position-fixed bottom-0 end-0" role="alert" aria-live="assertive" aria-atomic="true" id="toast-ticket-detail" style="z-index: 1050;">
+    <div class="toast-header">
+        <i class="ti ti-bell ti-xs me-2"></i>
+        <div class="me-auto fw-medium" id="toast-title"></div>
+        <small class="text-muted" id="toast-time"></small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body" id="toast-message">
+    </div>
+</div>
+<!--Toast notification end-->
+
+@section Scripts {
+    <!-- Bootstrap datatable -->
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/jquery.dataTables.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/dataTables.bootstrap5.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/dataTables.responsive.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/responsive.bootstrap5.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/datatables.checkboxes.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/datatables.buttons.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/jszip.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/pdfmake.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/vfs_fonts.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/buttons.html5.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/buttons.print.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/dataTables.rowGroup.min.js"></script>
+    <!-- end Bootstrap datatable -->
+    <script src="~/Template/app-assets/vendors/js/forms/select/select2.full.min.js"></script>
+    <script src="~/Template/app-assets/js/scripts/forms/form-select2.js"></script>
+    <script src="~/Template/app-assets/vendors/js/forms/validation/jquery.validate.min.js"></script>
+    <!-- Mensaje cargando-->
+    <script src="~/js/jquery.loadingModal.js"></script>
+    <!-- Alertas-->
+    <script src="~/js/sweetalert2.all.min.js"></script>
+    <!-- Moment-->
+    <script src="~/Template/app-assets/vendors/js/extensions/moment.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/extensions/moment-with-locales.min.js"></script>
+
+    <script>
+        var urlRoot = '@Url.Content("~/")';
+        var prefixIdSelected;
+        var ticketIdSelected;
+    </script>
+
+    <script>
+        $(document).ready(function () {
+
+            moment.locale('es');
+
+            var tableTickets = $('#tickets-table').DataTable({
+                "language": { "url": "https://cdn.datatables.net/plug-ins/1.12.1/i18n/es-ES.json" },
+                processing: true,
+                serverSide: true,
+                searching: true,
+                ordering: true,
+                paging: true,
+                lengthMenu: [
+                    [10, 25, 50, 100, -1],
+                    ['10', '25', '50', '100', 'Todo']
+                ],
+                "ajax": {
+                    "url": urlRoot + 'ServiceDesk/GetServiceDeskTickets',
+                    "type": "POST",
+                    "dataType": "json"
+                },
+                "order": [[0, "desc"]],
+                dom: 'lBfrtip',
+                buttons: [
+                    { extend: 'excel', className: 'btn btn-success' }
+                ],
+                columns: [
+                    { "data": "ticketCode" },
+                    { "data": "ticketName" },
+                    { "data": "creator" },
+                    { "data": "assigner" },
+                    {
+                        "render": function (data, type, row) {
+                            return moment(row.createdDateTime).format('DD-MM-YYYY HH:mm:ss');
+                        }
+                    },
+                    { "data": "incidentTypeDescription" },
+                    { "data": "assignee" },
+                    { "data": "ticketStatus" },
+                    {
+                        'defaultContent': null,
+                        'render': function (data, type, row) {
+                            return '<div class="d-flex"> <button type="button" class="btn btn-icon btn-warning mx-1 edit-button" data-toggle="tooltip" data-placement="left" title="Modificar"> <i data-feather="edit"></i></i> </button> <button type="button" class="btn btn-icon btn-danger mx-1 delete-button" data-toggle="tooltip" data-placement="left" title="Eliminar"> <i data-feather="trash"></i> </button> </div>'
+                        }
+                    }
+                ],
+                rowCallback: function (row, data) {
+                    if (data.estado === 'Activo') {
+                        $($(row).find("td")[8]).css("color", "green");
+                    }
+                    else {
+                        $($(row).find("td")[8]).css("color", "#E60026");
+                    }
+                    //Colocar color a Sitios
+                    //Sitios Con Cobertura
+                    $($(row).find("td")[9]).css("color", "#43F30B");
+                    //Sitios Con Cobertura Parcial
+                    $($(row).find("td")[10]).css("color", "#F8E207");
+                    //Sitios Sin Cobertura
+                    $($(row).find("td")[11]).css("color", "#F80719");
+                    //Sitios Totales
+                    $($(row).find("td")[12]).css("color", "#DE07F8");
+                },
+                drawCallback: function (settings) {
+                    feather.replace();
+                }
+            });
+
+            //Edit tickets-table table button
+            tableTickets.on("click", ".edit-button", function () {
+                let rowSelected = $(this).closest('tr');
+                let data = tableTickets.row(rowSelected).data();
+                if(data != null){
+                    getTicket(data.prefixId, data.ticketId);
+                }
+            });
+
+            //Delete tickets-table table button
+            $("#tickets-table").on("click", ".delete-button", function () {
+                let rowSelected = $(this).closest('tr');
+                let data = tableTickets.row(rowSelected).data();
+                console.log(data);
+            });
+
+            loadSelects();
+
+        });
+
+        function loadSelects() {
+            // Definir un array de objetos con la información de cada select
+            var selects = [
+                { id: "selectState", entityName: "State", valueField: "IdState", textField: "Name" },
+                { id: "selectIncidentType", entityName: "IncidentType", valueField: "IdIncidentType", textField: "Description" },
+                { id: "selectPrimaryCause", entityName: "PrimaryCause", valueField: "IdPrimaryCause", textField: "Description" },
+                { id: "selectAffectedElement", entityName: "AffectedElement", valueField: "IdAffectedElement", textField: "Description" },
+                { id: "selectPriority", entityName: "PriorityLevel", valueField: "IdPriorityLevel", textField: "Description" },
+                { id: "selectEngineerType", entityName: "EngineerType", valueField: "EngineerTypeId", textField: "TypeName" },
+                { id: "selectSolutionType", entityName: "SolutionType", valueField: "IdSolutionType", textField: "Description" },
+                { id: "selectConfirmedBy", entityName: "ConfirmedArea", valueField: "IdConfirmedArea", textField: "Description" }
+            ];
+
+            // Iterar sobre cada select y cargarlo
+            selects.forEach(function (select) {
+                loadSelectById(select.id, select.entityName, select.valueField, select.textField)
+                    .then(function () {
+                        if (typeof select.load === "function") {
+                            select.load(); // Ejecutar la función de carga personalizada si está definida
+                        }
+                    })
+                    .catch(function (error) {
+                        console.error("Error al cargar el select " + select.id + ":", error);
+                    });
+            });
+        }
+
+        //Carga el select de manera dinamica pasando id, entidad, valor id, valor descripcion
+        function loadSelectById(elementId, entityName, valueField, textField) {
+            return new Promise(function (resolve, reject) {
+                $.ajax({
+                    url: "@Url.Action("GetSelectListItems", "Common")",
+                    type: 'GET',
+                    data: {
+                        entityName: entityName,
+                        valueField: valueField,
+                        textField: textField
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        $('#' + elementId).empty();
+                        $('#' + elementId).append($('<option>', {
+                            value: '',
+                            text: '-- Seleccione un item --'
+                        }));
+                        $.each(response, function (index, item) {
+                            $('#' + elementId).append($('<option>', {
+                                value: item.value,
+                                text: item.text
+                            }));
+                        });
+                        resolve(); // Resuelve la promesa cuando la carga se completa exitosamente
+                    },
+                    error: function (error) {
+                        console.error('Error al obtener los elementos del DropDownList:', error);
+                        reject(error); // Rechaza la promesa si hay un error
+                    }
+                });
+            });
+        }
+
+        function loadMunicipalitySelectByState(elementId, stateId) {
+            // Obtener las municipalidades por el ID del estado
+            $.get("@Url.Action("GetMunicipalitiesByStateId", "Common")", { stateId: stateId }, function (data) {
+                // Limpiar el select
+                $("#" + elementId).empty();
+
+                $("#" + elementId).append("<option selected value=''>-- Seleccione un item --</option>");
+                // Agregar las opciones de municipios
+                $.each(data, function (index, row) {
+                    $("#" + elementId).append("<option value='" + row.idMunicipality + "'>" + row.name + "</option>");
+                });
+            }).fail(function (error) {
+                console.error("Error al cargar las municipalidades:", error);
+            });
+        }
+
+        function loadEngineersToAssignSelect(elementId, engineerType) {
+            // Obtener los ingenieros a asignar
+            $.get(urlRoot+"ServiceDesk/GetEngineersToAssign", { 
+                prefixId: prefixIdSelected,
+                ticketId: ticketIdSelected,
+                engineerTypeId: engineerType
+            }, function (data) {
+                // Limpiar el select
+                $("#" + elementId).empty();
+
+                $("#" + elementId).append("<option selected value=''>-- Seleccione un item --</option>");
+
+                if(data.data.length > 0){
+                    // Agregar las opciones de ingenieros
+                    $.each(data.data, function (index, row) {
+                        $("#" + elementId).append("<option value='" + row.engineerId + "'>" + row.name + " || " + row.engineerType + "</option>");
+                    });
+                }
+            }).fail(function (error) {
+                console.error("Error al cargar ingenieros:", error);
+            });
+        }
+
+        //EVENTOS
+        $("#selectState").on('change', function () {
+            let selectedItem = $(this).val();
+            if (selectedItem > 0) {
+                loadMunicipalitySelectByState("selectMunicipality", selectedItem);
+            }
+        });
+
+        //Ingenieros a asignar
+        $("#selectEngineerType").on('change', function () {
+            let selectedItem = $(this).val();
+            if (selectedItem > 0) {
+                loadEngineersToAssignSelect("selectEngineerToAssign", selectedItem);
+            }
+        });
+
+        //Evento botón guardar ticket
+        $("#btn-save-ticket").click(function () {
+            // Validar el formulario
+            if ($("#form-ticket").valid()) {
+                saveTicket();
+            }
+        });
+
+        //Botón para guardar bitácora
+        $("#btn-save-binnacle").click(function () {
+            // Validar el formulario
+            if ($("#form-binnacle").valid()) {
+                saveBinnacle();
+            }
+        });
+
+        //Evento boton asignar
+        $("#btn-assign-ticket").click(function () {
+            // Validar el formulario
+            if ($("#ticket-assign-form").valid()) {
+                assignTicket();
+            }
+        });
+
+        //Evento boton finalizar ticket
+        $("#btn-finish-ticket").click(function () {
+            // Validar el formulario
+            if ($("#form-ticket-finalize").valid()) {
+                finishTicket();
+            }
+        });
+
+        //VALIDACION DE FORMULARIOS
+        $("#form-ticket").validate({
+            errorClass: "error-validate", 
+            rules: {
+                ticketName: "required",
+                coordinate: "required",
+                selectState: "required",
+                selectMunicipality: "required",
+                address: "required",
+                selectPriority: "required",
+                selectIncidentType: "required",
+                selectPrimaryCause: "required",
+                selectAffectedElement: "required",
+                summaryTicket: "required",
+                pdfFileTicket: "required"
+            },
+            messages: {
+                ticketName: "Ingrese nombre de ticket",
+                coordinate: "Ingrese coordenadas",
+                selectState: "Seleccione Departamento",
+                selectMunicipality: "Seleccione Municipio",
+                address: "Ingrese dirección",
+                selectPriority: "Seleccione prioridad",
+                selectIncidentType: "Seleccione tipo de incidente",
+                selectPrimaryCause: "Seleccione causa primaria",
+                selectAffectedElement: "Seleccione elemento afectado",
+                summaryTicket: "Ingrese resumen",
+                pdfFileTicket: "Debe de Seleccionar un Archivo PDF"
+            }
+        });
+
+        $("#form-binnacle").validate({
+            errorClass: "error-validate",
+            rules: {
+                binnacleCommentary: "required"
+            },
+            messages: {
+                binnacleCommentary : "Ingrese comentario"
+            }
+        });
+
+        $("#ticket-assign-form").validate({
+            errorClass: "error-validate",
+            rules: {
+                selectEngineerToAssign: "required"
+            },
+            messages: {
+                selectEngineerToAssign: "Seleccione ingeniero"
+            }
+        });
+
+        $("#form-ticket-finalize").validate({
+            errorClass: "error-validate",
+            rules: {
+                selectRequiredVisit: "required",
+                selectBrigadeMov: "required",
+                selectTopology: "required",
+                selectSolutionType: "required",
+                selectConfirmedBy: "required",
+                workDone: "required",
+                summaryIncident: "required"
+            },
+            messages: {
+                selectRequiredVisit: "Seleccione visita técnica requerida",
+                selectBrigadeMov: "Seleccione desplazamiento de brigada",
+                selectTopology: "Seleccione cambio de topología de red",
+                selectSolutionType: "Seleccione tipo de solución",
+                selectConfirmedBy: "Seleccione confirmado por",
+                workDone: "Ingrese trabajo realizado",
+                summaryIncident: "Ingrese resumen de incidencia"
+            }
+        });
+
+        //FUNCIONES
+        function updateAndShowToast(title, time, message) {
+            // Actualizar el contenido del toast
+            $('#toast-title').text(title);
+            $('#toast-time').text(time);
+            $('#toast-message').text(message);
+
+            // Mostrar el toast
+            let toastElement = $('#toast-ticket-detail')[0];
+            let myToast = new bootstrap.Toast(toastElement);
+
+            // Asignar zIndex al toast
+            $(toastElement).css('z-index', 1057);
+
+            myToast.show();
+        }
+
+        function saveTicket() {
+            var formData = new FormData();
+            formData.append('file', $('#pdfFileTicket')[0].files[0]);
+            formData.append('ticketName', $('#ticketName').val());
+            formData.append('coordinate', $('#coordinate').val());
+            formData.append('stateId', $('#selectState').val());
+            formData.append('municipalityId', $('#selectMunicipality').val());
+            formData.append('address', $('#address').val());
+            formData.append('priorityId', $('#selectPriority').val());
+            formData.append('incidentTypeId', $('#selectIncidentType').val());
+            formData.append('primaryCauseId', $('#selectPrimaryCause').val());
+            formData.append('affectedElementId', $('#selectAffectedElement').val());
+            formData.append('summaryTicket', $('#summaryTicket').val());
+
+            // Configurar opciones para la solicitud fetch
+            var options = {
+                method: 'POST',
+                body: formData
+            };
+
+            // Realizar la solicitud fetch
+            fetch(urlRoot + 'ServiceDesk/CreateTicket', options)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Ha ocurrido un error en el servidor.');
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    // Mostrar mensaje de éxito
+                    Swal.fire({
+                        title: "Procesado",
+                        text: result.message,
+                        icon: "success"
+                    });
+                    // Limpiar modal
+                    cleanModal("modalAddTicket");
+                    let table = $('#tickets-table').DataTable();
+                    table.ajax.reload();
+                    $('#modalAddTicket').modal('hide');
+                })
+                .catch(error => {
+                    // Mostrar mensaje de error
+                    Swal.fire({
+                        title: "ERROR EN SERVIDOR",
+                        text: error.message,
+                        icon: "error"
+                    });
+                })
+                .finally(() => {
+                    // Ocultar modal de carga
+                    $('body').loadingModal('destroy');
+                });
+
+        }
+
+        function saveBinnacle(){
+            //Modal Loading
+            $('body').loadingModal({
+                position: 'auto',
+                text: 'Cargando',
+                color: '#fff',
+                opacity: '0.7',
+                backgrundColor: 'rgb(0,0,0)',
+                animation: 'doubleBounce'
+            });
+
+            $.ajax({
+                url: urlRoot + 'ServiceDesk/SaveBinnacleLogAsync',
+                type: 'POST',
+                data: {
+                    prefixId: prefixIdSelected,
+                    ticketId: ticketIdSelected,
+                    commentary: $("#binnacleCommentary").val()
+                },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        updateAndShowToast("Notificación", "Ahora", response.message);
+                        reloadBinnacles(prefixIdSelected, ticketIdSelected);
+                        $('#binnacleCommentary').val("");
+                        $('#canvas-binnacle-top-button-close').click();
+                    } else {
+                        // Manejar la respuesta de error
+                        console.log(response.message);
+                    }
+                    $('body').loadingModal('destroy');
+                },
+                error: function (xhr, status, error) {
+                    $('body').loadingModal('destroy');
+                }
+            });
+        }
+
+        function assignTicket() {
+            //Modal Loading
+            $('body').loadingModal({
+                position: 'auto',
+                text: 'Cargando',
+                color: '#fff',
+                opacity: '0.7',
+                backgrundColor: 'rgb(0,0,0)',
+                animation: 'doubleBounce'
+            });
+
+            $.ajax({
+                url: urlRoot + 'ServiceDesk/AssignTicketByEngineerId',
+                type: 'POST',
+                data: {
+                    prefixId: prefixIdSelected,
+                    ticketId: ticketIdSelected,
+                    engineerId: $("#selectEngineerToAssign").val()
+                },
+                dataType: 'json',
+                success: function (response) {
+                    Swal.fire({
+                        title: "Procesado",
+                        text: response.message,
+                        icon: response.success ? "success" : "warning"
+                    });
+                    let table = $('#tickets-table').DataTable();
+                    table.ajax.reload();
+                    $('#modalInformationTicket').modal('hide');
+                    $('body').loadingModal('destroy');
+                },
+                error: function (xhr, status, error) {
+                    $('body').loadingModal('destroy');
+                }
+            });
+        }
+
+        function finishTicket() {
+            //Modal Loading
+            $('body').loadingModal({
+                position: 'auto',
+                text: 'Cargando',
+                color: '#fff',
+                opacity: '0.7',
+                backgrundColor: 'rgb(0,0,0)',
+                animation: 'doubleBounce'
+            });
+
+            $.ajax({
+                url: urlRoot + 'ServiceDesk/FinishTicket',
+                type: 'POST',
+                data : {
+                    prefixId: prefixIdSelected,
+                    ticketId: ticketIdSelected,
+                    isTechnicalVisitRequired: $("#selectRequiredVisit").val(),
+                    isBrigadeDeployed: $("#selectBrigadeMov").val(),
+                    isChangeNetworkTopology: $("#selectTopology").val(),
+                    solutionTypeId: $("#selectSolutionType").val(),
+                    idConfirmedArea: $("#selectConfirmedBy").val(),
+                    workDone: $("#workDone").val(),
+                    incidentClosureSummary: $("#summaryIncident").val(),
+                    userName: ""
+                },
+                dataType: 'json',
+                success: function (response) {
+                    Swal.fire({
+                        title: "Procesado",
+                        text: response.message,
+                        icon: response.success ? "success" : "warning"
+                    });
+                    let table = $('#tickets-table').DataTable();
+                    table.ajax.reload();
+                    $('#modalInformationTicket').modal('hide');
+                    $('body').loadingModal('destroy');
+                },
+                error: function (xhr, status, error) {
+                    $('body').loadingModal('destroy');
+                }
+            });
+        }
+
+        function cleanModal(modalName) {
+            // Seleccionar todos los campos de entrada dentro del modal
+            $('#' + modalName + ' input').val('');
+
+            // Seleccionar todos los campos de selección dentro del modal
+            $('#' + modalName + ' select').val('');
+
+            // Seleccionar todos los campos de texto dentro del modal
+            $('#' + modalName + ' textarea').val('');
+        }
+
+        function isViewableFile(filename) {
+            // Aquí puedes incluir la lógica para determinar si el archivo es viewable
+            return filename.endsWith('.pdf') || filename.endsWith('.jpg') || filename.endsWith('.png');
+        }
+
+        function addFilesToList(files) {
+            var fileList = $('#fileList');
+            fileList.empty(); // Limpiar la lista antes de agregar nuevos elementos
+            files.forEach(function (file) {
+                // Crear un elemento de lista para cada archivo
+                var listItem = $('<li class="list-group-item d-flex justify-content-between align-items-center"></li>');
+                var filename = $('<span class="me-auto">' + file.nameFile + '</span>'); // Para alinear el nombre del archivo a la izquierda
+
+                // Crear un contenedor para los botones
+                var buttonContainer = $('<div class="btn-group" role="group"></div>');
+
+                // Crear enlace para descargar el archivo con el icono de descarga de Feather
+                var downloadLink = $('<a href="' + file.path + '" download class="btn btn-primary btn-sm"><i data-feather="download"></i> Descargar</a>');
+
+                // Verificar si el archivo es viewable
+                if (isViewableFile(file.nameFile)) {
+                    // Crear enlace para ver el archivo con el icono de ojo de Feather
+                    var viewLink = $('<a href="' + file.path + '" target="_blank" class="btn btn-secondary btn-sm"><i data-feather="eye"></i> Ver</a>');
+                    buttonContainer.append(viewLink);
+                }
+
+                // Agregar enlace de descarga al contenedor de botones
+                buttonContainer.append(downloadLink);
+
+                // Agregar nombre del archivo y contenedor de botones a la lista de archivos
+                listItem.append(filename);
+                listItem.append(buttonContainer);
+                fileList.append(listItem);
+            });
+
+            // Cargar los iconos de Feather
+            feather.replace();
+        }
+
+        function setBinnacleList(data){
+            $('#list-group-binnacles').empty();
+            data.forEach(function (binnacle) {
+                var listItem = '<li class="list-group-item d-flex justify-content-between">' +
+                    '<div class="li-wrapper d-flex justify-content-start align-items-center">' +
+                    '<div class="avatar avatar-sm me-3">' +
+                    '<span class="avatar-initial rounded-circle bg-primary">' + binnacle.createdBy.charAt(0) + '</span>' +
+                    '</div>' +
+                    '<div class="list-content">' +
+                    '<h5 class="mb-1">' + binnacle.createdBy + '</h5>' +
+                    '<h6>' + binnacle.comment + '</h6>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="comment-date">' + moment(binnacle.createdDate).format('DD-MM-YYYY HH:mm:ss') + '</div>' +
+                    '</li>';
+
+                // Agregamos el nuevo elemento list-group-item al list-group
+                $('#list-group-binnacles').append(listItem);
+            });
+        }
+
+        function setStatusesTable(statuses){
+            $('#table-status-ticket tbody').empty();
+
+            // Iterar sobre cada objeto de estado y agregarlo a la tabla
+            statuses.forEach(function (status) {
+                var newRow = $('<tr>');
+                newRow.append($('<td>').text(status.ticketStatusDescription));
+                newRow.append($('<td>').text(status.changedBy));
+                newRow.append($('<td>').text(moment(status.changedDate).format('DD-MM-YYYY HH:mm:ss')));
+                $('#table-status-ticket tbody').append(newRow);
+            });
+        }
+
+        function setTicketData(ticketData){
+            //Variables globales guardar informacion de seleccion
+            prefixIdSelected = ticketData.prefixId;
+            ticketIdSelected = ticketData.ticketId;
+            //Details Ticket initial
+            $('#ticketCodeTitle').text(ticketData.ticketCode);
+            $('#createdDateTime').text('Fecha de creación: ' + moment(ticketData.createdDate).format('dddd D [de] MMMM [de] YYYY [a las] HH:mm:ss'));
+            $('#ticketNameDetail').val(ticketData.ticketName);
+            $('#ticketStatus').val(ticketData.ticketStatus);
+            $('#priority').val(ticketData.priority);
+            $('#createdByDetail').val(ticketData.createdBy);
+            $('#assigneeByDetail').val(ticketData.assigneeBy);
+            $('#assigneeFor').val(ticketData.assigneeFor);
+            $('#coordinateDetail').val(ticketData.coordinate);
+            $('#municipality').val(ticketData.municipality);
+            $('#state').val(ticketData.state);
+            $('#region').val(ticketData.region);
+            $('#addressDetail').val(ticketData.address);
+            $('#incidentType').val(ticketData.incidentType);
+            $('#primaryCause').val(ticketData.primaryCause);
+            $('#affectedElement').val(ticketData.affectedElement);
+            $('#failDetail').val(ticketData.faultDetail);
+            //Datos de asignacion
+            $('#currentAssignee').text(ticketData.assigneeFor !== '' ? ticketData.assigneeFor : 'SIN ASIGNAR');
+            //Llena bitácora
+            setBinnacleList(ticketData.binnacles);
+            //LLena tabla de estados
+            setStatusesTable(ticketData.statuses);
+            //Llena list de archivos
+            addFilesToList(ticketData.files);
+        }
+
+        function getTicket(prefixId, ticketId) {
+            //Modal Loading
+            $('body').loadingModal({
+                position: 'auto',
+                text: 'Cargando',
+                color: '#fff',
+                opacity: '0.7',
+                backgrundColor: 'rgb(0,0,0)',
+                animation: 'doubleBounce'
+            });
+
+            $.ajax({
+                url: urlRoot + 'ServiceDesk/GetTicketAsync',
+                type: 'GET',
+                data: {
+                    prefixId: prefixId,
+                    ticketId: ticketId
+                },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        cleanModal("modalInformationTicket");
+                        setTicketData(response.data);
+                        $("#modalInformationTicket").modal("show")
+                        $("#btn-tab-detail").trigger("click");
+                    } else {
+                        // Manejar la respuesta de error
+                        console.log(response.message);
+                    }
+                    $('body').loadingModal('destroy');
+                },
+                error: function (xhr, status, error) {
+                    $('body').loadingModal('destroy');
+                }
+            });
+        }
+
+        function reloadBinnacles(prefixId, ticketId) {
+            $.ajax({
+                url: urlRoot + 'ServiceDesk/GetTicketBinnaclesAsync',
+                type: 'GET',
+                data: {
+                    prefixId: prefixId,
+                    ticketId: ticketId
+                },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        setBinnacleList(response.data);
+                    } else {
+                        console.log(response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                }
+            });
+        }
+
+        function eliminarFactibilidad(id) {
+            Swal.fire({
+                title: "¿DESACTIVAR FACTIBILIDAD?",
+                text: "¿Está seguro que desea desactivar esta factibilidad? con Id " + id,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si, Desactivar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    //Modal Loading
+                    $('body').loadingModal({
+                        position: 'auto',
+                        text: 'Cargando',
+                        color: '#fff',
+                        opacity: '0.7',
+                        backgrundColor: 'rgb(0,0,0)',
+                        animation: 'doubleBounce'
+                    });
+
+                    $.ajax({
+                        url: "@Url.Action("DesactivarFactibilidad", "Indicadores")",
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        data: JSON.stringify({ IdFactibilidad: id }),
+                        success: function (result) {
+                            //show Alert
+                            Swal.fire({
+                                title: 'DESACTIVAR FACTIBILIDAD',
+                                text: result.mensaje,
+                                icon: result.tipo
+                            })
+
+                            //reload table
+                            var table = $('#factibilidadesTable').DataTable();
+                            table.ajax.reload();
+                            //hidemodal loading
+                            $('body').loadingModal('destroy');
+                        },
+                        error: function (result) {
+                            //show Alert
+                            Swal.fire({
+                                title: "HA OCURRIDO UN ERROR",
+                                text: "Error en el Servidor" + result.responseText,
+                                icon: "error"
+                            })
+                            //hidemodal loading
+                            $('body').loadingModal('destroy');
+
+                        }
+                    });
+
+                }
+            });
+        }
+    </script>
+}

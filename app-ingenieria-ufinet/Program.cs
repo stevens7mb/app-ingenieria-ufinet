@@ -1,9 +1,11 @@
 using app_ingenieria_ufinet.Data;
+using app_ingenieria_ufinet.Repositories.Common;
 using app_ingenieria_ufinet.Repositories.Indicador;
 using app_ingenieria_ufinet.Repositories.Inspection;
 using app_ingenieria_ufinet.Repositories.Login;
 using app_ingenieria_ufinet.Repositories.Parametrization;
 using app_ingenieria_ufinet.Repositories.PI;
+using app_ingenieria_ufinet.Repositories.ServiceDesk;
 using app_ingenieria_ufinet.Repositories.User;
 using app_ingenieria_ufinet.Utils;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -32,6 +34,8 @@ builder.Services.AddTransient<IIndicadorRepository, IndicadorRepository>();
 builder.Services.AddTransient<IInspectionRepository, InspectionRepository>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddScoped<IServiceDeskRepository, ServiceDeskRepository>();
+builder.Services.AddScoped<ICommonRepository, CommonRepository>();
 
 //Auth
 builder.Services.AddSession(options =>

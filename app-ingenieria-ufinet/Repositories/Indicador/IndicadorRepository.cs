@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing.Drawing2D;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace app_ingenieria_ufinet.Repositories.Indicador
 {
@@ -83,6 +84,13 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
         /// <param name="Mes">Mes desde el que se desea obtener estadisticad</param>
         /// <returns>retorna lista de los tipos de servicio</returns>
         DashboardModel DatosDashboard(DashboardRequestModel request);
+
+        /// <summary>
+        /// Agregar cliente con el nombre
+        /// </summary>
+        /// <param name="clientName"></param>
+        /// <returns></returns>
+        bool AddClient(string clientName);
     }
 
     /// <summary>
@@ -132,25 +140,33 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
                 SearchValue = request.Search != null ? request.Search.Value.Trim() : ""
             };
 
+            var username = _userService?.GetUser()?.Claims?.FirstOrDefault(x => x.Type == "IdUsuario")?.Value;
+
             try
             {
+                var serviceTypeFilter = request.Columns?.FirstOrDefault(x => x.Data == "tipoServicio")?.Search.Value;
+                var clientFilter = request.Columns?.FirstOrDefault(x => x.Data == "cliente")?.Search.Value;
+
                 var procedureParams = new Dictionary<string, object>()
                 {
                     {"@SearchValue", req.SearchValue},
                     {"@PageNo", req.PageNo},
                     {"@PageSize", req.PageSize },
                     {"@SortColumn", req.SortColumn },
-                    {"@SortDirection", req.SortDirection}
+                    {"@SortDirection", req.SortDirection},
+                    {"@usuario", username ?? ""},
+                    {"@tipo_servicio_filter", serviceTypeFilter},
+                    {"@cliente_filter", clientFilter}
                 };
 
                 var result = this._dbUtils.ExecuteStoredProc<FactibilidadPaginateModel>("lista_factibilidades_paginate", procedureParams);
-                
+
                 return new DataTableResponse<FactibilidadPaginateModel>()
                 {
                     Draw = request.Draw,
-                    RecordsTotal = result[0].TotalCount,
-                    RecordsFiltered = result[0].FilteredCount,
-                    Data = result.ToArray(),
+                    RecordsTotal = result != null && result.Any() ? result[0].TotalCount : 0,
+                    RecordsFiltered = result != null && result.Any() ? result[0].FilteredCount : 0,
+                    Data = result != null && result.Any() ? result.ToArray() : new FactibilidadPaginateModel[0],
                     Error = ""
                 };
             }
@@ -166,11 +182,17 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
         /// <returns>retorna una lista de clientes</returns>
         public List<ClienteModel> selectClientes()
         {
-            var procedureParams = new Dictionary<string, object>() { };
+            var username = _userService?.GetUser()?.Claims?.FirstOrDefault(x => x.Type == "IdUsuario")?.Value;
+            var idBranch = _context?.Usuarios?.FirstOrDefault(x => x.Usuario1 == username)?.IdSucursal;
 
-            var result = this._dbUtils.ExecuteStoredProc<ClienteModel>("lista_clientes", procedureParams);
+            var result = _context?.Clientes.Where(x => x.Estado == -1 && x.IdSucursal == idBranch).Select(x => new ClienteModel
+            {
+                IdCliente = x.IdCliente,
+                Nombre = x.Nombre ?? "",
+                AreaEstudio = x.AreaEstudio ?? ""
+            }).ToList();
 
-            return result;
+            return result ?? [];
         }
 
         /// <summary>
@@ -179,11 +201,17 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
         /// <returns>retorna una lista de KAM</returns>
         public List<KamModel> selectKAM()
         {
-            var procedureParams = new Dictionary<string, object>() { };
+            var username = _userService?.GetUser()?.Claims?.FirstOrDefault(x => x.Type == "IdUsuario")?.Value;
+            var idBranch = _context?.Usuarios?.FirstOrDefault(x => x.Usuario1 == username)?.IdSucursal;
 
-            var result = this._dbUtils.ExecuteStoredProc<KamModel>("lista_kam", procedureParams);
+            var result = _context?.Kams.Where(x => x.Estado == -1 && x.IdSucursal == idBranch).Select(x => new KamModel
+            {
+                IdKAM = x.IdKam,
+                Nombre = x.Nombre ?? "",
+                Usuario = x.Usuario ?? ""
+            }).ToList();
 
-            return result;
+            return result ?? [];
         }
 
         /// <summary>
@@ -303,13 +331,18 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
         {
             //tipos de servicios
             List<TipoServicioModel> servicios = TiposServicios();
-            
+
+            //Usuario logueado
+            var username = _userService?.GetUser()?.Claims?.FirstOrDefault(x => x.Type == "IdUsuario")?.Value;
+            var branchId = _context?.Usuarios?.FirstOrDefault(x => x.Usuario1 == username)?.IdSucursal;
+
             //Parametros comunes sps
             var procedureParams = new Dictionary<string, object>()
             {
                 {"@mes_desde", request.MesDesde == 0 ? null : request.MesDesde},
                 {"@mes_hasta", request.MesHasta == 0 ? null : request.MesHasta},
-                {"@anio", request.Anio == 0 ? null : request.Anio}
+                {"@anio", request.Anio == 0 ? null : request.Anio},
+                {"@id_sucursal", branchId }
             };
 
             //Datos de Estudios por Ingenieros
@@ -332,7 +365,8 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
 
             var procedureParamsIndicadores = new Dictionary<string, object>()
             {
-                {"@anio", request.Anio == 0 ? null : request.Anio}
+                {"@anio", request.Anio == 0 ? null : request.Anio},
+                {"@id_sucursal", branchId}
             };
 
             indicadoresDesempeño = this._dbUtils.ExecuteStoredProc<IndicadoresDesempeModel>("dashboard_indicadores_desemp_anio_unif", procedureParamsIndicadores);
@@ -359,6 +393,27 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
             result.RankingKamsGrafica = estudiosPorKams.OrderByDescending(x => x.CantidadEstudios).Take(10).ToList();
 
             return result;
+        }
+
+        public bool AddClient(string clientName)
+        {
+            var username = _userService?.GetUser()?.Claims?.FirstOrDefault(x => x.Type == "IdUsuario")?.Value;
+            var branchId = _context?.Usuarios?.FirstOrDefault(x => x.Usuario1 == username)?.IdSucursal;
+            var branchDesc = _context?.Sucursals?.FirstOrDefault(x => x.IdSucursal == branchId)?.Descripcion;
+            int maxId = _context?.Clientes.Max(c => (int?)c.IdCliente) + 1 ?? 0;
+
+            Cliente client = new() { 
+                IdCliente = maxId,
+                Nombre = clientName,
+                IdSucursal = branchId,
+                Estado = -1,
+                AreaEstudio = branchDesc
+            };
+
+            _context.Clientes.Add(client);
+            _context.SaveChanges();
+
+            return true;
         }
     }
 }

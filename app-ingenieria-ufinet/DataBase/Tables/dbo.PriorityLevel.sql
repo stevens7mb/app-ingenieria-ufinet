@@ -1,0 +1,9 @@
+﻿IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'PriorityLevel')
+BEGIN
+	CREATE TABLE dbo.PriorityLevel
+	(
+		IdPriorityLevel INT NOT NULL,
+		Description VARCHAR(100),
+		CONSTRAINT PK_PriorityLevel PRIMARY KEY(IdPriorityLevel)
+	)
+END

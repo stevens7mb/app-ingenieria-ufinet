@@ -1,0 +1,828 @@
+﻿@using Microsoft.AspNetCore.Mvc.Rendering
+@using app_ingenieria_ufinet.Data
+@{
+    Layout = "_Layout";
+}
+
+<!--Bootstrap Datatable-->
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/tables/datatable/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/tables/datatable/responsive.bootstrap5.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.3.2/css/buttons.dataTables.min.css">
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/tables/datatable/buttons.bootstrap5.min.css">
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/tables/datatable/rowGroup.bootstrap5.min.css">
+<link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/forms/select/select2.min.css">
+<link href="~/css/jquery.loadingmodal.css" rel="stylesheet" />
+<style>
+    /* Estilo para los mensajes de error */
+    .error-validate {
+        color: #4ec4e6;
+        border-color: #7367f0 !important;
+    }
+
+</style>
+
+<!-- Zero configuration table -->
+<section id="basic-datatable">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Service Desk Tickets</h4>
+                    <button type="button" id="addTicket" name="addTicket" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalAddTicket" onclick="cleanModal('modalAddTicket')">
+                        Crear Ticket
+                    </button>
+                </div>
+                <div class="card-content">
+                    <div class="card-body card-dashboard">
+                        <div class="table-responsive col-md-12">
+                            <table class="table zero-configuration nowrap" id="tickets-table">
+                                <thead>
+                                    <tr>
+                                        <th>Ticket</th>
+                                        <th>Nombre</th>
+                                        <th>Ingeniero Provisioning</th>
+                                        <th>Tipo Incidencia</th>
+                                        <th>Ingeniero Mantenimiento</th>
+                                        <th>Estado</th>
+                                        <th>Accion</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal Agregar Ticket -->
+<div class="modal fade fade text-start" id="modalAddTicket" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel33"> Creación de Ticket </h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="cleanModal('modalAddTicket')" id="closeModalAddTicket">
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-ticket" name="form-ticket" method="post">
+                    <div class="modal-body">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>Ticket: </label>
+                                    <div class="mb-1">
+                                        <input type="text" id="ticketName" name="ticketName" placeholder="Ingrese Nombre Ticket" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Coordenadas: </label>
+                                    <div class="mb-1">
+                                        <input type="text" id="coordinate" name="coordinate" placeholder="Ingrese Coordenadas" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Departamento: </label>
+                                    <div class="mb-1">
+                                        <select class="form-control col-md-12" id="selectState" name="selectState">
+                                            <option value="">Seleccione una opción</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>Municipio: </label>
+                                    <div class="mb-1">
+                                        <select class="form-control col-md-12" id="selectMunicipality" name="selectMunicipality">
+                                            <option value="">Seleccione una opción</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Dirección: </label>
+                                    <div class="mb-1">
+                                        <input type="text" id="address" name="address" placeholder="Ingrese Dirección" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Region</label>
+                                    <div class="mb-1">
+                                        <input type="text" id="region" name="region" placeholder="Ingrese Dirección" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>Ingeniero Mantenimiento: </label>
+                                    <div class="mb-1">
+                                        <select class="form-control col-md-12" id="selectMaintanceEngineer" name="selectMaintanceEngineer">
+                                            <option value="">Seleccione una opción</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Tipo de Incidente: </label>
+                                    <div class="mb-1">
+                                        <select class="form-control col-md-12" id="selectIncidentType" name="selectIncidentType">
+                                            <option value="">Seleccione una opción</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Causa Primaria: </label>
+                                    <div class="mb-1">
+                                        <select class="form-control col-md-12" id="selectPrimaryCause" name="selectPrimaryCause">
+                                            <option value="">Seleccione una opción</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label>Elemento Afectado: </label>
+                                <div class="mb-1">
+                                    <select class="form-control col-md-12" id="selectAffectedElement" name="selectAffectedElement">
+                                        <option value="">Seleccione una opción</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <label class="form-label" for="summaryTicket">Detalles de la falla / Resumen Ticket</label>
+                                    <textarea name="summaryTicket" class="form-control" id="summaryTicket" rows="4" placeholder="Ingrese detalles de la falla"></textarea>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="card-body">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <h1 class="white col-md-10">Seleccionar Archivo</h1>
+                                        </div>
+
+                                        <img src="~/img/ServiceDesk/pdf.svg" height="50" width="50" />
+                                        <p class="white">Debe de Seleccionar un Archivo PDF, con el formato preestablecido.</p>
+                                    </div>
+                                    <input class="form-control form-control-lg btn-primary" id="pdfFileTicket" name="pdfFileTicket" type="file" accept=".pdf">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="btn-save-ticket">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Agregar Ticket Fin -->
+<!-- Modal Editar Factibilidad -->
+<div class="modal fade fade text-start" id="modalEditarFactibilidad" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel33"> Editar un Estudio </h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="ResetModal()" id="closeModalEditarFactibilidad">
+                    @* <span aria-hidden="true">&times;</span>*@
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-factibilidade" name="form-factibilidade" method="post">
+                    <div class="modal-body">
+                        <input type="hidden" id="IdFactibilidade" name="IdFactibilidade" placeholder="" class="form-control">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>Detalle: </label>
+                                    <div class="mb-1">
+                                        <input type="text" id="Estudioe" name="Estudioe" placeholder="Detalle Estudio" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>Ticket: </label>
+                                    <div class="mb-1">
+                                        <input type="number" id="Tickete" name="Tickete" placeholder="Ingrese Ticket" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Cliente: </label>
+                                    <div class="mb-1">
+                                        <select class="form-control col-md-12" id="selectClientee" name="selectClientee">
+                                            <option value="">Seleccione una opción</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>KAM: </label>
+                                    <div class="mb-1">
+                                        <select class="form-control col-md-12" id="selectKAMe" name="selectKAMe">
+                                            <option value="">Seleccione una opción</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>BW: </label>
+                                    <div class="mb-1">
+                                        <input type="number" id="BWe" name="BWe" placeholder="Ancho de Banda" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Fecha Solicitud</label>
+                                    <div class="mb-1">
+                                        <input id="fechaSolicitude" name="fechaSolicitude" class="form-control" type="datetime-local" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Fecha Respuesta</label>
+                                    <div class="mb-1">
+                                        <input id="fechaRespuestae" name="fechaRespuestae" class="form-control" type="datetime-local" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>Sitios Con Cobertura: </label>
+                                    <div class="mb-1">
+                                        <input type="number" id="SitioConCoberturae" name="SitioConCoberturae" placeholder="Sitios Con Cobertura" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Sitios Con Cobertura Parcial: </label>
+                                    <div class="mb-1">
+                                        <input type="number" id="SitioConCoberturaParciale" name="SitioConCoberturaParciale" placeholder="Sitios Con Cobertura Parcial" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Sitios Sin Cobertura: </label>
+                                    <div class="mb-1">
+                                        <input type="number" id="SitioSinCoberturae" name="SitioSinCoberturae" placeholder="Sitios Sin Cobertura" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>Tipo de Servicio: </label>
+                                    <div class="mb-1">
+                                        <select class="form-control col-md-12" id="selectTipoServicioe" name="selectTipoServicioe">
+                                            <option value="">Seleccione una opción</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" id="btnEditarFactibilidad">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Editar Factibilidad Fin -->
+@section Scripts {
+    <!-- Bootstrap datatable -->
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/jquery.dataTables.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/dataTables.bootstrap5.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/dataTables.responsive.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/responsive.bootstrap5.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/datatables.checkboxes.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/datatables.buttons.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/jszip.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/pdfmake.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/vfs_fonts.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/buttons.html5.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/buttons.print.min.js"></script>
+    <script src="~/Template/app-assets/vendors/js/tables/datatable/dataTables.rowGroup.min.js"></script>
+    <!-- end Bootstrap datatable -->
+    <script src="~/Template/app-assets/vendors/js/forms/select/select2.full.min.js"></script>
+    <script src="~/Template/app-assets/js/scripts/forms/form-select2.js"></script>
+    <script src="~/Template/app-assets/vendors/js/forms/validation/jquery.validate.min.js"></script>
+    <!-- Mensaje cargando-->
+    <script src="~/js/jquery.loadingModal.js"></script>
+    <!-- Alertas-->
+    <script src="~/js/sweetalert2.all.min.js"></script>
+
+    <script>
+        var urlRoot = '@Url.Content("~/")';
+    </script>
+
+    <script>
+
+        $(document).ready(function () {
+
+            $('#tickets-table').DataTable({
+                "language": { "url": "https://cdn.datatables.net/plug-ins/1.12.1/i18n/es-ES.json" },
+                processing: true,
+                serverSide: true,
+                searching: true,
+                ordering: true,
+                paging: true,
+                lengthMenu: [
+                    [10, 25, 50, 100, -1],
+                    ['10', '25', '50', '100', 'Todo']
+                ],
+                "ajax": {
+                    "url": urlRoot + 'ServiceDesk/GetServiceDeskTickets',
+                    "type": "POST",
+                    "dataType": "json"
+                },
+                "order": [[0, "desc"]],
+                dom: 'lBfrtip',
+                buttons: [
+                    { extend: 'excel', className: 'btn btn-success' }
+                ],
+                columns: [
+                    { "data": "ticketId" },
+                    { "data": "ticketName" },
+                    { "data": "provisioningEngineerName" },
+                    { "data": "incidentTypeDescription" },
+                    { "data": "maintanceEngineerName" },
+                    { "data": "ticketStatus" },
+                    {
+                        'defaultContent': null,
+                        'render': function (data, type, row) {
+                            return '<div class="d-flex"> <button type="button" class="btn btn-icon btn-success mx-1" id="' + row.idFactibilidad + '" onclick="detallesFactibilidad(this.id)" data-toggle="tooltip" data-placement="left" title="Finalizar"> <i data-feather="check-circle"></i></i> </button> <button type="button" class="btn btn-icon btn-warning mx-1" id="' + row.idFactibilidad + '" onclick="eliminarFactibilidad(this.id)" data-toggle="tooltip" data-placement="left" title="Regresar"> <i data-feather="arrow-left"></i> </button> </div>'
+                        }
+                    }
+                ],
+                rowCallback: function (row, data) {
+                    if (data.estado === 'Activo') {
+                        $($(row).find("td")[8]).css("color", "green");
+                    }
+                    else {
+                        $($(row).find("td")[8]).css("color", "#E60026");
+                    }
+                    //Colocar color a Sitios
+                    //Sitios Con Cobertura
+                    $($(row).find("td")[9]).css("color", "#43F30B");
+                    //Sitios Con Cobertura Parcial
+                    $($(row).find("td")[10]).css("color", "#F8E207");
+                    //Sitios Sin Cobertura
+                    $($(row).find("td")[11]).css("color", "#F80719");
+                    //Sitios Totales
+                    $($(row).find("td")[12]).css("color", "#DE07F8");
+                },
+                drawCallback: function (settings) {
+                    feather.replace();
+                }
+            });
+
+            loadSelects();
+
+        });
+
+        function loadSelects() {
+            // Definir un array de objetos con la información de cada select
+            var selects = [
+                { id: "selectState", entityName: "State", valueField: "IdState", textField: "Name" },
+                { id: "selectIncidentType", entityName: "IncidentType", valueField: "IdIncidentType", textField: "Description" },
+                { id: "selectPrimaryCause", entityName: "PrimaryCause", valueField: "IdPrimaryCause", textField: "Description" },
+                { id: "selectAffectedElement", entityName: "AffectedElement", valueField: "IdAffectedElement", textField: "Description" },
+                { id: "selectMaintanceEngineer", entityName: "MaintanceEngineer", valueField: "IdMaintanceEngineer", textField: "Name" }
+            ];
+
+            // Iterar sobre cada select y cargarlo
+            selects.forEach(function (select) {
+                loadSelectById(select.id, select.entityName, select.valueField, select.textField)
+                    .then(function () {
+                        if (typeof select.load === "function") {
+                            select.load(); // Ejecutar la función de carga personalizada si está definida
+                        }
+                    })
+                    .catch(function (error) {
+                        console.error("Error al cargar el select " + select.id + ":", error);
+                    });
+            });
+        }
+
+        //Carga el select de manera dinamica pasando id, entidad, valor id, valor descripcion
+        function loadSelectById(elementId, entityName, valueField, textField) {
+            return new Promise(function (resolve, reject) {
+                $.ajax({
+                    url: "@Url.Action("GetSelectListItems", "Common")",
+                    type: 'GET',
+                    data: {
+                        entityName: entityName,
+                        valueField: valueField,
+                        textField: textField
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        $('#' + elementId).empty();
+                        $('#' + elementId).append($('<option>', {
+                            value: '',
+                            text: '-- Seleccione un item --'
+                        }));
+                        $.each(response, function (index, item) {
+                            $('#' + elementId).append($('<option>', {
+                                value: item.value,
+                                text: item.text
+                            }));
+                        });
+                        resolve(); // Resuelve la promesa cuando la carga se completa exitosamente
+                    },
+                    error: function (error) {
+                        console.error('Error al obtener los elementos del DropDownList:', error);
+                        reject(error); // Rechaza la promesa si hay un error
+                    }
+                });
+            });
+        }
+
+        function loadMunicipalitySelectByState(elementId, stateId) {
+            // Obtener las municipalidades por el ID del estado
+            $.get("@Url.Action("GetMunicipalitiesByStateId", "Common")", { stateId: stateId }, function (data) {
+                // Limpiar el select
+                $("#" + elementId).empty();
+
+                $("#" + elementId).append("<option selected value='0'>-- Seleccione un item --</option>");
+                // Agregar las opciones de municipios
+                $.each(data, function (index, row) {
+                    $("#" + elementId).append("<option value='" + row.idMunicipality + "'>" + row.name + "</option>");
+                });
+            }).fail(function (error) {
+                console.error("Error al cargar las municipalidades:", error);
+            });
+        }
+
+        //EVENTS
+        $("#selectState").on('change', function () {
+            let selectedItem = $(this).val();
+            if (selectedItem > 0) {
+                loadMunicipalitySelectByState("selectMunicipality", selectedItem);
+            }
+        });
+
+        //Button to save ticket event
+        $("#btn-save-ticket").click(function () {
+            // Validar el formulario
+            if ($("#form-ticket").valid()) {
+                // Si el formulario es válido, realizar alguna acción, como cargar el archivo
+                saveTicket();
+            }
+        });
+
+        //VALIDACION DE FORMULARIOS
+
+        $("#form-factibilidad").validate({
+            rules: {
+                Estudio: "required",
+                Ticket: "required",
+                selectCliente: "required",
+                selectKAM: "required",
+                BW: "required",
+                fechaSolicitud: "required",
+                fechaRespuesta: "required",
+                SitioConCobertura: "required",
+                SitioConCoberturaParcial: "required",
+                SitioSinCobertura: "required",
+                selectTipoServicio: "required"
+            },
+            messages: {
+                Estudio: "Ingrese Detalle",
+                Ticket: "Ingrese Ticket",
+                selectCliente: "Seleccione Cliente",
+                selectKAM: "Seleccione KAM",
+                BW: "Ingrese BW",
+                fechaSolicitud: "Seleccione Fecha Solicitud",
+                fechaRespuesta: "Seleccione Fecha Respuesta",
+                SitioConCobertura: "Ingrese Sitios CC",
+                SitioConCoberturaParcial: "Ingrese Sitios CCP",
+                SitioSinCobertura: "Ingrese Sitios SC",
+                selectTipoServicio: "Ingrese Tipo servicio"
+            },
+            submitHandler: function (form) {
+                event.preventDefault();
+                agregarFactibilidad();
+            }
+        });
+
+        $("#form-factibilidade").validate({
+            ignore: [],
+            rules: {
+                Estudioe: "required",
+                Tickete: "required",
+                selectClientee: "required",
+                selectKAMe: "required",
+                BWe: "required",
+                fechaSolicitude: "required",
+                fechaRespuestae: "required",
+                SitioConCoberturae: "required",
+                SitioConCoberturaParciale: "required",
+                SitioSinCoberturae: "required",
+                selectTipoServicioe: "required"
+            },
+            messages: {
+                Estudioe: "Ingrese Detalle",
+                Tickete: "Ingrese Ticket",
+                selectClientee: "Seleccione Cliente",
+                selectKAMe: "Seleccione KAM",
+                BWe: "Ingrese BW",
+                fechaSolicitude: "Seleccione Fecha Solicitud",
+                fechaRespuestae: "Seleccione Fecha Respuesta",
+                SitioConCoberturae: "Ingrese Sitios CC",
+                SitioConCoberturaParciale: "Ingrese Sitios CCP",
+                SitioSinCoberturae: "Ingrese Sitios SC",
+                selectTipoServicioe: "Ingrese Tipo servicio"
+            },
+            submitHandler: function (form) {
+                event.preventDefault();
+                editarFactibilidad();
+            }
+        });
+
+        $("#form-ticket").validate({
+            errorClass: "error-validate",
+            rules: {
+                ticketName: "required",
+                coordinate: "required",
+                selectState: "required",
+                selectMunicipality: "required",
+                address: "required",
+                region: "required",
+                selectMaintanceEngineer: "required",
+                selectIncidentType: "required",
+                selectPrimaryCause: "required",
+                selectAffectedElement: "required",
+                summaryTicket: "required",
+                pdfFileTicket: "required"
+            },
+            messages: {
+                ticketName: "Ingrese nombre de ticket",
+                coordinate: "Ingrese coordenadas",
+                selectState: "Seleccione Departamento",
+                selectMunicipality: "Seleccione Municipio",
+                address: "Ingrese dirección",
+                region: "Ingrese región",
+                selectMaintanceEngineer: "Seleccione Ingeniero",
+                selectIncidentType: "Seleccione tipo de incidente",
+                selectPrimaryCause: "Seleccione causa primaria",
+                selectAffectedElement: "Seleccione elemento afectado",
+                summaryTicket: "Ingrese resumen",
+                pdfFileTicket: "Debe de Seleccionar un Archivo PDF"
+            }
+        });
+
+
+        //FUNCIONES
+        function saveTicket() {
+            var formData = new FormData();
+            formData.append('file', $('#pdfFileTicket')[0].files[0]);
+            formData.append('ticketName', $('#ticketName').val());
+            formData.append('coordinate', $('#coordinate').val());
+            formData.append('stateId', $('#selectState').val());
+            formData.append('municipalityId', $('#selectMunicipality').val());
+            formData.append('address', $('#address').val());
+            formData.append('region', $('#region').val());
+            formData.append('maintanceEngineerId', $('#selectMaintanceEngineer').val());
+            formData.append('incidentTypeId', $('#selectIncidentType').val());
+            formData.append('primaryCauseId', $('#selectPrimaryCause').val());
+            formData.append('affectedElementId', $('#selectAffectedElement').val());
+            formData.append('summaryTicket', $('#summaryTicket').val());
+
+            // Configurar opciones para la solicitud fetch
+            var options = {
+                method: 'POST',
+                body: formData
+            };
+
+            // Realizar la solicitud fetch
+            fetch(urlRoot + 'ServiceDesk/CreateTicket', options)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Ha ocurrido un error en el servidor.');
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    // Mostrar mensaje de éxito
+                    Swal.fire({
+                        title: "Procesado",
+                        text: result.message,
+                        icon: "success"
+                    });
+                    // Limpiar modal
+                    cleanModal("modalAddTicket");
+                    let table = $('#tickets-table').DataTable();
+                    table.ajax.reload();
+                    $('#modalAddTicket').modal('hide');
+                })
+                .catch(error => {
+                    // Mostrar mensaje de error
+                    Swal.fire({
+                        title: "ERROR EN SERVIDOR",
+                        text: error.message,
+                        icon: "error"
+                    });
+                })
+                .finally(() => {
+                    // Ocultar modal de carga
+                    $('body').loadingModal('destroy');
+                });
+
+        }
+
+        function cleanModal(modalName) {
+            // Seleccionar todos los campos de entrada dentro del modal
+            $('#' + modalName + ' input').val('');
+
+            // Seleccionar todos los campos de selección dentro del modal
+            $('#' + modalName + ' select').val('');
+
+            // Seleccionar todos los campos de texto dentro del modal
+            $('#' + modalName + ' textarea').val('');
+        }
+
+        function detallesFactibilidad(id) {
+            //Modal Loading
+            $('body').loadingModal({
+                position: 'auto',
+                text: 'Cargando',
+                color: '#fff',
+                opacity: '0.7',
+                backgrundColor: 'rgb(0,0,0)',
+                animation: 'doubleBounce'
+            });
+
+            $.ajax({
+                url: "@Url.Action("DetallesFactibilidad", "Indicadores")",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify({ IdFactibilidad: id }),
+                success: function (result) {
+
+                    $("#IdFactibilidade").val(result.idFactibilidad);
+                    $("#Estudioe").val(result.estudio);
+                    $("#Tickete").val(result.ticket);
+                    $("#selectClientee").val(result.idCliente);
+                    $("#selectKAMe").val(result.idKAM);
+                    $("#BWe").val(result.bw);
+                    $("#fechaSolicitude").val(result.fechaSolicitud);
+                    $("#fechaRespuestae").val(result.fechaRespuesta);
+                    $("#SitioConCoberturae").val(result.sitioConCobertura);
+                    $("#SitioConCoberturaParciale").val(result.sitioConCoberturaParcial);
+                    $("#SitioSinCoberturae").val(result.sitioSinCobertura);
+                    $("#selectTipoServicioe").val(result.idTipoServicio);
+
+                    $("#modalEditarFactibilidad").modal("show")
+
+                    $('body').loadingModal('destroy');
+                },
+                error: function (result) {
+                    //show Alert
+                    Swal.fire({
+                        title: "HA OCURRIDO UN ERROR",
+                        text: "Error en el Servidor" + result.responseText,
+                        icon: "error"
+                    })
+                    //hidemodal loading
+                    $('body').loadingModal('destroy');
+
+                }
+            });
+        }
+
+        function editarFactibilidad() {
+            //mensaje carga
+            $('body').loadingModal({
+                position: 'auto',
+                text: 'Cargando',
+                color: '#fff',
+                opacity: '0.7',
+                backgrundColor: 'rgb(0,0,0)',
+                animation: 'doubleBounce'
+            });
+
+            //objeto
+            var id = $("#IdFactibilidade").val();
+            var estudio = $("#Estudioe").val();
+            var ticket = $("#Tickete").val();
+            var cliente = $("#selectClientee").val();
+            var kam = $("#selectKAMe").val();
+            var bw = $("#BWe").val();
+            var fechaSolicitud = $("#fechaSolicitude").val();
+            var fechaRespuesta = $("#fechaRespuestae").val();
+            var sitioConCobertura = $("#SitioConCoberturae").val();
+            var sitioConCoberturaParcial = $("#SitioConCoberturaParciale").val();
+            var sitioSinCobertura = $("#SitioSinCoberturae").val();
+            var tipoServicio = $("#selectTipoServicioe").val();
+
+            var parametros = JSON.stringify({
+                IdFactibilidad: id,
+                Estudio: estudio,
+                Ticket: ticket,
+                Cliente: cliente,
+                KAM: kam,
+                BW: bw,
+                FechaSolicitud: fechaSolicitud,
+                FechaRespuesta: fechaRespuesta,
+                SitioConCobertura: sitioConCobertura,
+                SitioConCoberturaParcial: sitioConCoberturaParcial,
+                SitioSinCobertura: sitioSinCobertura,
+                IdTipoServicio: tipoServicio
+            });
+
+            $.ajax({
+                url: "@Url.Action("EditarFactibilidad", "Indicadores")",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: parametros,
+                dataType: "json",
+                success: function (result) {
+                    //show Alert
+                    Swal.fire({
+                        title: 'Editar Factibilidad',
+                        text: result.mensaje,
+                        icon: result.tipo
+                    })
+                    //$("#modalAgregarUsuario").modal('hide');
+                    $('#closeModalEditarFactibilidad').trigger("click");
+
+                    //reload table
+                    var table = $('#factibilidadesTable').DataTable();
+                    table.ajax.reload();
+                    //hidemodal loading
+                    $('body').loadingModal('destroy');
+                },
+                error: function (result) {
+                    Swal.fire({
+                        title: 'Editar Factibilidad',
+                        text: result.Mensaje,
+                        icon: result.Tipo
+                    })
+                    //hidemodal loading
+                    $('body').loadingModal('destroy');
+
+                }
+            });
+        }
+
+        function eliminarFactibilidad(id) {
+            Swal.fire({
+                title: "¿DESACTIVAR FACTIBILIDAD?",
+                text: "¿Está seguro que desea desactivar esta factibilidad? con Id " + id,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si, Desactivar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    //Modal Loading
+                    $('body').loadingModal({
+                        position: 'auto',
+                        text: 'Cargando',
+                        color: '#fff',
+                        opacity: '0.7',
+                        backgrundColor: 'rgb(0,0,0)',
+                        animation: 'doubleBounce'
+                    });
+
+                    $.ajax({
+                        url: "@Url.Action("DesactivarFactibilidad", "Indicadores")",
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        data: JSON.stringify({ IdFactibilidad: id }),
+                        success: function (result) {
+                            //show Alert
+                            Swal.fire({
+                                title: 'DESACTIVAR FACTIBILIDAD',
+                                text: result.mensaje,
+                                icon: result.tipo
+                            })
+
+                            //reload table
+                            var table = $('#factibilidadesTable').DataTable();
+                            table.ajax.reload();
+                            //hidemodal loading
+                            $('body').loadingModal('destroy');
+                        },
+                        error: function (result) {
+                            //show Alert
+                            Swal.fire({
+                                title: "HA OCURRIDO UN ERROR",
+                                text: "Error en el Servidor" + result.responseText,
+                                icon: "error"
+                            })
+                            //hidemodal loading
+                            $('body').loadingModal('destroy');
+
+                        }
+                    });
+
+                }
+            });
+        }
+    </script>
+}

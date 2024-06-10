@@ -1,0 +1,17 @@
+﻿IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Rol')
+BEGIN
+	CREATE TABLE dbo.Rol (
+		IdRol int NOT NULL,
+		Descripcion varchar(255) NOT NULL,
+		SNAppContrata SiNo DEFAULT 0 NOT NULL,
+		SNAppInspeccion SiNo DEFAULT 0 NOT NULL,
+		SNAppSupervision SiNo DEFAULT 0 NOT NULL,
+		CONSTRAINT PK__Rol__2A49584C41EF8594 PRIMARY KEY (IdRol)
+	)
+END
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE Name = 'SNMaintanceEngineer' AND Object_ID = Object_ID(N'Rol'))
+BEGIN
+    ALTER TABLE dbo.Rol
+    ADD SNMaintanceEngineer SiNo DEFAULT 0 NOT NULL
+END

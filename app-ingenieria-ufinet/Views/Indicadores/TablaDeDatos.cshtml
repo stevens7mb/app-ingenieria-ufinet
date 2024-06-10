@@ -1,6 +1,18 @@
-﻿@{
+﻿@using System.Security.Claims
+
+@{
     Layout = "_Layout";
+
+    // Get the ClaimsIdentity object directly
+    var claimsIdentity = User.Identity as ClaimsIdentity;
+
+    // Declare and initialize the user's roles array
+    string[]? userRoles = claimsIdentity?.Claims
+                                        .Where(claim => claim.Type == ClaimTypes.Role)
+                                        .Select(claim => claim.Value)
+                                        .ToArray();
 }
+
 <!--Bootstrap Datatable-->
 <link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/tables/datatable/dataTables.bootstrap5.min.css">
 <link rel="stylesheet" type="text/css" href="~/Template/app-assets/vendors/css/tables/datatable/responsive.bootstrap5.min.css">
@@ -26,6 +38,38 @@
                         <div class="table-responsive col-md-12">
                             <table class="table zero-configuration nowrap" id="factibilidadesTable">
                                 <thead>
+                                    <tr style="width:100%">
+                                        <th></th>
+                                        <th></th>
+                                        <th>
+                                            @if (userRoles != null && userRoles.Contains("Admin"))
+                                            {
+                                                <select class="form-control" id="serviceTypeFilter">
+                                                    <option value=""></option>
+                                                </select>
+                                            }
+
+                                        </th>
+                                        <th>
+                                            @if (userRoles != null && userRoles.Contains("Admin"))
+                                            {
+                                                <select class="form-control" id="clientFilter">
+                                                    <option value=""></option>
+                                                </select>
+                                            }
+                                        </th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
                                     <tr>
                                         <th>Ticket</th>
                                         <th>Detalle</th>
@@ -84,14 +128,21 @@
                                         <input type="number" id="Ticket" name="Ticket" placeholder="Ingrese Ticket" class="form-control">
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-8">
                                     <label>Cliente: </label>
-                                    <div class="mb-1">
+                                    <div class="input-group mb-1">
                                         <select class="form-control col-md-12" id="selectCliente" name="selectCliente">
                                             <option value="">Seleccione una opción</option>
                                         </select>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" id="btn-add-client" type="button">
+                                                <i data-feather="plus-circle"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-4">
                                     <label>KAM: </label>
                                     <div class="mb-1">
@@ -100,8 +151,6 @@
                                         </select>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-md-4">
                                     <label>BW: </label>
                                     <div class="mb-1">
@@ -114,14 +163,14 @@
                                         <input id="fechaSolicitud" name="fechaSolicitud" class="form-control" type="datetime-local" />
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-4">
                                     <label>Fecha Respuesta</label>
                                     <div class="mb-1">
                                         <input id="fechaRespuesta" name="fechaRespuesta" class="form-control" type="datetime-local" />
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-md-4">
                                     <label>Sitios Con Cobertura: </label>
                                     <div class="mb-1">
@@ -134,14 +183,14 @@
                                         <input type="number" id="SitioConCoberturaParcial" name="SitioConCoberturaParcial" placeholder="Sitios Con Cobertura Parcial" class="form-control">
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-4">
                                     <label>Sitios Sin Cobertura: </label>
                                     <div class="mb-1">
                                         <input type="number" id="SitioSinCobertura" name="SitioSinCobertura" placeholder="Sitios Sin Cobertura" class="form-control">
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-md-4">
                                     <label>Tipo de Servicio: </label>
                                     <div class="mb-1">
@@ -194,14 +243,21 @@
                                         <input type="number" id="Tickete" name="Tickete" placeholder="Ingrese Ticket" class="form-control">
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-8">
                                     <label>Cliente: </label>
-                                    <div class="mb-1">
+                                    <div class="input-group mb-1">
                                         <select class="form-control col-md-12" id="selectClientee" name="selectClientee">
                                             <option value="">Seleccione una opción</option>
                                         </select>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" id="btn-add-cliente" type="button">
+                                                <i data-feather="plus-circle"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-4">
                                     <label>KAM: </label>
                                     <div class="mb-1">
@@ -210,8 +266,6 @@
                                         </select>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-md-4">
                                     <label>BW: </label>
                                     <div class="mb-1">
@@ -224,14 +278,14 @@
                                         <input id="fechaSolicitude" name="fechaSolicitude" class="form-control" type="datetime-local" />
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-4">
                                     <label>Fecha Respuesta</label>
                                     <div class="mb-1">
                                         <input id="fechaRespuestae" name="fechaRespuestae" class="form-control" type="datetime-local" />
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-md-4">
                                     <label>Sitios Con Cobertura: </label>
                                     <div class="mb-1">
@@ -244,14 +298,14 @@
                                         <input type="number" id="SitioConCoberturaParciale" name="SitioConCoberturaParciale" placeholder="Sitios Con Cobertura Parcial" class="form-control">
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-4">
                                     <label>Sitios Sin Cobertura: </label>
                                     <div class="mb-1">
                                         <input type="number" id="SitioSinCoberturae" name="SitioSinCoberturae" placeholder="Sitios Sin Cobertura" class="form-control">
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-md-4">
                                     <label>Tipo de Servicio: </label>
                                     <div class="mb-1">
@@ -272,6 +326,40 @@
     </div>
 </div>
 <!-- Modal Editar Factibilidad Fin -->
+
+<!-- Modal Agregar Cliente -->
+<div class="modal fade fade text-start" id="modalAgregarCliente" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel33"> Agregar Cliente </h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="ResetModal()" id="closeModalAgregarCliente">
+                    @* <span aria-hidden="true">&times;</span>*@
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-add-client" name="form-add-client" method="post">
+                    <div class="modal-body">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>Nombre Cliente: </label>
+                                    <div class="mb-1">
+                                        <input type="text" id="addClientInput" name="addClientInput" placeholder="Agregar Cliente" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" id="btn-save-client">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Agregar Cliente Fin -->
 
 @section Scripts {
     <!-- Bootstrap datatable -->
@@ -362,7 +450,33 @@
                 },
                 drawCallback: function (settings) {
                     feather.replace();
+                },
+                initComplete: function () {
+                    var api = this.api();
+
+                    // Crear el filtro desplegable para la columna "Tipo de Servicio"
+                    api.column(2, { search: 'applied' }).data().unique().sort().each(function (d, j) {
+                        $('#serviceTypeFilter').append('<option value="' + d + '">' + d + '</option>');
+                    });
+
+                    // Crear el filtro desplegable para la columna "Tipo de Servicio"
+                    api.column(3, { search: 'applied' }).data().unique().sort().each(function (d, j) {
+                        $('#clientFilter').append('<option value="' + d + '">' + d + '</option>');
+                    });
+
+                    // Agregar el evento de cambio al filtro desplegable
+                    $('#serviceTypeFilter').on('change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                        api.column(2).search(val ? val  : '', true, false).draw();
+                    });
+
+                    // Agregar el evento de cambio al filtro desplegable
+                    $('#clientFilter').on('change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                        api.column(3).search(val ? val : '', true, false).draw();
+                    });
                 }
+
             });
 
             cargarSelect();
@@ -482,6 +596,30 @@
                 editarFactibilidad();
             }
         });
+
+        $("#form-add-client").validate({
+            ignore: [],
+            rules: {
+                addClientInput: "required"
+            },
+            messages: {
+                addClientInput: "Ingrese Nombre"
+            },
+            submitHandler: function (form) {
+                event.preventDefault();
+                addClient();
+            }
+        });
+
+        //EVENTOS
+        $("#btn-add-client").on("click", function () {
+            $("#modalAgregarCliente").modal("show");
+        });
+
+        $("#btn-add-cliente").on("click", function () {
+            $("#modalAgregarCliente").modal("show");
+        });
+
 
         //FUNCIONES
 
@@ -770,6 +908,39 @@
                         }
                     });
 
+                }
+            });
+        }
+
+        function addClient() {
+            //Modal Loading
+            $('body').loadingModal({
+                position: 'auto',
+                text: 'Cargando',
+                color: '#fff',
+                opacity: '0.7',
+                backgrundColor: 'rgb(0,0,0)',
+                animation: 'doubleBounce'
+            });
+
+
+            $.ajax({
+                url: "@Url.Action("AddClient", "Indicadores")",
+                type: 'POST',
+                data: {
+                    clientName: $("#addClientInput").val()
+                },
+                dataType: 'json',
+                success: function (response) {
+                    if (response) {
+                        $("#modalAgregarCliente").modal("hide");
+                        $("#addClientInput").val("");
+                        cargarSelect();
+                    } 
+                    $('body').loadingModal('destroy');
+                },
+                error: function (xhr, status, error) {
+                    $('body').loadingModal('destroy');
                 }
             });
         }

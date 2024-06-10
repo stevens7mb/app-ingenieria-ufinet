@@ -6,6 +6,7 @@ using app_ingenieria_ufinet.Models.User;
 using app_ingenieria_ufinet.Repositories.Indicador;
 using app_ingenieria_ufinet.Repositories.User;
 using Microsoft.AspNetCore.Mvc;
+using System.Buffers;
 
 namespace app_ingenieria_ufinet.Controllers
 {
@@ -37,9 +38,9 @@ namespace app_ingenieria_ufinet.Controllers
         }
 
         [HttpPost]
-        public DataTableResponse<FactibilidadPaginateModel> ListaFactibilidadesPaginate()
+        [Route("Indicadores/ListaFactibilidadesPaginate")]
+        public DataTableResponse<FactibilidadPaginateModel> ListaFactibilidadesPaginate(DataTableRequest request)
         {
-            var request = new DataTableRequest();
 
             request.Draw = Convert.ToInt32(Request.Form["draw"].FirstOrDefault());
             request.Start = Convert.ToInt32(Request.Form["start"].FirstOrDefault());
@@ -48,6 +49,7 @@ namespace app_ingenieria_ufinet.Controllers
             {
                 Value = Request.Form["search[value]"].FirstOrDefault()
             };
+
             request.Order = new DataTableOrder[] {
             new DataTableOrder()
             {
@@ -122,5 +124,17 @@ namespace app_ingenieria_ufinet.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult AddClient(string clientName)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "Datos de entrada no válidos" });
+            }
+
+            bool result = this._indicadorRepository.AddClient(clientName);
+
+            return Json(result);
+        }
     }
 }

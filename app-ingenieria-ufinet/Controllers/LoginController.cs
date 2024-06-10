@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using app_ingenieria_ufinet.Models.Login;
 using app_ingenieria_ufinet.Repositories.Login;
-using app_ingenieria_ufinet.Filters;
-using System.Collections.Generic;
 
 namespace app_ingenieria_ufinet.Controllers
 {
@@ -33,7 +31,7 @@ namespace app_ingenieria_ufinet.Controllers
         [HttpGet]
         public async Task<IActionResult> IniciarSesion(string username, string password)
         {
-            Usuario usuario = this._loginRepository.LoginUsuario(username, password);
+            app_ingenieria_ufinet.Models.Login.Usuario usuario = this._loginRepository.LoginUsuario(username, password);
             if (usuario == null)
             {
                 var mensaje = "No tienes credenciales correctas";

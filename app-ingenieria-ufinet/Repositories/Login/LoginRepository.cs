@@ -1,6 +1,7 @@
 ﻿using app_ingenieria_ufinet.Data;
 using app_ingenieria_ufinet.Models.Login;
 using app_ingenieria_ufinet.Utils;
+using Usuario = app_ingenieria_ufinet.Models.Login.Usuario;
 
 namespace app_ingenieria_ufinet.Repositories.Login
 {
@@ -9,7 +10,7 @@ namespace app_ingenieria_ufinet.Repositories.Login
     /// </summary>
     public interface ILoginRepository
     {
-        Usuario LoginUsuario(string username, string password);
+        app_ingenieria_ufinet.Models.Login.Usuario LoginUsuario(string username, string password);
         List<Roles> LoginRoles(string username);
     }
 
@@ -31,7 +32,7 @@ namespace app_ingenieria_ufinet.Repositories.Login
         /// <param name="username"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public Usuario LoginUsuario(string username, string password)
+        public app_ingenieria_ufinet.Models.Login.Usuario LoginUsuario(string username, string password)
         {
             var procedureParams = new Dictionary<string, object>()
             {
@@ -39,14 +40,14 @@ namespace app_ingenieria_ufinet.Repositories.Login
                 {"password", password}
             };
 
-            var result = this._dbUtils.ExecuteStoredProc<Usuario>("login", procedureParams);
+            var result = this._dbUtils.ExecuteStoredProc<app_ingenieria_ufinet.Models.Login.Usuario>("login", procedureParams);
             if (result.Count == 0)
             {
                 return null;
             }
             else
             {
-                Usuario usuario = result[0];
+                app_ingenieria_ufinet.Models.Login.Usuario usuario = result[0];
 
                 bool respuesta = usuario.Contraseña == password ? true : false;
 

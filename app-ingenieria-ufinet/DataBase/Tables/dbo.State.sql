@@ -1,0 +1,10 @@
+﻿IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'State')
+BEGIN
+    CREATE TABLE dbo.State(
+        IdState INT NOT NULL,
+        Name VARCHAR(45) NOT NULL,
+        IdRegion INT NOT NULL,
+        CONSTRAINT PK_State PRIMARY KEY(IdState),
+        CONSTRAINT FK_StateRegion FOREIGN KEY(IdRegion) REFERENCES Region(IdRegion)
+    )
+END
