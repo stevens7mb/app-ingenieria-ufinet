@@ -1,6 +1,7 @@
 ﻿CREATE OR ALTER PROCEDURE dashboard_indicadores_desemp_anio_unif(
 	@anio INT = NULL,
-	@id_sucursal INT
+	@id_sucursal INT,
+	@es_admin INT
 ) AS
 BEGIN
 	DECLARE @sitios_totales DECIMAL(18,2)
@@ -49,7 +50,7 @@ BEGIN
 		WHERE f.Estado = -1
 		AND YEAR(f.FechaRespuesta) = @anio
 		AND MONTH(f.FechaRespuesta) = @intFlag
-		AND f.idSucursal = @id_sucursal
+		AND (@es_admin = -1 OR f.idSucursal = @id_sucursal)
 		
 		SET LANGUAGE Spanish
 		
@@ -67,7 +68,7 @@ BEGIN
 		WHERE f.Estado = -1
 		AND YEAR(f.FechaRespuesta) = @anio
 		AND MONTH(f.FechaRespuesta) = @intFlag
-		AND f.idSucursal = @id_sucursal
+		AND (@es_admin = -1 OR f.idSucursal = @id_sucursal)
 
 		SET @intFlag = @intFlag + 1
 	END

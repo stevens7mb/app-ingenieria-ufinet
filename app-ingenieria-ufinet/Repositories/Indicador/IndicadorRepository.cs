@@ -6,6 +6,7 @@ using app_ingenieria_ufinet.Models.Indicadores.Factibilidad;
 using app_ingenieria_ufinet.Models.Login;
 using app_ingenieria_ufinet.Models.User;
 using app_ingenieria_ufinet.Utils;
+using ClosedXML.Excel;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
@@ -91,6 +92,12 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
         /// <param name="clientName"></param>
         /// <returns></returns>
         bool AddClient(string clientName);
+
+        /// <summary>
+        /// Genera archivo de excel
+        /// </summary>
+        /// <returns></returns>
+        MemoryStream GenerateExcelFactibilities();
     }
 
     /// <summary>
@@ -115,7 +122,11 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
         /// <returns>retorna una lista de factibilidades</returns>
         public List<FactibilidadModel> ListaFactibilidades()
         {
-            var procedureParams = new Dictionary<string, object>() { };
+            var username = _userService?.GetUser()?.Claims?.FirstOrDefault(x => x.Type == "IdUsuario")?.Value;
+            var procedureParams = new Dictionary<string, object>()
+            {
+                {"@usuario", username ?? "" }
+            };
 
             var result = this._dbUtils.ExecuteStoredProc<FactibilidadModel>("lista_factibilidades", procedureParams);
 
@@ -161,13 +172,19 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
 
                 var result = this._dbUtils.ExecuteStoredProc<FactibilidadPaginateModel>("lista_factibilidades_paginate", procedureParams);
 
+                var filterServiceTypeValues = _context.TipoServicios.Where(x => x.Estado == -1).ToList();
+                var filterClientsValues = _context.Clientes.Where(x => x.Estado == -1).ToList();
+
+                var filters = new List<object> { filterServiceTypeValues, filterClientsValues };
+
                 return new DataTableResponse<FactibilidadPaginateModel>()
                 {
                     Draw = request.Draw,
                     RecordsTotal = result != null && result.Any() ? result[0].TotalCount : 0,
                     RecordsFiltered = result != null && result.Any() ? result[0].FilteredCount : 0,
                     Data = result != null && result.Any() ? result.ToArray() : new FactibilidadPaginateModel[0],
-                    Error = ""
+                    Error = "",
+                    FiltersValues = filters
                 };
             }
             catch (Exception ex)
@@ -322,6 +339,18 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
         }
 
         /// <summary>
+        /// Verificaa si es admiin o no
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        private bool IsUserAdministrator(string username)
+        {
+            bool isAdmin = _context.RolUsuarios.Any(x => x.Usuario == username && x.IdRolNavigation.Descripcion == "Admin");
+
+            return isAdmin;
+        }
+
+        /// <summary>
         /// Obtiene las respuestas de los procedimientos almacenados para las estadisticas del dashboard, dinamico.
         /// </summary>
         /// <param name="Anio">Año desde el que se desea obtener estadisticas</param>
@@ -335,6 +364,7 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
             //Usuario logueado
             var username = _userService?.GetUser()?.Claims?.FirstOrDefault(x => x.Type == "IdUsuario")?.Value;
             var branchId = _context?.Usuarios?.FirstOrDefault(x => x.Usuario1 == username)?.IdSucursal;
+            int isAdmin = IsUserAdministrator(username ?? "") ? -1 : 0;
 
             //Parametros comunes sps
             var procedureParams = new Dictionary<string, object>()
@@ -342,7 +372,8 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
                 {"@mes_desde", request.MesDesde == 0 ? null : request.MesDesde},
                 {"@mes_hasta", request.MesHasta == 0 ? null : request.MesHasta},
                 {"@anio", request.Anio == 0 ? null : request.Anio},
-                {"@id_sucursal", branchId }
+                {"@id_sucursal", branchId },
+                {"@es_admin", isAdmin}
             };
 
             //Datos de Estudios por Ingenieros
@@ -366,7 +397,8 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
             var procedureParamsIndicadores = new Dictionary<string, object>()
             {
                 {"@anio", request.Anio == 0 ? null : request.Anio},
-                {"@id_sucursal", branchId}
+                {"@id_sucursal", branchId},
+                {"@es_admin", isAdmin}
             };
 
             indicadoresDesempeño = this._dbUtils.ExecuteStoredProc<IndicadoresDesempeModel>("dashboard_indicadores_desemp_anio_unif", procedureParamsIndicadores);
@@ -414,6 +446,72 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
             _context.SaveChanges();
 
             return true;
+        }
+
+        /// <summary>
+        /// Genera archivo de excel
+        /// </summary>
+        /// <returns></returns>
+        public MemoryStream GenerateExcelFactibilities()
+        {
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Factibilidades");
+
+                // Encabezados de columnas
+                worksheet.Cell(1, 1).Value = "ID Factibilidad";
+                worksheet.Cell(1, 2).Value = "Ticket";
+                worksheet.Cell(1, 3).Value = "Estudio";
+                worksheet.Cell(1, 4).Value = "Cliente";
+                worksheet.Cell(1, 5).Value = "KAM";
+                worksheet.Cell(1, 6).Value = "BW";
+                worksheet.Cell(1, 7).Value = "Fecha Solicitud";
+                worksheet.Cell(1, 8).Value = "Fecha Respuesta";
+                worksheet.Cell(1, 9).Value = "Estado";
+                worksheet.Cell(1, 10).Value = "Sitio con Cobertura";
+                worksheet.Cell(1, 11).Value = "Sitio con Cobertura Parcial";
+                worksheet.Cell(1, 12).Value = "Sitio sin Cobertura";
+                worksheet.Cell(1, 13).Value = "Sitios Analizados";
+                worksheet.Cell(1, 14).Value = "Ingeniero";
+                worksheet.Cell(1, 15).Value = "Tipo de Servicio";
+
+                // Formato de celdas
+                worksheet.Row(1).Style.Font.Bold = true; // Negrita para la fila de encabezados
+
+                var data = ListaFactibilidades();
+
+                // Llenar datos
+                int row = 2;
+                foreach (var item in data)
+                {
+                    worksheet.Cell(row, 1).Value = item.IdFactibilidad;
+                    worksheet.Cell(row, 2).Value = item.Ticket;
+                    worksheet.Cell(row, 3).Value = item.Estudio;
+                    worksheet.Cell(row, 4).Value = item.Cliente;
+                    worksheet.Cell(row, 5).Value = item.KAM;
+                    worksheet.Cell(row, 6).Value = item.BW;
+                    worksheet.Cell(row, 7).Value = item.FechaSolicitud;
+                    worksheet.Cell(row, 7).Style.DateFormat.Format = "dd-MM-yyyy";
+                    worksheet.Cell(row, 8).Value = item.FechaRespuesta;
+                    worksheet.Cell(row, 8).Style.DateFormat.Format = "dd-MM-yyyy";
+                    worksheet.Cell(row, 9).Value = item.Estado;
+                    worksheet.Cell(row, 10).Value = item.SitioConCobertura;
+                    worksheet.Cell(row, 11).Value = item.SitioConCoberturaParcial;
+                    worksheet.Cell(row, 12).Value = item.SitioSinCobertura;
+                    worksheet.Cell(row, 13).Value = item.SitiosAnalizados;
+                    worksheet.Cell(row, 14).Value = item.Ingeniero;
+                    worksheet.Cell(row, 15).Value = item.TipoServicio;
+
+                    row++; 
+                }
+
+                // Convertir workbook a MemoryStream
+                MemoryStream stream = new();
+                workbook.SaveAs(stream);
+                stream.Position = 0;
+
+                return stream;
+            }
         }
     }
 }

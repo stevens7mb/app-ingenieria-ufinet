@@ -2,7 +2,8 @@
 	@mes_desde INT = NULL,
 	@mes_hasta INT = NULL,
 	@anio INT = NULL,
-	@id_sucursal INT
+	@id_sucursal INT,
+	@es_admin INT
 ) AS
 BEGIN
 	---Factibilidades por Cliente
@@ -14,7 +15,7 @@ BEGIN
 	AND (@mes_desde IS NULL OR MONTH(f.FechaRespuesta) >= @mes_desde)
 	AND (@mes_hasta IS NULL OR MONTH(f.FechaRespuesta) <= @mes_hasta)
 	AND (@anio IS NULL OR YEAR(f.FechaRespuesta) = @anio) 
-	AND f.idSucursal = @id_sucursal
+	AND (@es_admin = -1 OR f.idSucursal = @id_sucursal)
 	
 	SELECT 
 		c.Nombre as Cliente,
@@ -26,7 +27,7 @@ BEGIN
 	AND (@mes_desde IS NULL OR MONTH(f.FechaRespuesta) >= @mes_desde)
 	AND (@mes_hasta IS NULL OR MONTH(f.FechaRespuesta) <= @mes_hasta)
 	AND (@anio IS NULL OR YEAR(f.FechaRespuesta) = @anio)
-	AND f.idSucursal = @id_sucursal
+	AND (@es_admin = -1 OR f.idSucursal = @id_sucursal)
 	GROUP BY c.Nombre 
 	ORDER BY COUNT(f.IdCliente) DESC
 END;

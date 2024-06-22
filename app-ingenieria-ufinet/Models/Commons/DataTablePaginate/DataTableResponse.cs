@@ -7,5 +7,6 @@
         public int RecordsFiltered { get; set; }
         public T[] Data { get; set; }
         public string? Error { get; set; }
+        public List<object>? FiltersValues { get; set; }
     }
 }

@@ -212,7 +212,6 @@
 </div>
 <!-- Modal Agregar Factibilidad Fin -->
 
-
 <!-- Modal Editar Factibilidad -->
 <div class="modal fade fade text-start" id="modalEditarFactibilidad" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
@@ -406,8 +405,14 @@
                 },
                 "order": [[0, "desc"]],
                 dom: 'lBfrtip',
-                buttons: [
-                    { extend: 'excel', className: 'btn btn-success' }
+                "buttons": [
+                    {
+                        extend: 'excel',
+                        className: 'btn btn-success',
+                        action: function (e, dt, node, config) {
+                            exportExcel(); 
+                        }
+                    }
                 ],
                 columns: [
                     { "data": "ticket" },
@@ -454,14 +459,27 @@
                 initComplete: function () {
                     var api = this.api();
 
-                    // Crear el filtro desplegable para la columna "Tipo de Servicio"
-                    api.column(2, { search: 'applied' }).data().unique().sort().each(function (d, j) {
-                        $('#serviceTypeFilter').append('<option value="' + d + '">' + d + '</option>');
-                    });
+                    // Obtener el objeto de respuesta JSON
+                    var jsonResponse = api.ajax.json();
 
                     // Crear el filtro desplegable para la columna "Tipo de Servicio"
-                    api.column(3, { search: 'applied' }).data().unique().sort().each(function (d, j) {
-                        $('#clientFilter').append('<option value="' + d + '">' + d + '</option>');
+                    var serviceTypeFilterValues = jsonResponse.filtersValues[0];
+
+                    // Limpiar y llenar el filtro desplegable con valores únicos
+                    $('#serviceTypeFilter').empty();
+                    $('#serviceTypeFilter').append('<option value=""></option>');
+                    serviceTypeFilterValues.forEach(function (value) {
+                        $('#serviceTypeFilter').append('<option value="' + value.tipoServicio1 + '">' + value.tipoServicio1 + '</option>');
+                    });
+
+                    // Crear el filtro desplegable para la columna "Clientes"
+                    var clientFilterValues = jsonResponse.filtersValues[1];
+
+                    // Limpiar y llenar el filtro desplegable con valores únicos
+                    $('#clientFilter').empty();
+                    $('#clientFilter').append('<option value=""></option>');
+                    clientFilterValues.forEach(function (value) {
+                        $('#clientFilter').append('<option value="' + value.nombre + '">' + value.nombre + '</option>');
                     });
 
                     // Agregar el evento de cambio al filtro desplegable
@@ -944,5 +962,48 @@
                 }
             });
         }
+
+        function getFileName() {
+            var currentDate = new Date();
+            var year = currentDate.getFullYear();
+            var month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // Asegura que siempre tenga dos dígitos
+            var day = currentDate.getDate().toString().padStart(2, '0');
+            var hours = currentDate.getHours().toString().padStart(2, '0');
+            var minutes = currentDate.getMinutes().toString().padStart(2, '0');
+            var seconds = currentDate.getSeconds().toString().padStart(2, '0');
+
+            var filename = 'factibilidades_' + year + month + day + '_' + hours + minutes + seconds + '.xlsx';
+            return filename;
+        }
+
+        function exportExcel() {
+            // Realizar la solicitud AJAX para descargar el archivo
+            $.ajax({
+                url: "@Url.Action("ExportExcelFactibilities", "Indicadores")",
+                type: 'POST',
+                xhrFields: {
+                    responseType: 'blob' // Especificamos que esperamos un blob como respuesta
+                },
+                success: function (blob, textStatus, xhr) { // Aquí recibimos el blob y el objeto xhr
+                    const url = window.URL.createObjectURL(blob);
+
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = getFileName();
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    Swal.fire({
+                        title: "HA OCURRIDO UN ERROR",
+                        text: "Error en la descarga" + errorThrown,
+                        icon: "error"
+                    })
+                }
+            });
+        }
+
     </script>
 }

@@ -5,6 +5,7 @@ using app_ingenieria_ufinet.Models.Indicadores.Factibilidad;
 using app_ingenieria_ufinet.Models.User;
 using app_ingenieria_ufinet.Repositories.Indicador;
 using app_ingenieria_ufinet.Repositories.User;
+using Azure;
 using Microsoft.AspNetCore.Mvc;
 using System.Buffers;
 
@@ -57,7 +58,9 @@ namespace app_ingenieria_ufinet.Controllers
                 Column = Convert.ToInt32(Request.Form["order[0][column]"].FirstOrDefault())
             }};
 
-            return _indicadorRepository.ListaFactibilidadesPaginate(request);
+            var response = _indicadorRepository.ListaFactibilidadesPaginate(request);
+
+            return response;
         }
 
         [HttpGet]
@@ -135,6 +138,15 @@ namespace app_ingenieria_ufinet.Controllers
             bool result = this._indicadorRepository.AddClient(clientName);
 
             return Json(result);
+        }
+
+        [HttpPost]
+        public IActionResult ExportExcelFactibilities()
+        {
+            var memoryStream = _indicadorRepository.GenerateExcelFactibilities();
+            string fileName = $"factibilidades_{DateTime.Now.ToString("yyyyMMddHHmmss")}.xlsx";
+
+            return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
         }
     }
 }

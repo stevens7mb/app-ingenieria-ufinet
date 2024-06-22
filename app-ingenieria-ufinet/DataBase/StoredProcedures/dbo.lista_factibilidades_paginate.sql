@@ -12,13 +12,27 @@
 AS
 BEGIN
   	SET NOCOUNT ON;
-  	
-	DECLARE @TotalCount AS INT = (SELECT COUNT(*) FROM Factibilidad)
+ 
+
+	DECLARE 
+		@TotalCount AS INT = (SELECT COUNT(*) FROM Factibilidad)
 
 	DECLARE 
 		@FirstRec INT,
 		@LastRec INT,
-		@IdSucursal INT
+		@IdSucursal INT,
+		@admin_rol INT,
+		@es_admin INT = 0
+
+	SELECT 
+		@admin_rol = idRol
+	FROM dbo.Rol
+	WHERE Descripcion = 'Admin'
+
+	IF EXISTS(SELECT 1 FROM dbo.RolUsuario WHERE Usuario = @Usuario AND idRol = @admin_rol)
+	BEGIN
+		SET @es_admin = -1;
+	END
 
 	SELECT 
 		@IdSucursal = idSucursal
@@ -152,11 +166,11 @@ BEGIN
 				OR TipoServicio LIKE '%' + @SearchValue + '%'		 
 			)
 		    AND f.Estado = -1
-			AND u.idSucursal = @IdSucursal
+			AND (@es_admin = -1 OR u.idSucursal = @IdSucursal)
 			AND (@tipo_servicio_filter IS NULL OR ts.TipoServicio = @tipo_servicio_filter)
 			AND (@cliente_filter IS NULL OR c.Nombre = @cliente_filter)
 		) 
-	 
+
 		SELECT
 		    IdFactibilidad, 
 			Ticket,
