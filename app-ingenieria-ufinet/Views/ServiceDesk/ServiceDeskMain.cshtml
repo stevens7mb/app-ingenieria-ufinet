@@ -426,7 +426,7 @@
                                     <div class="tab-pane fade" id="nav-binnacle" role="tabpanel">
                                         <div class="d-flex justify-content-between align-items-center mb-3">
                                             <h4 class="card-title">Bitacora de eventos</h4>
-                                            <button type="button" class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#canvas-binnacle-top" aria-controls="offcanvasTop">
+                                            <button id="add-binnacle-button" type="button" class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#canvas-binnacle-top" aria-controls="offcanvasTop">
                                                 <i data-feather="plus"></i>
                                             </button>
                                         </div>
@@ -1108,13 +1108,16 @@
                 // Crear un contenedor para los botones
                 var buttonContainer = $('<div class="btn-group" role="group"></div>');
 
+                // Construir la URL completa para la descarga del archivo
+                var downloadUrl = getDownloadUrl(file.nameFile); // Función para construir la URL de descarga
+
                 // Crear enlace para descargar el archivo con el icono de descarga de Feather
-                var downloadLink = $('<a href="' + file.path + '" download class="btn btn-primary btn-sm"><i data-feather="download"></i> Descargar</a>');
+                var downloadLink = $('<a href="' + downloadUrl + '" download class="btn btn-primary btn-sm"><i data-feather="download"></i> Descargar</a>');
 
                 // Verificar si el archivo es viewable
                 if (isViewableFile(file.nameFile)) {
                     // Crear enlace para ver el archivo con el icono de ojo de Feather
-                    var viewLink = $('<a href="' + file.path + '" target="_blank" class="btn btn-secondary btn-sm"><i data-feather="eye"></i> Ver</a>');
+                    var viewLink = $('<a href="/ServiceDesk/ViewFile?filename=' + encodeURIComponent(file.nameFile) + '" target="_blank" class="btn btn-secondary btn-sm"><i data-feather="eye"></i> Ver</a>'); var viewLink = $('<a href="/ServiceDesk/ViewFile?filename=' + encodeURIComponent(file.nameFile) + '" target="_blank" class="btn btn-secondary btn-sm"><i data-feather="eye"></i> Ver</a>'); var viewLink = $('<a href="/ServiceDesk/ViewFile?filename=' + encodeURIComponent(file.nameFile) + '" target="_blank" class="btn btn-secondary btn-sm"><i data-feather="eye"></i> Ver</a>');
                     buttonContainer.append(viewLink);
                 }
 
@@ -1131,20 +1134,27 @@
             feather.replace();
         }
 
+        // Función para obtener la URL de descarga del archivo
+        function getDownloadUrl(fileName) {
+            var downloadUrl = urlRoot + 'ServiceDesk/DownloadFile?filename=' + encodeURIComponent(fileName);
+            return downloadUrl;
+        }
+
         function setBinnacleList(data){
             $('#list-group-binnacles').empty();
             data.forEach(function (binnacle) {
-                var listItem = '<li class="list-group-item d-flex justify-content-between">' +
-                    '<div class="li-wrapper d-flex justify-content-start align-items-center">' +
-                    '<div class="avatar avatar-sm me-3">' +
-                    '<span class="avatar-initial rounded-circle bg-primary">' + binnacle.createdBy.charAt(0) + '</span>' +
-                    '</div>' +
-                    '<div class="list-content">' +
-                    '<h5 class="mb-1">' + binnacle.createdBy + '</h5>' +
-                    '<h6>' + binnacle.comment + '</h6>' +
-                    '</div>' +
-                    '</div>' +
-                    '<div class="comment-date">' + moment(binnacle.createdDate).format('DD-MM-YYYY HH:mm:ss') + '</div>' +
+                var listItem = 
+                    '<li class="list-group-item d-flex justify-content-between">' +
+                    '<div class="li-wrapper d-flex justify-content-start align-items-center text-start">' +
+                            '<div class="avatar avatar-sm me-3">' +
+                                '<span class="avatar-initial rounded-circle bg-primary">' + binnacle.createdBy.charAt(0) + '</span>' +
+                            '</div>' +
+                            '<div class="list-content">' +
+                                '<h5 class="mb-1">' + binnacle.createdBy + '</h5>' +
+                                '<h6>' + binnacle.comment + '</h6>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="comment-date ms-auto">' + moment(binnacle.createdDate).format('DD-MM-YYYY HH:mm:ss') + '</div>' +
                     '</li>';
 
                 // Agregamos el nuevo elemento list-group-item al list-group
@@ -1163,6 +1173,42 @@
                 newRow.append($('<td>').text(moment(status.changedDate).format('DD-MM-YYYY HH:mm:ss')));
                 $('#table-status-ticket tbody').append(newRow);
             });
+        }
+
+
+        function otherConfigElements(isFinalizedStatus){
+            if (isFinalizedStatus) {
+                //buttons
+                $('#btn-finish-ticket').hide();
+                $('#btn-assign-ticket').hide();
+                $('#add-binnacle-button').hide();
+
+                //Campos
+                $('#selectEngineerType').prop('disabled', true);
+                $('#selectEngineerToAssign').prop('disabled', true);
+            }
+            else {
+                //buttons
+                $('#btn-finish-ticket').show();
+                $('#btn-assign-ticket').show();
+                $('#add-binnacle-button').show();
+
+                //Campos
+                $('#selectEngineerType').prop('disabled', false);
+                $('#selectEngineerToAssign').prop('disabled', false);
+            }
+        }
+
+        function setFinalizedTicketData(ticketData) {
+            if (ticketData.isTicketFinalizedStatus) {            
+                $('#selectRequiredVisit').val(ticketData.isTechnicalVisitRequired).prop('disabled', true);
+                $('#selectBrigadeMov').val(ticketData.isBrigadeDeployed).prop('disabled', true);
+                $('#selectTopology').val(ticketData.isChangeNetworkTopology).prop('disabled', true);
+                $('#selectSolutionType').val(ticketData.idSolutionType).prop('disabled', true);
+                $('#selectConfirmedBy').val(ticketData.idConfirmedArea).prop('disabled', true);
+                $('#workDone').val(ticketData.workDone).prop('disabled', true);
+                $('#summaryIncident').val(ticketData.incidentClosureSummary).prop('disabled', true);
+            }
         }
 
         function setTicketData(ticketData){
@@ -1195,6 +1241,10 @@
             setStatusesTable(ticketData.statuses);
             //Llena list de archivos
             addFilesToList(ticketData.files);
+            //Llena y configura datos de ticket finalizado
+            setFinalizedTicketData(ticketData);
+            //Otras configuraciones de elementos al finalizar
+            otherConfigElements(ticketData.isTicketFinalizedStatus);
         }
 
         function getTicket(prefixId, ticketId) {

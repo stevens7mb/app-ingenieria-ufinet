@@ -111,5 +111,55 @@
         /// Estados del ticket
         /// </summary>
         public required List<TicketStatus> Statuses { get; set; }
+
+        /// <summary>
+        /// Visita técncia requerida -1 SI, 0 NO
+        /// </summary>
+        public int? IsTechnicalVisitRequired { get; set; }
+
+        /// <summary>
+        /// Desplazamiento de brigada -1 SI, 0 NO
+        /// </summary>
+        public int? IsBrigadeDeployed { get; set; }
+
+        /// <summary>
+        /// Cambio de topología de red -1 SI, 0 NO
+        /// </summary>
+        public int? IsChangeNetworkTopology {get; set; }
+
+        /// <summary>
+        /// Tipo de solución id
+        /// </summary>
+        public int? IdSolutionType { get; set; }
+
+        /// <summary>
+        /// Tipo de solución
+        /// </summary>
+        public string? SolutionType { get; set; }
+
+        /// <summary>
+        /// Confirmado por id
+        /// </summary>
+        public int? IdConfirmedArea { get; set; }
+
+        /// <summary>
+        /// Confirmado por
+        /// </summary>
+        public string? ConfirmedArea { get; set; }
+
+        /// <summary>
+        /// Trabajos realizados
+        /// </summary>
+        public string? WorkDone { get; set; }
+
+        /// <summary>
+        /// Resumen de la incidencia cierre
+        /// </summary>
+        public string? IncidentClosureSummary { get; set; }
+
+        /// <summary>
+        /// Indica si el ticket se encuentra finalizado
+        /// </summary>
+        public bool IsTicketFinalizedStatus { get; set; }
     }
 }

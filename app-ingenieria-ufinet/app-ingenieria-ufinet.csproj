@@ -9,9 +9,13 @@
 
   <ItemGroup>
     <Compile Remove="DataBase\Types\**" />
+    <Compile Remove="wwwroot\doc\**" />
     <Content Remove="DataBase\Types\**" />
+    <Content Remove="wwwroot\doc\**" />
     <EmbeddedResource Remove="DataBase\Types\**" />
+    <EmbeddedResource Remove="wwwroot\doc\**" />
     <None Remove="DataBase\Types\**" />
+    <None Remove="wwwroot\doc\**" />
   </ItemGroup>
 
   <ItemGroup>

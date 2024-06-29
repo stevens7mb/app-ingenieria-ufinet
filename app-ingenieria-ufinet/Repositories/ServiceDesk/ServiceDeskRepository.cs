@@ -176,7 +176,7 @@ namespace app_ingenieria_ufinet.Repositories.ServiceDesk
         /// <returns></returns>
         public void UploadFileTicket(IFormFile file, int prefixId, int ticketId)
         {
-            string filePath;
+            string filename = GetUniqueFileName(file.FileName);
             string? targetFolder = _configuration["FileUploadSettings:TargetFolder"];
             string targetPath = Path.Combine(_webHostEnvironment.WebRootPath, targetFolder ?? "");
 
@@ -185,18 +185,19 @@ namespace app_ingenieria_ufinet.Repositories.ServiceDesk
                 Directory.CreateDirectory(targetPath);
             }
 
-            string filename = Path.GetFileName(file.FileName);
-            filePath = Path.Combine(targetPath, filename);
+            string filePath = Path.Combine(targetPath, filename);
 
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 file.CopyTo(stream);
             }
 
+            string relativeFilePath = Path.Combine(targetFolder ?? "", filename);
+
             ServiceDeskTicketFile serviceDeskTicketFile = new()
             {
                 NameFile = filename,
-                PathFile = filePath,
+                PathFile = relativeFilePath,
                 FileSize = file.Length,
                 IdPrefix = prefixId,
                 IdTicket = ticketId
@@ -204,6 +205,37 @@ namespace app_ingenieria_ufinet.Repositories.ServiceDesk
 
             _context.ServiceDeskTicketFiles.Add(serviceDeskTicketFile);
             _context.SaveChanges();
+        }
+
+        // Método para obtener un nombre de archivo único para evitar conflictos
+        private string GetUniqueFileName(string fileName)
+        {
+            fileName = Path.GetFileName(fileName);
+            string? targetFolder = _configuration["FileUploadSettings:TargetFolder"];
+            string targetPath = Path.Combine(_webHostEnvironment.WebRootPath, targetFolder ?? "");
+
+            string filePath = Path.Combine(targetPath, fileName);
+
+            // Verificar si ya existe un archivo con el mismo nombre
+            if (System.IO.File.Exists(filePath))
+            {
+                // Generar un nombre único agregando un sufijo numérico
+                int count = 1;
+                string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
+                string fileExtension = Path.GetExtension(fileName);
+                string newFileName = $"{fileNameWithoutExtension}_{count}{fileExtension}";
+
+                // Verificar la existencia del nuevo nombre generado
+                while (System.IO.File.Exists(Path.Combine(targetPath, newFileName)))
+                {
+                    count++;
+                    newFileName = $"{fileNameWithoutExtension}_{count}{fileExtension}";
+                }
+
+                fileName = newFileName;
+            }
+
+            return fileName;
         }
 
         /// <summary>
@@ -268,7 +300,17 @@ namespace app_ingenieria_ufinet.Repositories.ServiceDesk
                                     ChangedBy = st.ChangedByEngineer.Name ?? "",
                                     ChangedDate = st.ChangeDateTime
                                 })
-                                .OrderByDescending(x => x.ChangedDate)
+                                .OrderByDescending(x => x.ChangedDate),
+                    IsTechnicalVisitRequired = e.IsTechnicalVisitRequired,
+                    IsBrigadeDeployed = e.IsBrigadeDeployed,
+                    IsChangeNetworkTopology = e.IsChangeNetworkTopology,
+                    IdSolutionType = e.IdSolutionType,
+                    SolutionType = e.IdSolutionTypeNavigation == null ? "" : e.IdSolutionTypeNavigation.Description ?? "",
+                    IdConfirmedArea = e.IdConfirmedArea,
+                    ConfirmedArea = e.IdConfirmedAreaNavigation == null ? "" : e.IdConfirmedAreaNavigation.Description ?? "",
+                    WorkDone = e.WorkDone,
+                    IncidentClosureSummary = e.IncidentClosureSummary,
+                    IsTicketFinalizedStatus = e.IdTicketStateNavigation.Description == "Finalizado"
                 })
                 .FirstOrDefaultAsync();
 

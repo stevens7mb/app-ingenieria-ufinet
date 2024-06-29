@@ -2,15 +2,19 @@
 using app_ingenieria_ufinet.Models.ServiceDesk;
 using app_ingenieria_ufinet.Repositories.Common;
 using app_ingenieria_ufinet.Repositories.ServiceDesk;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using System.Configuration;
 using System.Security.Claims;
 
 namespace app_ingenieria_ufinet.Controllers
 {
-    public class ServiceDeskController(IServiceDeskRepository serviceRepository, ICommonRepository commonRepository) : Controller
+    public class ServiceDeskController(IServiceDeskRepository serviceRepository, ICommonRepository commonRepository, IConfiguration configuration, IWebHostEnvironment webHostEnvironment) : Controller
     {
         private readonly IServiceDeskRepository _serviceDeskRepository = serviceRepository;
         private readonly ICommonRepository _commonRepository = commonRepository;
+        private readonly IConfiguration _configuration = configuration;
+        private readonly IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
 
         public IActionResult ServiceDeskMain()
         {
@@ -175,7 +179,8 @@ namespace app_ingenieria_ufinet.Controllers
         /// <returns></returns>
         [Route("ServiceDesk/GetEngineersToAssign")]
         [HttpGet]
-        public JsonResult GetEngineersToAssign(int prefixId, int ticketId, int engineerTypeId) {
+        public JsonResult GetEngineersToAssign(int prefixId, int ticketId, int engineerTypeId)
+        {
             try
             {
                 if (!ModelState.IsValid)
@@ -256,6 +261,73 @@ namespace app_ingenieria_ufinet.Controllers
             {
                 return Json(new { success = false, message = "Ha ocurrido un error al finalizar ticket" + ex.Message });
             }
+        }
+
+        [HttpGet]
+        [Route("ServiceDesk/DownloadFile")]
+        public IActionResult DownloadFile(string filename)
+        {
+            string? targetFolder = _configuration["FileUploadSettings:TargetFolder"];
+            string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, targetFolder ?? "");
+            string filePath = Path.Combine(uploadsFolder, filename);
+
+            var memory = new MemoryStream();
+            using (var stream = new FileStream(filePath, FileMode.Open))
+            {
+                stream.CopyTo(memory);
+            }
+            memory.Position = 0;
+
+            var contentType = "application/octet-stream";
+            return File(memory, contentType, filename);
+        }
+
+        // Método para ver archivos
+        [HttpGet]
+        [Route("ServiceDesk/ViewFile")]
+        public IActionResult ViewFile(string filename)
+        {
+            string? targetFolder = _configuration["FileUploadSettings:TargetFolder"];
+            string filePath = Path.Combine(_webHostEnvironment.WebRootPath, targetFolder ?? "", filename);
+
+            if (System.IO.File.Exists(filePath))
+            {
+                // Determinar el tipo MIME adecuado
+                var contentType = GetContentType(filename);
+
+                // Leer el contenido del archivo
+                var fileBytes = System.IO.File.ReadAllBytes(filePath);
+
+                // Devolver el archivo como una respuesta HTTP con el tipo MIME adecuado
+                return File(fileBytes, contentType);
+            }
+
+            // Si el archivo no existe, devolver un error 404
+            return NotFound();
+        }
+
+        // Método para determinar el tipo MIME según la extensión del archivo
+        private string GetContentType(string filename)
+        {
+            string contentType;
+            var extension = Path.GetExtension(filename).ToLowerInvariant();
+            switch (extension)
+            {
+                case ".pdf":
+                    contentType = "application/pdf";
+                    break;
+                case ".jpg":
+                case ".jpeg":
+                    contentType = "image/jpeg";
+                    break;
+                case ".png":
+                    contentType = "image/png";
+                    break;
+                default:
+                    contentType = "application/octet-stream";
+                    break;
+            }
+            return contentType;
         }
     }
 }
