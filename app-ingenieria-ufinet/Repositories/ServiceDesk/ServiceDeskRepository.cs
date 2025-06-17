@@ -479,10 +479,9 @@ namespace app_ingenieria_ufinet.Repositories.ServiceDesk
                     return false;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 await transaction.RollbackAsync();
-                Console.WriteLine($"Error: {ex.Message}");
                 throw;
             }
         }
