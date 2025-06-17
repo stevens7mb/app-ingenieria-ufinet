@@ -68,8 +68,8 @@
         public required string SummaryTicket { get; set; }
 
         /// <summary>
-        /// File pdf
+        /// Files
         /// </summary>
-        public required IFormFile File { get; set; } 
+        public required IFormFileCollection Files { get; set; }
     }
 }

@@ -17,5 +17,9 @@ public partial class ServiceDeskTicketFile
 
     public int IdTicket { get; set; }
 
+    public int TypeStatusId { get; set; }
+
     public virtual ServiceDeskTicket? ServiceDeskTicket { get; set; }
+
+    public virtual ServiceDeskTicketFileTypeStatus TypeStatus { get; set; } = null!;
 }

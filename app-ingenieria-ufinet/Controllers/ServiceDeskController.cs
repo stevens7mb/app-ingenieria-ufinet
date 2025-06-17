@@ -2,9 +2,7 @@
 using app_ingenieria_ufinet.Models.ServiceDesk;
 using app_ingenieria_ufinet.Repositories.Common;
 using app_ingenieria_ufinet.Repositories.ServiceDesk;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using System.Configuration;
 using System.Security.Claims;
 
 namespace app_ingenieria_ufinet.Controllers
@@ -329,5 +327,38 @@ namespace app_ingenieria_ufinet.Controllers
             }
             return contentType;
         }
+
+        [Route("ServiceDesk/GetMunicipalityAndDepartmentByCoordinates")]
+        [HttpPost]
+        public async Task<JsonResult> GetMunicipalityAndDepartmentByCoordinates([FromBody] CoordinateRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return Json(new { success = false, message = "Datos de entrada no válidos" });
+                }
+
+                var (IdMunicipality, IdState, Municipality) = await _serviceDeskRepository.GetMunicipalityAndDepartmentByCoordinates(request.Latitude, request.Longitude);
+
+                if (IdMunicipality == null || IdState == null)
+                {
+                    return Json(new { success = false, message = "No se lograron ubicar las coordenadas" });
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    IdMunicipality,
+                    IdState,
+                    Municipality
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error al obtener ubicación: " + ex.Message });
+            }
+        }
+
     }
 }

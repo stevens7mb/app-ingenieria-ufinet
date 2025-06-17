@@ -71,5 +71,13 @@ namespace app_ingenieria_ufinet.Repositories.ServiceDesk
         /// <param name="request"></param>
         /// <returns></returns>
         Task<bool> FinishTicket(FinishTicketRequest request);
+
+        /// <summary>
+        /// Obtener municipio y departamento por coordenadas ingresadas
+        /// </summary>
+        /// <param name="latitude"></param>
+        /// <param name="longitude"></param>
+        /// <returns></returns>
+        Task<(int? IdMunicipality, int? IdState, string Municipality)> GetMunicipalityAndDepartmentByCoordinates(double latitude, double longitude);
     }
 }

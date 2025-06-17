@@ -106,7 +106,16 @@
                                 <div class="col-md-4">
                                     <label>Coordenadas: </label>
                                     <div class="mb-1">
-                                        <input type="text" id="coordinate" name="coordinate" placeholder="Ingrese Coordenadas" class="form-control">
+                                        <input type="text"
+                                               id="coordinate"
+                                               name="coordinate"
+                                               class="form-control"
+                                               placeholder="Ej: 14.63,-90.5"
+                                               pattern="^-?\d{1,2}(\.\d+)?,\s*-?\d{1,3}(\.\d+)?$"
+                                               title="Ingrese coordenadas válidas en formato: latitud,longitud. Ej: 14.63,-90.5">
+                                        <div class="invalid-feedback">
+                                            Por favor ingrese coordenadas válidas (latitud entre -90 y 90, longitud entre -180 y 180).
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -180,11 +189,11 @@
                                         <div class="row">
                                             <h1 class="white col-md-10">Seleccionar Archivo</h1>
                                         </div>
-
                                         <img src="~/img/ServiceDesk/pdf.svg" height="50" width="50" />
-                                        <p class="white">Debe de Seleccionar un Archivo PDF, con el formato preestablecido.</p>
+                                        <img src="~/img/ServiceDesk/image.png" height="50" width="50" />
+                                        <p class="white">Debe de Seleccionar Archivo PDF o Imagenes, con el formato preestablecido.</p>
                                     </div>
-                                    <input class="form-control form-control-lg btn-primary" id="pdfFileTicket" name="pdfFileTicket" type="file" accept=".pdf">
+                                    <input class="form-control form-control-lg btn-primary" id="filesTicket" name="filesTicket" type="file" accept=".pdf, .jpeg, .jpg, .png .gif" multiple>
                                 </div>
                             </div>
                         </div>
@@ -238,7 +247,7 @@
         <div class="modal-content h-100">
             <div class="modal-header">
                 <h4 class="modal-title" id="myModalLabel33"> Ticket </h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="ResetModal()" id="closeModalEditarFactibilidad">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>
             <div class="modal-body">
@@ -376,6 +385,22 @@
                                             <h4>Archivos Asociados</h4>
                                             <ul id="fileList" class="list-group">
                                             </ul>
+                                        </div>
+                                        <div class="container col-md-8 pt-4">
+                                            <h4>Archivos Asociados</h4>
+                                            <div id="fileCarousel" class="carousel slide border rounded shadow-sm">
+                                                <div class="carousel-inner" id="fileCarouselInner"></div>
+
+                                                <!-- Flechas de navegación -->
+                                                <button class="carousel-control-prev" type="button" data-bs-target="#fileCarousel" data-bs-slide="prev">
+                                                    <span class="carousel-control-prev-icon bg-dark rounded-circle p-2" style="transform: scale(1.2);" aria-hidden="true"></span>
+                                                    <span class="visually-hidden">Anterior</span>
+                                                </button>
+                                                <button class="carousel-control-next" type="button" data-bs-target="#fileCarousel" data-bs-slide="next">
+                                                    <span class="carousel-control-next-icon bg-dark rounded-circle p-2" style="transform: scale(1.2);" aria-hidden="true"></span>
+                                                    <span class="visually-hidden">Siguiente</span>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" id="nav-ticket-assignee" role="tabpanel">
@@ -516,7 +541,44 @@
                                                             <label for="summaryIncident">Resumen Incidencia</label>
                                                             <textarea name="summaryIncident" class="form-control" id="summaryIncident" rows="4" placeholder="Ingrese detalles de la incidencia"></textarea>
                                                         </div>
-                                                    </div>                                   
+                                                    </div>
+                                                    <div class="row" id="divFilesFinalizeTicket">
+                                                        <div class="col-md-6 mx-auto">
+                                                            <div class="card-body text-center">
+                                                                <h1 class="white">Seleccionar Archivo</h1>
+
+                                                                <div class="my-3">
+                                                                    <img src="~/img/ServiceDesk/pdf.svg" height="50" width="50" />
+                                                                    <img src="~/img/ServiceDesk/image.png" height="50" width="50" />
+                                                                </div>
+
+                                                                <p class="white">Debe de seleccionar archivo PDF o imágenes, con el formato preestablecido.</p>
+
+                                                                <input class="form-control form-control-lg btn-primary mt-3"
+                                                                       id="filesTicketFinish"
+                                                                       name="filesTicketFinish"
+                                                                       type="file"
+                                                                       accept=".pdf, .jpeg, .jpg, .png, .gif"
+                                                                       multiple>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="container col-md-8 pt-4" id="divFinalizedFilesCarousel">
+                                                        <h4>Archivos Finalizacion Asociados</h4>
+                                                        <div id="fileCarouselFinalize" class="carousel slide border rounded shadow-sm">
+                                                            <div class="carousel-inner" id="fileCarouselInnerFinalize"></div>
+
+                                                            <!-- Flechas de navegación -->
+                                                            <button class="carousel-control-prev" type="button" data-bs-target="#fileCarouselFinalize" data-bs-slide="prev">
+                                                                <span class="carousel-control-prev-icon bg-dark rounded-circle p-2" style="transform: scale(1.2);" aria-hidden="true"></span>
+                                                                <span class="visually-hidden">Anterior</span>
+                                                            </button>
+                                                            <button class="carousel-control-next" type="button" data-bs-target="#fileCarouselFinalize" data-bs-slide="next">
+                                                                <span class="carousel-control-next-icon bg-dark rounded-circle p-2" style="transform: scale(1.2);" aria-hidden="true"></span>
+                                                                <span class="visually-hidden">Siguiente</span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
@@ -745,6 +807,23 @@
             });
         }
 
+        /**
+         * Carga el select de municipios de forma asincrona
+         */
+        function loadMunicipalitySelectByStateAsync(elementId, stateId) {
+            return $.get("/Common/GetMunicipalitiesByStateId", { stateId: stateId })
+                .done(function (data) {
+                    $("#" + elementId).empty();
+                    $("#" + elementId).append("<option selected value=''>-- Seleccione un item --</option>");
+                    $.each(data, function (index, row) {
+                        $("#" + elementId).append("<option value='" + row.idMunicipality + "'>" + row.name + "</option>");
+                    });
+                })
+                .fail(function (error) {
+                    console.error("Error al cargar las municipalidades:", error);
+                });
+        }
+
         function loadEngineersToAssignSelect(elementId, engineerType) {
             // Obtener los ingenieros a asignar
             $.get(urlRoot+"ServiceDesk/GetEngineersToAssign", { 
@@ -816,6 +895,43 @@
             }
         });
 
+        /**
+         * Evento input en coordenadas
+         */
+        $('#coordinate').on('input', function () {
+            const coord = $(this).val().trim();
+            const regex = /^-?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*-?(1[0-7]\d(\.\d+)?|180(\.0+)?|(\d{1,2}(\.\d+)?))$/;
+
+            if (regex.test(coord)) {
+                $(this).removeClass('is-invalid').addClass('is-valid');
+            } else {
+                // Coordenada inválida
+                $(this).removeClass('is-valid').addClass('is-invalid');
+            }
+        });
+
+        /**
+         * Evento blur coordenadas
+         */
+        $('#coordinate').on('blur', function () {
+            let coordinateText = $(this).val().trim();
+
+            let parts = coordinateText.split(',');
+
+            let regex = /^-?\d{1,2}(\.\d+)?,\s*-?\d{1,3}(\.\d+)?$/;
+
+            if (!regex.test(coordinateText)) {  // Cambié para validar el texto completo, no el array 'parts'
+                updateAndShowToast("Coordenadas inválidas", "Ahora", "Por favor ingrese coordenadas válidas como: 14.63,-90.5");
+                $(this).val('');  // Limpia pero NO pones focus otra vez
+                return;
+            }
+
+            let latitude = parseFloat(parts[0]);
+            let longitude = parseFloat(parts[1]);
+
+            getMunicipalityAndDepartmentByCoordinates(latitude, longitude);
+        });
+
         //VALIDACION DE FORMULARIOS
         $("#form-ticket").validate({
             errorClass: "error-validate", 
@@ -830,7 +946,7 @@
                 selectPrimaryCause: "required",
                 selectAffectedElement: "required",
                 summaryTicket: "required",
-                pdfFileTicket: "required"
+                filesTicket: "required"
             },
             messages: {
                 ticketName: "Ingrese nombre de ticket",
@@ -843,7 +959,7 @@
                 selectPrimaryCause: "Seleccione causa primaria",
                 selectAffectedElement: "Seleccione elemento afectado",
                 summaryTicket: "Ingrese resumen",
-                pdfFileTicket: "Debe de Seleccionar un Archivo PDF"
+                filesTicket: "Debe de Seleccionar Archivo PDF o imagenes"
             }
         });
 
@@ -908,7 +1024,12 @@
 
         function saveTicket() {
             var formData = new FormData();
-            formData.append('file', $('#pdfFileTicket')[0].files[0]);
+            let files = $('#filesTicket')[0].files;
+
+            for (let i = 0; i < files.length; i++) {
+                formData.append('Files', files[i]); 
+            }
+
             formData.append('ticketName', $('#ticketName').val());
             formData.append('coordinate', $('#coordinate').val());
             formData.append('stateId', $('#selectState').val());
@@ -1038,7 +1159,7 @@
         }
 
         function finishTicket() {
-            //Modal Loading
+            // Modal Loading
             $('body').loadingModal({
                 position: 'auto',
                 text: 'Cargando',
@@ -1048,22 +1169,34 @@
                 animation: 'doubleBounce'
             });
 
+            // Crear FormData
+            let formData = new FormData();
+
+            // Agregar archivos
+            let files = $('#filesTicketFinish')[0].files;
+            for (var i = 0; i < files.length; i++) {
+                formData.append('Files', files[i]);
+            }
+
+            // Agregar los demás campos
+            formData.append('PrefixId', prefixIdSelected);
+            formData.append('TicketId', ticketIdSelected);
+            formData.append('IsTechnicalVisitRequired', $("#selectRequiredVisit").val());
+            formData.append('IsBrigadeDeployed', $("#selectBrigadeMov").val());
+            formData.append('IsChangeNetworkTopology', $("#selectTopology").val());
+            formData.append('SolutionTypeId', $("#selectSolutionType").val());
+            formData.append('IdConfirmedArea', $("#selectConfirmedBy").val());
+            formData.append('WorkDone', $("#workDone").val());
+            formData.append('IncidentClosureSummary', $("#summaryIncident").val());
+            formData.append('UserName', "");
+
+            // Enviar solicitud AJAX
             $.ajax({
                 url: urlRoot + 'ServiceDesk/FinishTicket',
                 type: 'POST',
-                data : {
-                    prefixId: prefixIdSelected,
-                    ticketId: ticketIdSelected,
-                    isTechnicalVisitRequired: $("#selectRequiredVisit").val(),
-                    isBrigadeDeployed: $("#selectBrigadeMov").val(),
-                    isChangeNetworkTopology: $("#selectTopology").val(),
-                    solutionTypeId: $("#selectSolutionType").val(),
-                    idConfirmedArea: $("#selectConfirmedBy").val(),
-                    workDone: $("#workDone").val(),
-                    incidentClosureSummary: $("#summaryIncident").val(),
-                    userName: ""
-                },
-                dataType: 'json',
+                data: formData,
+                contentType: false,
+                processData: false,
                 success: function (response) {
                     Swal.fire({
                         title: "Procesado",
@@ -1093,8 +1226,10 @@
         }
 
         function isViewableFile(filename) {
-            // Aquí puedes incluir la lógica para determinar si el archivo es viewable
-            return filename.endsWith('.pdf') || filename.endsWith('.jpg') || filename.endsWith('.png');
+            const viewableExtensions = ['.pdf', '.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp'];
+            const lowerFilename = filename.toLowerCase();
+
+            return viewableExtensions.some(ext => lowerFilename.endsWith(ext));
         }
 
         function addFilesToList(files) {
@@ -1131,6 +1266,47 @@
             });
 
             // Cargar los iconos de Feather
+            feather.replace();
+        }
+
+        function addFilesToCarousel(files, carouselSelector) {
+            const carouselInner = $(carouselSelector);
+            carouselInner.empty();
+
+            files.forEach(function (file, index) {
+                const extension = file.nameFile.split('.').pop().toLowerCase();
+                const isPdf = extension === 'pdf';
+                const isImage = ['jpg', 'jpeg', 'png', 'gif'].includes(extension);
+
+                let imgSrc = isImage
+                    ? getDownloadUrl(file.nameFile)
+                    : isPdf
+                        ? '/img/ServiceDesk/pdf.svg'
+                        : '/img/ServiceDesk/image.png';
+
+                const item = $(`
+                    <div class="carousel-item ${index === 0 ? 'active' : ''}">
+                        <div class="d-flex flex-column align-items-center justify-content-center p-4">
+                            <img src="${imgSrc}" class="d-block mb-3" style="max-height: 300px; object-fit: contain;" alt="${file.nameFile}">
+                            <div class="text-center">
+                                <strong class="d-block mb-2">${file.nameFile}</strong>
+                                <div class="btn-group" role="group">
+                                    ${(isPdf || isImage) ? `
+                                    <a href="/ServiceDesk/ViewFile?filename=${encodeURIComponent(file.nameFile)}" target="_blank" class="btn btn-outline-secondary btn-sm">
+                                        <i data-feather="eye"></i> Ver
+                                    </a>` : ''}
+                                    <a href="${getDownloadUrl(file.nameFile)}" download class="btn btn-outline-primary btn-sm">
+                                        <i data-feather="download"></i> Descargar
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `);
+
+                carouselInner.append(item);
+            });
+
             feather.replace();
         }
 
@@ -1186,6 +1362,10 @@
                 //Campos
                 $('#selectEngineerType').prop('disabled', true);
                 $('#selectEngineerToAssign').prop('disabled', true);
+
+                //Se oculta opcion subir archivos
+                $('#divFilesFinalizeTicket').hide();
+                $('#divFinalizedFilesCarousel').show();
             }
             else {
                 //buttons
@@ -1196,6 +1376,10 @@
                 //Campos
                 $('#selectEngineerType').prop('disabled', false);
                 $('#selectEngineerToAssign').prop('disabled', false);
+
+                //Se muestra opcion subir archivos
+                $('#divFilesFinalizeTicket').show();
+                $('#divFinalizedFilesCarousel').hide();
             }
         }
 
@@ -1208,6 +1392,15 @@
                 $('#selectConfirmedBy').val(ticketData.idConfirmedArea).prop('disabled', true);
                 $('#workDone').val(ticketData.workDone).prop('disabled', true);
                 $('#summaryIncident').val(ticketData.incidentClosureSummary).prop('disabled', true);
+            }
+            else{
+                $('#selectRequiredVisit').val("").prop('disabled', false);
+                $('#selectBrigadeMov').val("").prop('disabled', false);
+                $('#selectTopology').val("").prop('disabled', false);
+                $('#selectSolutionType').val("").prop('disabled', false);
+                $('#selectConfirmedBy').val("").prop('disabled', false);
+                $('#workDone').val("").prop('disabled', false);
+                $('#summaryIncident').val("").prop('disabled', false);
             }
         }
 
@@ -1241,6 +1434,10 @@
             setStatusesTable(ticketData.statuses);
             //Llena list de archivos
             addFilesToList(ticketData.files);
+            //Lena carousel archivos iniciales
+            addFilesToCarousel(ticketData.files, '#fileCarouselInner');
+            //Lena carousel archivos finales
+            addFilesToCarousel(ticketData?.finishFiles, '#fileCarouselInnerFinalize');
             //Llena y configura datos de ticket finalizado
             setFinalizedTicketData(ticketData);
             //Otras configuraciones de elementos al finalizar
@@ -1363,5 +1560,52 @@
                 }
             });
         }
+
+        function getMunicipalityAndDepartmentByCoordinates(latitude, longitude) {
+            $.ajax({
+                url: '/ServiceDesk/GetMunicipalityAndDepartmentByCoordinates',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    latitude: latitude,
+                    longitude: longitude
+                }),
+                success: function (response) {
+                    if (response.success) {
+                        loadMunicipalitySelectByStateAsync("selectMunicipality", response.idState)
+                            .then(function () {
+                                $("#selectState").val(response.idState);
+                                $("#selectMunicipality").val(response.idMunicipality);
+
+                                updateAndShowToast(
+                                    'Coordenadas encontradas',
+                                    new Date().toLocaleTimeString(),
+                                    `Municipio: ${response.municipality}`
+                                );
+                            });
+                    } else {
+                        updateAndShowToast(
+                            'Error de coordenadas',
+                            new Date().toLocaleTimeString(),
+                            response.message
+                        );
+
+                        $("#selectState").val("");
+                        $("#selectMunicipality").val("");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    updateAndShowToast(
+                        'Error del servidor',
+                        new Date().toLocaleTimeString(),
+                        'No se pudo obtener la ubicación: ' + error
+                    );
+
+                    $("#selectState").val("");
+                    $("#selectMunicipality").val("");
+                }
+            });
+        }
+
     </script>
 }

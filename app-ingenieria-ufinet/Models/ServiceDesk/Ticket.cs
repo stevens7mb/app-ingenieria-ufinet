@@ -103,6 +103,11 @@
         public List<TicketFile>? Files { get; set; }
 
         /// <summary>
+        /// Archivos asociados al ticket finalizacion
+        /// </summary>
+        public List<TicketFile>? FinishFiles { get; set; }
+
+        /// <summary>
         /// Bitacora 
         /// </summary>
         public List<TicketBinnacle>? Binnacles { get; set;}

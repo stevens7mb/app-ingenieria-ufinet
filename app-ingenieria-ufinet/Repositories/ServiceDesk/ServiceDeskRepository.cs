@@ -1,10 +1,9 @@
 ﻿using app_ingenieria_ufinet.Data;
 using app_ingenieria_ufinet.Models.Commons.DataTablePaginate;
-using app_ingenieria_ufinet.Models.Indicadores.Factibilidad;
 using app_ingenieria_ufinet.Models.ServiceDesk;
-using app_ingenieria_ufinet.Utils;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
+using NetTopologySuite;
+using NetTopologySuite.Geometries;
 
 namespace app_ingenieria_ufinet.Repositories.ServiceDesk
 {
@@ -146,8 +145,11 @@ namespace app_ingenieria_ufinet.Repositories.ServiceDesk
                 _context.ServiceDeskTicketStatusHistories.Add(newHistory);
                 _context.SaveChanges();
 
-                //Se guarda el archivo
-                UploadFileTicket(request.File, newTicket.IdPrefix, newTicket.IdTicket);
+                //Se guardan archivos
+                foreach(var file in request.Files)
+                {
+                    UploadFileTicket(file, newTicket.IdPrefix, newTicket.IdTicket);
+                }
 
                 // Si todas las operaciones son exitosas, commit la transacción
                 transaction.Commit();
@@ -174,7 +176,7 @@ namespace app_ingenieria_ufinet.Repositories.ServiceDesk
         /// <param name="prefixId"></param>
         /// <param name="ticketId"></param>
         /// <returns></returns>
-        public void UploadFileTicket(IFormFile file, int prefixId, int ticketId)
+        public void UploadFileTicket(IFormFile file, int prefixId, int ticketId, int typeStatusId = (int)TicketFileTypeStatus.Initial)
         {
             string filename = GetUniqueFileName(file.FileName);
             string? targetFolder = _configuration["FileUploadSettings:TargetFolder"];
@@ -200,7 +202,8 @@ namespace app_ingenieria_ufinet.Repositories.ServiceDesk
                 PathFile = relativeFilePath,
                 FileSize = file.Length,
                 IdPrefix = prefixId,
-                IdTicket = ticketId
+                IdTicket = ticketId,
+                TypeStatusId = typeStatusId
             };
 
             _context.ServiceDeskTicketFiles.Add(serviceDeskTicketFile);
@@ -275,7 +278,15 @@ namespace app_ingenieria_ufinet.Repositories.ServiceDesk
                     AffectedElement = e.IdAffectedElementNavigation.Description ?? "",
                     FaultDetail = e.FaultDetail ?? "",
                     Files = e.ServiceDeskTicketFiles
-                                .Where(tf => tf.IdPrefix == e.IdPrefix && tf.IdTicket == e.IdTicket)
+                                .Where(tf => tf.IdPrefix == e.IdPrefix && tf.IdTicket == e.IdTicket && tf.TypeStatusId == (int)TicketFileTypeStatus.Initial)
+                                .Select(tf => new TicketFile
+                                {
+                                    TicketFileId = tf.TicketFileId,
+                                    NameFile = tf.NameFile,
+                                    Path = tf.PathFile
+                                }).ToList(),
+                    FinishFiles = e.ServiceDeskTicketFiles
+                                .Where(tf => tf.IdPrefix == e.IdPrefix && tf.IdTicket == e.IdTicket && tf.TypeStatusId == (int)TicketFileTypeStatus.Final)
                                 .Select(tf => new TicketFile
                                 {
                                     TicketFileId = tf.TicketFileId,
@@ -517,6 +528,15 @@ namespace app_ingenieria_ufinet.Repositories.ServiceDesk
                     await _context.ServiceDeskTicketStatusHistories.AddAsync(history);
                     await _context.SaveChangesAsync();
 
+                    //Se guardan archivos
+                    if (request?.Files != null && request.Files.Any())
+                    {
+                        foreach (var file in request.Files)
+                        {
+                            UploadFileTicket(file, ticket.IdPrefix, ticket.IdTicket, (int)TicketFileTypeStatus.Final);
+                        }
+                    }
+
                     await transaction.CommitAsync();
                     return true;
                 }
@@ -531,6 +551,35 @@ namespace app_ingenieria_ufinet.Repositories.ServiceDesk
                 Console.WriteLine($"Error: {ex.Message}");
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Obtener municipio y departamento por coordenadas ingresadas
+        /// </summary>
+        /// <param name="latitude"></param>
+        /// <param name="longitude"></param>
+        /// <returns></returns>
+        public async Task<(int? IdMunicipality, int? IdState, string Municipality)> GetMunicipalityAndDepartmentByCoordinates(double latitude, double longitude)
+        {
+            var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
+            var point = geometryFactory.CreatePoint(new Coordinate(longitude, latitude));
+
+            var result = await (
+                from ms in _context.Municipalityshapes
+                where ms.OgrGeometry.Contains(point)
+                join m in _context.Municipalities
+                    on ms.IdMunicipality equals m.IdMunicipality
+                select new
+                {
+                    m.IdMunicipality,
+                    m.IdState,
+                    m.Name
+                }
+            ).FirstOrDefaultAsync();
+
+            return result != null
+                ? (result.IdMunicipality, result.IdState, result.Name)
+                : (null, null, null);
         }
     }
 }

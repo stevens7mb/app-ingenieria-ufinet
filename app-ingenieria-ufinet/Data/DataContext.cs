@@ -37,6 +37,8 @@ public partial class DataContext : DbContext
 
     public virtual DbSet<FibraDropNueva> FibraDropNuevas { get; set; }
 
+    public virtual DbSet<GeometryColumn> GeometryColumns { get; set; }
+
     public virtual DbSet<IncidentType> IncidentTypes { get; set; }
 
     public virtual DbSet<InspeccionTrabajo> InspeccionTrabajos { get; set; }
@@ -54,6 +56,8 @@ public partial class DataContext : DbContext
     public virtual DbSet<Monedum> Moneda { get; set; }
 
     public virtual DbSet<Municipality> Municipalities { get; set; }
+
+    public virtual DbSet<Municipalityshape> Municipalityshapes { get; set; }
 
     public virtual DbSet<Nniacceso> Nniaccesos { get; set; }
 
@@ -91,6 +95,8 @@ public partial class DataContext : DbContext
 
     public virtual DbSet<ServiceDeskTicketFile> ServiceDeskTicketFiles { get; set; }
 
+    public virtual DbSet<ServiceDeskTicketFileTypeStatus> ServiceDeskTicketFileTypeStatuses { get; set; }
+
     public virtual DbSet<ServiceDeskTicketLog> ServiceDeskTicketLogs { get; set; }
 
     public virtual DbSet<ServiceDeskTicketStatusHistory> ServiceDeskTicketStatusHistories { get; set; }
@@ -102,6 +108,8 @@ public partial class DataContext : DbContext
     public virtual DbSet<Sfpnodo> Sfpnodos { get; set; }
 
     public virtual DbSet<SolutionType> SolutionTypes { get; set; }
+
+    public virtual DbSet<SpatialRefSy> SpatialRefSys { get; set; }
 
     public virtual DbSet<State> States { get; set; }
 
@@ -134,7 +142,7 @@ public partial class DataContext : DbContext
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Name=DatabaseConnection");
+        => optionsBuilder.UseSqlServer("Name=DatabaseConnection", x => x.UseNetTopologySuite());
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -248,7 +256,7 @@ public partial class DataContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("TipoCPECliente");
         });
-
+  
         modelBuilder.Entity<Engineer>(entity =>
         {
             entity.ToTable("Engineer");
@@ -269,6 +277,7 @@ public partial class DataContext : DbContext
 
             entity.HasOne(d => d.IdRegionNavigation).WithMany(p => p.Engineers)
                 .HasForeignKey(d => d.IdRegion)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_EngineerRegion");
 
             entity.HasOne(d => d.UserNameNavigation).WithMany(p => p.Engineers)
@@ -341,6 +350,36 @@ public partial class DataContext : DbContext
             entity.Property(e => e.Fo12hdrop).HasColumnName("FO12HDrop");
         });
 
+        modelBuilder.Entity<GeometryColumn>(entity =>
+        {
+            entity.HasKey(e => new { e.FTableCatalog, e.FTableSchema, e.FTableName, e.FGeometryColumn }).HasName("geometry_columns_pk");
+
+            entity.ToTable("geometry_columns");
+
+            entity.Property(e => e.FTableCatalog)
+                .HasMaxLength(128)
+                .IsUnicode(false)
+                .HasColumnName("f_table_catalog");
+            entity.Property(e => e.FTableSchema)
+                .HasMaxLength(128)
+                .IsUnicode(false)
+                .HasColumnName("f_table_schema");
+            entity.Property(e => e.FTableName)
+                .HasMaxLength(256)
+                .IsUnicode(false)
+                .HasColumnName("f_table_name");
+            entity.Property(e => e.FGeometryColumn)
+                .HasMaxLength(256)
+                .IsUnicode(false)
+                .HasColumnName("f_geometry_column");
+            entity.Property(e => e.CoordDimension).HasColumnName("coord_dimension");
+            entity.Property(e => e.GeometryType)
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .HasColumnName("geometry_type");
+            entity.Property(e => e.Srid).HasColumnName("srid");
+        });
+
         modelBuilder.Entity<IncidentType>(entity =>
         {
             entity.HasKey(e => e.IdIncidentType).HasName("PK_IncydentType");
@@ -386,9 +425,9 @@ public partial class DataContext : DbContext
                 .HasConstraintName("fk_InspeccionTrabajo_Provisioning");
 
             entity.HasOne(d => d.IdInspeccionTrabajoEstadoNavigation).WithMany(p => p.InspeccionTrabajos)
-                .HasForeignKey(d => d.IdInspeccionTrabajoEstado)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_InspeccionTrabajo_InspeccionTrabajoEstado");
+               .HasForeignKey(d => d.IdInspeccionTrabajoEstado)
+               .OnDelete(DeleteBehavior.ClientSetNull)
+               .HasConstraintName("fk_InspeccionTrabajo_InspeccionTrabajoEstado");
 
             entity.HasOne(d => d.IdTecnicoNavigation).WithMany(p => p.InspeccionTrabajos)
                 .HasForeignKey(d => d.IdTecnico)
@@ -402,6 +441,7 @@ public partial class DataContext : DbContext
 
             entity.HasOne(d => d.UsuarioSupervisionNavigation).WithMany(p => p.InspeccionTrabajoUsuarioSupervisionNavigations)
                 .HasForeignKey(d => d.UsuarioSupervision)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_InspeccionTrabajo_UsuarioSupervision");
         });
 
@@ -544,6 +584,35 @@ public partial class DataContext : DbContext
                 .HasConstraintName("FK_State");
         });
 
+        modelBuilder.Entity<Municipalityshape>(entity =>
+        {
+            entity.HasKey(e => e.OgrFid);
+
+            entity.ToTable("municipalityshape");
+
+            entity.HasIndex(e => e.OgrGeometry, "ogr_dbo_municipalityshape_ogr_geometry_sidx");
+
+            entity.Property(e => e.OgrFid).HasColumnName("ogr_fid");
+            entity.Property(e => e.Cc2).HasColumnName("cc_2");
+            entity.Property(e => e.Country).HasColumnName("country");
+            entity.Property(e => e.Engtype2).HasColumnName("engtype_2");
+            entity.Property(e => e.Gid0).HasColumnName("gid_0");
+            entity.Property(e => e.Gid1).HasColumnName("gid_1");
+            entity.Property(e => e.Gid2).HasColumnName("gid_2");
+            entity.Property(e => e.Hasc2).HasColumnName("hasc_2");
+            entity.Property(e => e.Name1).HasColumnName("name_1");
+            entity.Property(e => e.Name2).HasColumnName("name_2");
+            entity.Property(e => e.NlName1).HasColumnName("nl_name_1");
+            entity.Property(e => e.NlName2).HasColumnName("nl_name_2");
+            entity.Property(e => e.OgrGeometry)
+                .HasColumnType("geometry")
+                .HasColumnName("ogr_geometry");
+            entity.Property(e => e.Type2).HasColumnName("type_2");
+            entity.Property(e => e.Varname2).HasColumnName("varname_2");
+            entity.Property(e => e.IdMunicipality).HasColumnName("IdMunicipality");
+        });
+
+        
         modelBuilder.Entity<Nniacceso>(entity =>
         {
             entity.HasKey(e => e.IdNniacceso).HasName("PK_NNIAcceso_IdNNIAcceso");
@@ -575,13 +644,14 @@ public partial class DataContext : DbContext
 
             entity.Property(e => e.IdNodoAcceso).ValueGeneratedNever();
             entity.Property(e => e.EquipoAccesoDestino)
-                .HasMaxLength(100)
-                .IsUnicode(false);
+               .HasMaxLength(100)
+               .IsUnicode(false);
             entity.Property(e => e.Estado).HasDefaultValue(-1);
             entity.Property(e => e.IpaccesoDestino)
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("IPAccesoDestino");
+            entity.Property(e => e.Estado).HasDefaultValue(-1);
             entity.Property(e => e.NodoAccesoDestino)
                 .HasMaxLength(100)
                 .IsUnicode(false);
@@ -989,10 +1059,28 @@ public partial class DataContext : DbContext
             entity.Property(e => e.PathFile)
                 .HasMaxLength(500)
                 .IsUnicode(false);
+            entity.Property(e => e.TypeStatusId).HasDefaultValue(1);
+
+            entity.HasOne(d => d.TypeStatus).WithMany(p => p.ServiceDeskTicketFiles)
+                .HasForeignKey(d => d.TypeStatusId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ServiceDeskTicketFileTypeStatus");
 
             entity.HasOne(d => d.ServiceDeskTicket).WithMany(p => p.ServiceDeskTicketFiles)
                 .HasForeignKey(d => new { d.IdPrefix, d.IdTicket })
                 .HasConstraintName("FK_ServiceDeskTicket");
+        });
+
+        modelBuilder.Entity<ServiceDeskTicketFileTypeStatus>(entity =>
+        {
+            entity.HasKey(e => e.TypeStatusId);
+
+            entity.ToTable("ServiceDeskTicketFileTypeStatus");
+
+            entity.Property(e => e.TypeStatusId).ValueGeneratedNever();
+            entity.Property(e => e.Description)
+                .HasMaxLength(500)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<ServiceDeskTicketLog>(entity =>
@@ -1110,6 +1198,30 @@ public partial class DataContext : DbContext
             entity.Property(e => e.Description)
                 .HasMaxLength(100)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<SpatialRefSy>(entity =>
+        {
+            entity.HasKey(e => e.Srid).HasName("PK__spatial___36B11BD5F31EFEFC");
+
+            entity.ToTable("spatial_ref_sys");
+
+            entity.Property(e => e.Srid)
+                .ValueGeneratedNever()
+                .HasColumnName("srid");
+            entity.Property(e => e.AuthName)
+                .HasMaxLength(256)
+                .IsUnicode(false)
+                .HasColumnName("auth_name");
+            entity.Property(e => e.AuthSrid).HasColumnName("auth_srid");
+            entity.Property(e => e.Proj4text)
+                .HasMaxLength(2048)
+                .IsUnicode(false)
+                .HasColumnName("proj4text");
+            entity.Property(e => e.Srtext)
+                .HasMaxLength(2048)
+                .IsUnicode(false)
+                .HasColumnName("srtext");
         });
 
         modelBuilder.Entity<State>(entity =>

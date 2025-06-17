@@ -33,7 +33,7 @@
         /// <summary>
         /// Requiere desplazamiento de brigada
         /// </summary>
-        public required int IsBrigadeDeployed { get; set; } 
+        public required int IsBrigadeDeployed { get; set; }
 
         /// <summary>
         /// Requiere cambio de topologia de red
@@ -54,5 +54,11 @@
         /// Resumen de finalización de ticket
         /// </summary>
         public required string IncidentClosureSummary { get; set; }
+
+
+        /// <summary>
+        /// Files
+        /// </summary>
+        public IFormFileCollection? Files { get; set; }
     }
 }
