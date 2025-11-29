@@ -149,7 +149,7 @@
                         </ul>
                     </li>
                 }
-                @if (rolesUsuario.Contains("Admin") || rolesUsuario.Contains("Usuario"))
+                @if (rolesUsuario.Contains("Admin") || rolesUsuario.Contains("Usuario") || rolesUsuario.Contains("Comercial"))
                 {
                     <li class=" nav-item">
                         <a class="d-flex align-items-center" href="#"><i data-feather="pie-chart"></i><span class="menu-title text-truncate" data-i18n="Page Layouts">Indicadores DR</span>@*<span class="badge badge-light-danger rounded-pill ms-auto me-1">2</span>*@</a>
@@ -160,7 +160,7 @@
                                     <a class="d-flex align-items-center" href="@Url.Action("Dashboard", "Indicadores")"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Shop">DashBoard</span></a>
                                 </li>
                             }
-                            @if (rolesUsuario.Contains("Admin") || rolesUsuario.Contains("Usuario"))
+                            @if (rolesUsuario.Contains("Admin") || rolesUsuario.Contains("Usuario") || rolesUsuario.Contains("Comercial"))
                             {
                                 <li class="@(ViewContext.RouteData.Values["Controller"].ToString() + ViewContext.RouteData.Values["Action"].ToString() == "IndicadoresTablaDeDatos" ? "active nav-item" : "nav-item")">
                                     <a class="d-flex align-items-center" href="@Url.Action("TablaDeDatos", "Indicadores")"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Shop">Tabla De Datos</span></a>

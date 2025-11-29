@@ -1,5 +1,5 @@
 ﻿CREATE OR ALTER PROCEDURE crear_factibilidad(
-	@ticket INT,
+	@ticket VARCHAR(200),
 	@estudio VARCHAR(100),
 	@id_cliente INT,
 	@id_kam INT,
@@ -10,7 +10,12 @@
 	@sitio_con_cobertura_parcial INT,
 	@sitio_sin_cobertura INT,
 	@usuario VARCHAR(100),
-	@tipo_servicio INT
+	@tipo_servicio INT,
+	@coordenada VARCHAR(200) = NULL,
+	@municipio INT = NULL,	
+	@departamento INT = NULL,
+	@capex DECIMAL(18,2) = NULL,
+	@opex DECIMAL(18,2) = NULL
 ) AS
 BEGIN
 	BEGIN TRY
@@ -37,7 +42,15 @@ BEGIN
 			SitioSinCobertura,
 			IdIngeniero,
 			IdTipoServicio,
-			idSucursal
+			idSucursal,
+			Coordenada,
+			IdMunicipio,	
+			IdDepartamento,
+			Capex,
+			Opex,
+			UsuarioRegistro,
+			FechaRegistro,
+			IdEstado
 		)
 		VALUES(
 			@ticket, 
@@ -53,7 +66,32 @@ BEGIN
 			@sitio_sin_cobertura,
 			@idIngeniero,
 			@tipo_servicio,
-			@idSucursal
+			@idSucursal,
+			@coordenada,
+			@municipio,	
+			@departamento,
+			@capex,
+			@opex,
+			@usuario,
+			GETDATE(),
+			1 --Creado
+		)
+
+		INSERT INTO dbo.FactibilidadHistorialEstado(
+			IdFactibilidad,
+			Ticket,
+			IdEstado,
+			Usuario,
+			Fecha,
+			Comentario	
+		)
+		VALUES(
+			SCOPE_IDENTITY(),
+			@ticket,
+			1, --Creado
+			@usuario,	
+			GETDATE(),
+			'Factibilidad creada'	
 		)
 		
 	    SELECT 

@@ -53,6 +53,7 @@ BEGIN
 			IdFactibilidad, 
 			Ticket,
 			Estudio, 
+			ISNULL(ts.TipoServicio, '') AS 'TipoServicio',
 			c.Nombre AS Cliente, 
 			k.Nombre AS KAM, 
 			BW, 
@@ -67,13 +68,16 @@ BEGIN
 			SitioSinCobertura,
 			SitioConCobertura + SitioConCoberturaParcial + SitioSinCobertura AS SitiosAnalizados,
 			ing.Nombre AS Ingeniero,
-			ISNULL(ts.TipoServicio, '') AS 'TipoServicio'
+			Capex,
+			Opex,
+			ef.Estado AS EstadoFactibilidad
 		FROM Factibilidad f
 		INNER JOIN Cliente c ON c.IdCliente = f.IdCliente 
 		INNER JOIN KAM k ON k.IdKAM = f.IdKAM 
 		INNER JOIN Provisioning ing ON ing.IdIngeniero = f.IdIngeniero 
 		LEFT JOIN TipoServicio ts ON ts.IdTipoServicio = f.idTipoServicio
 		INNER JOIN Usuario u ON u.Usuario = ing.Usuario
+		LEFT JOIN dbo.EstadoFactibilidad ef ON ef.IdEstado = f.IdEstado
 		WHERE f.Estado = -1
 		AND u.idSucursal = @IdSucursal
 		AND (@tipo_servicio_filter IS NULL OR ts.TipoServicio = @tipo_servicio_filter)
@@ -88,34 +92,44 @@ BEGIN
 	 
 	      	CASE WHEN (@SortColumn = 0 AND @SortDirection='asc') THEN IdFactibilidad END ASC,  
 	      	CASE WHEN (@SortColumn = 0 AND @SortDirection='desc') THEN IdFactibilidad END DESC, 
-	      	CASE WHEN (@SortColumn = 1 AND @SortDirection='asc') THEN Ticket END ASC,  
-	      	CASE WHEN (@SortColumn = 1 AND @SortDirection='desc') THEN Ticket END DESC,
+	      	CASE WHEN (@SortColumn = 1 AND @SortDirection='asc') THEN 
+			CASE WHEN TRY_CAST(Ticket AS INT) IS NOT NULL THEN TRY_CAST(Ticket AS INT) ELSE NULL END END ASC,
+			CASE WHEN (@SortColumn = 1 AND @SortDirection='asc') THEN Ticket END ASC,
+			CASE WHEN (@SortColumn = 1 AND @SortDirection='desc') THEN 
+			CASE WHEN TRY_CAST(Ticket AS INT) IS NOT NULL THEN TRY_CAST(Ticket AS INT) ELSE NULL END END DESC,
+			CASE WHEN (@SortColumn = 1 AND @SortDirection='desc') THEN Ticket END DESC,
 	      	CASE WHEN (@SortColumn = 2 AND @SortDirection='asc') THEN Estudio END ASC,  
 	      	CASE WHEN (@SortColumn = 2 AND @SortDirection='desc') THEN Estudio END DESC,
-	      	CASE WHEN (@SortColumn = 3 AND @SortDirection='asc') THEN c.Nombre END ASC,  
-	      	CASE WHEN (@SortColumn = 3 AND @SortDirection='desc') THEN c.Nombre END DESC,
-	      	CASE WHEN (@SortColumn = 4 AND @SortDirection='asc') THEN k.Nombre END ASC,  
-	      	CASE WHEN (@SortColumn = 4 AND @SortDirection='desc') THEN k.Nombre END DESC,
-	      	CASE WHEN (@SortColumn = 5 AND @SortDirection='asc') THEN BW END ASC,  
-	      	CASE WHEN (@SortColumn = 5 AND @SortDirection='desc') THEN BW END DESC,
-	      	CASE WHEN (@SortColumn = 6 AND @SortDirection='asc') THEN FechaSolicitud END ASC,  
-	      	CASE WHEN (@SortColumn = 6 AND @SortDirection='desc') THEN FechaSolicitud END DESC,
-	      	CASE WHEN (@SortColumn = 7 AND @SortDirection='asc') THEN FechaRespuesta END ASC,  
-	      	CASE WHEN (@SortColumn = 7 AND @SortDirection='desc') THEN FechaRespuesta END DESC,
-	      	CASE WHEN (@SortColumn = 8 AND @SortDirection='asc') THEN (CASE WHEN f.Estado = -1 THEN 'Activo'ELSE 'Inactivo' END) END ASC,  
-	      	CASE WHEN (@SortColumn = 8 AND @SortDirection='desc') THEN (CASE WHEN f.Estado = -1 THEN 'Activo'ELSE 'Inactivo'END) END DESC,
-	      	CASE WHEN (@SortColumn = 9 AND @SortDirection='asc') THEN SitioConCobertura END ASC,  
-	      	CASE WHEN (@SortColumn = 9 AND @SortDirection='desc') THEN SitioConCobertura END DESC,
-	      	CASE WHEN (@SortColumn = 10 AND @SortDirection='asc') THEN SitioConCoberturaParcial END ASC,  
-	      	CASE WHEN (@SortColumn = 10 AND @SortDirection='desc') THEN SitioConCoberturaParcial END DESC,
-	      	CASE WHEN (@SortColumn = 11 AND @SortDirection='asc') THEN SitioSinCobertura END ASC,  
-	      	CASE WHEN (@SortColumn = 11 AND @SortDirection='desc') THEN SitioSinCobertura END DESC,
-	      	CASE WHEN (@SortColumn = 12 AND @SortDirection='asc') THEN (SitioConCobertura + SitioConCoberturaParcial + SitioSinCobertura) END ASC,  
-	      	CASE WHEN (@SortColumn = 12 AND @SortDirection='desc') THEN (SitioConCobertura + SitioConCoberturaParcial + SitioSinCobertura) END DESC,
-	      	CASE WHEN (@SortColumn = 13 AND @SortDirection='asc') THEN ing.Nombre END ASC,  
-	      	CASE WHEN (@SortColumn = 13 AND @SortDirection='desc') THEN ing.Nombre END DESC,
-	      	CASE WHEN (@SortColumn = 14 AND @SortDirection='asc') THEN TipoServicio END ASC,  
-	      	CASE WHEN (@SortColumn = 14 AND @SortDirection='desc') THEN TipoServicio END DESC
+			CASE WHEN (@SortColumn = 3 AND @SortDirection='asc') THEN TipoServicio END ASC,  
+	      	CASE WHEN (@SortColumn = 3 AND @SortDirection='desc') THEN TipoServicio END DESC,
+	      	CASE WHEN (@SortColumn = 4 AND @SortDirection='asc') THEN c.Nombre END ASC,  
+	      	CASE WHEN (@SortColumn = 4 AND @SortDirection='desc') THEN c.Nombre END DESC,
+	      	CASE WHEN (@SortColumn = 5 AND @SortDirection='asc') THEN k.Nombre END ASC,  
+	      	CASE WHEN (@SortColumn = 5 AND @SortDirection='desc') THEN k.Nombre END DESC,
+	      	CASE WHEN (@SortColumn = 6 AND @SortDirection='asc') THEN BW END ASC,  
+	      	CASE WHEN (@SortColumn = 6 AND @SortDirection='desc') THEN BW END DESC,
+	      	CASE WHEN (@SortColumn = 7 AND @SortDirection='asc') THEN FechaSolicitud END ASC,  
+	      	CASE WHEN (@SortColumn = 7 AND @SortDirection='desc') THEN FechaSolicitud END DESC,
+	      	CASE WHEN (@SortColumn = 8 AND @SortDirection='asc') THEN FechaRespuesta END ASC,  
+	      	CASE WHEN (@SortColumn = 8 AND @SortDirection='desc') THEN FechaRespuesta END DESC,
+	      	CASE WHEN (@SortColumn = 9 AND @SortDirection='asc') THEN (CASE WHEN f.Estado = -1 THEN 'Activo'ELSE 'Inactivo' END) END ASC,  
+	      	CASE WHEN (@SortColumn = 9 AND @SortDirection='desc') THEN (CASE WHEN f.Estado = -1 THEN 'Activo'ELSE 'Inactivo'END) END DESC,
+	      	CASE WHEN (@SortColumn = 10 AND @SortDirection='asc') THEN SitioConCobertura END ASC,  
+	      	CASE WHEN (@SortColumn = 10 AND @SortDirection='desc') THEN SitioConCobertura END DESC,
+	      	CASE WHEN (@SortColumn = 11 AND @SortDirection='asc') THEN SitioConCoberturaParcial END ASC,  
+	      	CASE WHEN (@SortColumn = 11 AND @SortDirection='desc') THEN SitioConCoberturaParcial END DESC,
+	      	CASE WHEN (@SortColumn = 12 AND @SortDirection='asc') THEN SitioSinCobertura END ASC,  
+	      	CASE WHEN (@SortColumn = 12 AND @SortDirection='desc') THEN SitioSinCobertura END DESC,
+	      	CASE WHEN (@SortColumn = 13 AND @SortDirection='asc') THEN (SitioConCobertura + SitioConCoberturaParcial + SitioSinCobertura) END ASC,  
+	      	CASE WHEN (@SortColumn = 13 AND @SortDirection='desc') THEN (SitioConCobertura + SitioConCoberturaParcial + SitioSinCobertura) END DESC,
+	      	CASE WHEN (@SortColumn = 14 AND @SortDirection='asc') THEN ing.Nombre END ASC,  
+	      	CASE WHEN (@SortColumn = 14 AND @SortDirection='desc') THEN ing.Nombre END DESC,
+			CASE WHEN (@SortColumn = 15 AND @SortDirection='asc') THEN Capex END ASC, 
+			CASE WHEN (@SortColumn = 15 AND @SortDirection='desc') THEN Capex END DESC,
+			CASE WHEN (@SortColumn = 16 AND @SortDirection='asc') THEN Opex END ASC, 
+			CASE WHEN (@SortColumn = 16 AND @SortDirection='desc') THEN Opex END DESC,
+		    CASE WHEN (@SortColumn = 17) AND @SortDirection='asc' THEN ef.Estado END ASC,  
+	      	CASE WHEN (@SortColumn = 17) AND @SortDirection='desc' THEN ef.Estado END DESC
 	    )
 	    	AS RowNum,
 	    	COUNT(*) OVER() as FilteredCount,
@@ -137,18 +151,23 @@ BEGIN
 			SitioSinCobertura,
 			SitioConCobertura + SitioConCoberturaParcial + SitioSinCobertura AS SitiosAnalizados,
 			ing.Nombre AS Ingeniero,
-			ISNULL(ts.TipoServicio, '') AS 'TipoServicio'
+			ISNULL(ts.TipoServicio, '') AS 'TipoServicio',
+			Capex,
+			Opex,
+			ef.Estado AS EstadoFactibilidad
 			FROM Factibilidad f
 			INNER JOIN Cliente c ON c.IdCliente = f.IdCliente 
 			INNER JOIN KAM k ON k.IdKAM = f.IdKAM 
 			INNER JOIN Provisioning ing ON ing.IdIngeniero = f.IdIngeniero 
 			LEFT JOIN TipoServicio ts ON ts.IdTipoServicio = f.idTipoServicio
 			INNER JOIN dbo.Usuario u ON u.Usuario = ing.Usuario
+			LEFT JOIN dbo.EstadoFactibilidad ef ON ef.IdEstado = f.IdEstado
 		    WHERE 
 		    (ISNULL(@SearchValue, '') = ''
 				OR IdFactibilidad LIKE '%' + @SearchValue + '%'
 				OR Ticket LIKE '%' + @SearchValue + '%'
 				OR Estudio LIKE '%' + @SearchValue + '%'
+				OR TipoServicio LIKE '%' + @SearchValue + '%'
 				OR c.Nombre LIKE '%' + @SearchValue + '%'
 				OR k.Nombre LIKE '%' + @SearchValue + '%'
 				OR BW LIKE '%' + @SearchValue + '%'
@@ -163,7 +182,9 @@ BEGIN
 				OR SitioSinCobertura LIKE '%' + @SearchValue + '%'
 				OR SitioConCobertura + SitioConCoberturaParcial + SitioSinCobertura LIKE '%' + @SearchValue + '%'
 				OR ing.Nombre LIKE '%' + @SearchValue + '%'
-				OR TipoServicio LIKE '%' + @SearchValue + '%'		 
+				OR Capex LIKE '%' + @SearchValue + '%'	
+				OR Opex LIKE '%' + @SearchValue + '%' 
+				OR ef.Estado LIKE '%' + @SearchValue + '%'
 			)
 		    AND f.Estado = -1
 			AND (@es_admin = -1 OR u.idSucursal = @IdSucursal)
@@ -175,6 +196,7 @@ BEGIN
 		    IdFactibilidad, 
 			Ticket,
 			Estudio, 
+			ISNULL(TipoServicio, '') AS 'TipoServicio', 
 			Cliente AS Cliente, 
 			KAM AS KAM, 
 			BW, 
@@ -186,7 +208,9 @@ BEGIN
 			SitioSinCobertura,
 			SitioConCobertura + SitioConCoberturaParcial + SitioSinCobertura AS SitiosAnalizados,
 			Ingeniero,
-			ISNULL(TipoServicio, '') AS 'TipoServicio', 
+			Capex,
+			Opex,
+			EstadoFactibilidad,
 	    	FilteredCount,
 	    	@TotalCount AS TotalCount
 	  	FROM CTE_Results

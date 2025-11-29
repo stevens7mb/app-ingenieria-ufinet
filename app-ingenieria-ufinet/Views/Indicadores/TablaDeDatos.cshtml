@@ -11,6 +11,8 @@
                                         .Where(claim => claim.Type == ClaimTypes.Role)
                                         .Select(claim => claim.Value)
                                         .ToArray();
+        string branch = claimsIdentity?.Claims
+                            .FirstOrDefault(c => c.Type == "Sucursal")?.Value ?? "Unknown";
 }
 
 <!--Bootstrap Datatable-->
@@ -41,6 +43,7 @@
                                     <tr style="width:100%">
                                         <th></th>
                                         <th></th>
+                                        <th></th>
                                         <th>
                                             @if (userRoles != null && userRoles.Contains("Admin"))
                                             {
@@ -69,9 +72,20 @@
                                         <th></th>
                                         <th></th>
                                         <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
                                     </tr>
                                     <tr>
-                                        <th>Ticket</th>
+                                        <th></th>
+                                        @if (branch == "Guatemala - Infinitum")
+                                        {
+                                            <th>Oferta</th>
+                                        }
+                                        else
+                                        {
+                                            <th>Ticket</th>
+                                        }
                                         <th>Detalle</th>
                                         <th>Tipo de Servicio</th>
                                         <th>Cliente</th>
@@ -85,6 +99,9 @@
                                         <th>Sitio Sin Cobertura</th>
                                         <th>Sitios analizados</th>
                                         <th>Ingeniero</th>
+                                        <th>CAPEX</th>
+                                        <th>OPEX</th>
+                                        <th>Estado Factibilidad</th>
                                         <th>Acción</th>
                                     </tr>
                                 </thead>
@@ -123,9 +140,9 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
-                                    <label>Ticket: </label>
+                                    <label>@(branch == "Guatemala - Infinitum" ? "Oferta" : "Ticket"):</label>
                                     <div class="mb-1">
-                                        <input type="number" id="Ticket" name="Ticket" placeholder="Ingrese Ticket" class="form-control">
+                                        <input type="@(branch == "Guatemala - Infinitum" ? "text" : "number")" id="Ticket" name="Ticket" placeholder="Ingrese @(branch == "Guatemala - Infinitum" ? "Oferta" : "Ticket")" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-8">
@@ -186,20 +203,78 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
-                                    <label>Sitios Sin Cobertura: </label>
-                                    <div class="mb-1">
-                                        <input type="number" id="SitioSinCobertura" name="SitioSinCobertura" placeholder="Sitios Sin Cobertura" class="form-control">
-                                    </div>
+                                    <label>Sitios Sin Cobertura:</label>
+                                    <input type="number" id="SitioSinCobertura" name="SitioSinCobertura" class="form-control" placeholder="Sitios Sin Cobertura" />
                                 </div>
+
                                 <div class="col-md-4">
-                                    <label>Tipo de Servicio: </label>
-                                    <div class="mb-1">
-                                        <select class="form-control col-md-12" id="selectTipoServicio" name="selectTipoServicio">
+                                    <label>Tipo de Servicio:</label>
+                                    <select id="selectTipoServicio" name="selectTipoServicio" class="form-control">
+                                        <option value="">Seleccione una opción</option>
+                                    </select>
+                                </div>
+
+                                @* Renderizar coordenadas solo si no es El Salvador *@
+                                @if (branch != "El Salvador")
+                                {
+                                    <div class="col-md-4">
+                                        <label>Coordenadas:</label>
+                                        <input type="text" id="coordinate" name="coordinate" class="form-control" placeholder="Ej: 14.63,-90.5" />
+                                    </div>
+                                }
+
+                                @* Si es El Salvador, llenar la tercera columna con CAPEX para que no quede vacía *@
+                                @if (branch == "El Salvador")
+                                {
+                                    <div class="col-md-4">
+                                        <label>CAPEX:</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number" id="capex" name="capex" class="form-control" placeholder="Ej: 150000" />
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            @* Segunda fila solo si no es El Salvador *@
+                            @if (branch != "El Salvador")
+                            {
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Departamento:</label>
+                                        <select id="selectState" name="selectState" class="form-control">
                                             <option value="">Seleccione una opción</option>
                                         </select>
                                     </div>
+
+                                    <div class="col-md-4">
+                                        <label>Municipio:</label>
+                                        <select id="selectMunicipality" name="selectMunicipality" class="form-control">
+                                            <option value="">Seleccione una opción</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label>CAPEX:</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number" id="capex" name="capex" class="form-control" placeholder="Ej: 150000" />
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            @* OPEX siempre en fila nueva *@
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>OPEX:</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" id="opex" name="opex" class="form-control" placeholder="Ej: 150000" />
+                                    </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -213,19 +288,17 @@
 <!-- Modal Agregar Factibilidad Fin -->
 
 <!-- Modal Editar Factibilidad -->
-<div class="modal fade fade text-start" id="modalEditarFactibilidad" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
+<div class="modal fade text-start" id="modalEditarFactibilidad" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="myModalLabel33"> Editar un Estudio </h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="ResetModal()" id="closeModalEditarFactibilidad">
-                    @* <span aria-hidden="true">&times;</span>*@
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="ResetModal()" id="closeModalEditarFactibilidad"></button>
             </div>
             <div class="modal-body">
                 <form id="form-factibilidade" name="form-factibilidade" method="post">
                     <div class="modal-body">
-                        <input type="hidden" id="IdFactibilidade" name="IdFactibilidade" placeholder="" class="form-control">
+                        <input type="hidden" id="IdFactibilidade" name="IdFactibilidade" class="form-control">
                         <div class="col-md-12">
                             <div class="row">
                                 <div class="col-md-12">
@@ -237,9 +310,9 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
-                                    <label>Ticket: </label>
+                                    <label>@(branch == "Prueba" ? "Oferta" : "Ticket"):</label>
                                     <div class="mb-1">
-                                        <input type="number" id="Tickete" name="Tickete" placeholder="Ingrese Ticket" class="form-control">
+                                        <input type="@(branch == "Prueba" ? "text" : "number")" id="Tickete" name="Tickete" placeholder="Ingrese @(branch == "Prueba" ? "Oferta" : "Ticket")" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-8">
@@ -300,17 +373,123 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
-                                    <label>Sitios Sin Cobertura: </label>
+                                    <label>Sitios Sin Cobertura:</label>
                                     <div class="mb-1">
-                                        <input type="number" id="SitioSinCoberturae" name="SitioSinCoberturae" placeholder="Sitios Sin Cobertura" class="form-control">
+                                        <input type="number" id="SitioSinCoberturae" name="SitioSinCoberturae" class="form-control" placeholder="Sitios Sin Cobertura" />
                                     </div>
                                 </div>
+
                                 <div class="col-md-4">
-                                    <label>Tipo de Servicio: </label>
+                                    <label>Tipo de Servicio:</label>
                                     <div class="mb-1">
-                                        <select class="form-control col-md-12" id="selectTipoServicioe" name="selectTipoServicioe">
+                                        <select id="selectTipoServicioe" name="selectTipoServicioe" class="form-control">
                                             <option value="">Seleccione una opción</option>
                                         </select>
+                                    </div>
+                                </div>
+
+                                @* Coordenadas solo si no es El Salvador *@
+                                @if (branch != "El Salvador")
+                                {
+                                    <div class="col-md-4">
+                                        <label>Coordenadas:</label>
+                                        <div class="mb-1">
+                                            <input type="text"
+                                                id="coordinatee"
+                                                name="coordinatee"
+                                                class="form-control"
+                                                placeholder="Ej: 14.63,-90.5"
+                                                pattern="^-?\d{1,2}(\.\d+)?,\s*-?\d{1,3}(\.\d+)?$"
+                                                title="Ingrese coordenadas válidas en formato: latitud,longitud. Ej: 14.63,-90.5" />
+                                            <div class="invalid-feedback">
+                                                Por favor ingrese coordenadas válidas (latitud entre -90 y 90, longitud entre -180 y 180).
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+                                @* Si es El Salvador, llenar tercera columna con CAPEX para que no queden espacios *@
+                                @if (branch == "El Salvador")
+                                {
+                                    <div class="col-md-4">
+                                        <label>CAPEX:</label>
+                                        <div class="input-group mb-1">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number"
+                                                id="capexe"
+                                                name="capexe"
+                                                class="form-control"
+                                                placeholder="Ej: 150000"
+                                                min="0"
+                                                step="0.01"
+                                                title="Ingrese un valor numérico para el CAPEX">
+                                            <div class="invalid-feedback">
+                                                Por favor ingrese un valor válido para el CAPEX.
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            @* Segunda fila solo si no es El Salvador *@
+                            @if (branch != "El Salvador")
+                            {
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Departamento:</label>
+                                        <div class="mb-1">
+                                            <select id="selectStatee" name="selectStatee" class="form-control">
+                                                <option value="">Seleccione una opción</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label>Municipio:</label>
+                                        <div class="mb-1">
+                                            <select id="selectMunicipalitye" name="selectMunicipalitye" class="form-control">
+                                                <option value="">Seleccione una opción</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label>CAPEX:</label>
+                                        <div class="input-group mb-1">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number"
+                                                id="capexe"
+                                                name="capexe"
+                                                class="form-control"
+                                                placeholder="Ej: 150000"
+                                                min="0"
+                                                step="0.01"
+                                                title="Ingrese un valor numérico para el CAPEX">
+                                            <div class="invalid-feedback">
+                                                Por favor ingrese un valor válido para el CAPEX.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            @* OPEX siempre en fila nueva *@
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>OPEX:</label>
+                                    <div class="input-group mb-1">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number"
+                                            id="opexe"
+                                            name="opexe"
+                                            class="form-control"
+                                            placeholder="Ej: 150000"
+                                            min="0"
+                                            step="0.01"
+                                            title="Ingrese un valor numérico para el OPEX">
+                                        <div class="invalid-feedback">
+                                            Por favor ingrese un valor válido para el OPEX.
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -360,6 +539,27 @@
 </div>
 <!-- Modal Agregar Cliente Fin -->
 
+<!-- Modal Aprobar Rechazar -->
+<div class="modal fade" id="modalApproveReject" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Validar Factibilidad</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>¿Desea aprobar o rechazar la factibilidad <strong id="modalTicket"></strong>?</p>
+        <textarea id="modalComment" class="form-control" placeholder="Comentario opcional"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" id="btnReject">Rechazar</button>
+        <button type="button" class="btn btn-success" id="btnApprove">Aprobar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal Aprobar Rechazar Fin-->
+
 @section Scripts {
     <!-- Bootstrap datatable -->
     <script src="~/Template/app-assets/vendors/js/tables/datatable/jquery.dataTables.min.js"></script>
@@ -384,6 +584,8 @@
     <script src="~/js/sweetalert2.all.min.js"></script>
 
     <script>
+        let idFactibilitySelected;
+        let selectedTicket;
 
         $(document).ready(function () {
 
@@ -415,6 +617,7 @@
                     }
                 ],
                 columns: [
+                    { "data": "idFactibilidad", "visible": false },
                     { "data": "ticket" },
                     { "data": "estudio" },
                     { "data": "tipoServicio" },
@@ -430,9 +633,57 @@
                     { "data": "sitiosAnalizados" },
                     { "data": "ingeniero" },
                     {
+                        data: "capex",
+                        render: function(data, type, row) {
+                            if (type === 'display') {
+                                return data != null ? $.fn.dataTable.render.number(',', '.', 2).display(data) : '';
+                            }
+                            // Para sort/filtro, los nulos se colocan al final
+                            return data != null ? parseFloat(data) : Number.MAX_SAFE_INTEGER;
+                        }
+                    },
+                    {
+                        data: "opex",
+                        render: function(data, type, row) {
+                            if (type === 'display') {
+                                return data != null ? $.fn.dataTable.render.number(',', '.', 2).display(data) : '';
+                            }
+                            // Para sort/filtro, los nulos se colocan al final
+                            return data != null ? parseFloat(data) : Number.MAX_SAFE_INTEGER;
+                        }
+                    },
+                    { "data": "estadoFactibilidad" },
+                    {
                         'defaultContent': null,
                         'render': function (data, type, row) {
-                            return '<div class="d-flex"> <button type="button" class="btn btn-icon btn-warning mx-1" id="' + row.idFactibilidad + '" onclick="detallesFactibilidad(this.id)" data-toggle="tooltip" data-placement="left" title="Modificar"> <i data-feather="edit"></i></i> </button> <button type="button" class="btn btn-icon btn-danger mx-1" id="' + row.idFactibilidad + '" onclick="eliminarFactibilidad(this.id)" data-toggle="tooltip" data-placement="left" title="Eliminar"> <i data-feather="trash"></i> </button> </div>'
+                            return `
+                                <div class="d-flex">
+                                    <button type="button" class="btn btn-icon btn-warning mx-1" 
+                                            id="${row.idFactibilidad}" 
+                                            onclick="detallesFactibilidad(this.id)" 
+                                            data-toggle="tooltip" data-placement="left" title="Modificar">
+                                        <i data-feather="edit"></i>
+                                    </button>
+
+                                    <button type="button" class="btn btn-icon btn-danger mx-1" 
+                                            id="${row.idFactibilidad}" 
+                                            onclick="eliminarFactibilidad(this.id)" 
+                                            data-toggle="tooltip" data-placement="left" title="Eliminar">
+                                        <i data-feather="trash"></i>
+                                    </button>
+
+                                    @if (userRoles != null && userRoles.Contains("Comercial"))
+                                    {
+                                        <button class="btn btn-icon btn-primary mx-1" 
+                                                onclick="validateFactibility('${row.idFactibilidad}','${row.ticket}')"
+                                                data-toggle="tooltip" title="Validar"
+                                                ${row.estadoFactibilidad === "Aprobado" || row.estadoFactibilidad === "Rechazado" ? "disabled" : ""}>
+                                            <i data-feather="check-square"></i>
+                                        </button>
+                                    }
+
+                                </div>
+                            `;
                         }
                     }
                 ],
@@ -452,6 +703,37 @@
                     $($(row).find("td")[11]).css("color", "#F80719");
                     //Sitios Totales
                     $($(row).find("td")[12]).css("color", "#DE07F8");
+                    //Color a CAPEX y OPEX
+                    $($(row).find("td")[14]).css("color", "#43F30B");
+                    $($(row).find("td")[15]).css("color", "#43F30B");
+
+                    //Colocar Estilo a Estado de Factibilidad   
+                    let statusCol = 16;  // columna del estado
+                    let statusClass = '';
+                    let statusStyle = '';
+
+                    switch(data.estadoFactibilidad) {
+                        case 'Creado':
+                            statusStyle = 'background-color:#FFD966; color:#000000'; 
+                            break;
+                        case 'Aprobado':
+                            statusClass = 'bg-success text-white';
+                            break;
+                        case 'Rechazado':
+                            statusClass = 'bg-danger text-white';
+                            break;
+                        default:
+                            statusClass = 'bg-secondary text-white';
+                    }
+
+                    let statusBadge = `<div class="text-center">
+                                        <span class="badge ${statusClass}" style="${statusStyle}">
+                                            ${data.estadoFactibilidad ?? ""}
+                                        </span>
+                                    </div>`;
+
+                    $($(row).find("td")[statusCol]).html(statusBadge);
+
                 },
                 drawCallback: function (settings) {
                     feather.replace();
@@ -485,20 +767,20 @@
                     // Agregar el evento de cambio al filtro desplegable
                     $('#serviceTypeFilter').on('change', function () {
                         var val = $.fn.dataTable.util.escapeRegex($(this).val());
-                        api.column(2).search(val ? val  : '', true, false).draw();
+                        api.column(3).search(val ? val  : '', true, false).draw();
                     });
 
                     // Agregar el evento de cambio al filtro desplegable
                     $('#clientFilter').on('change', function () {
                         var val = $.fn.dataTable.util.escapeRegex($(this).val());
-                        api.column(3).search(val ? val : '', true, false).draw();
+                        api.column(4).search(val ? val : '', true, false).draw();
                     });
                 }
 
             });
 
             cargarSelect();
-
+            loadSelects();
         });
 
         function cargarSelect() {
@@ -546,6 +828,61 @@
 
         }
 
+        function loadSelects() {
+            // Definir un array de objetos con la información de cada select
+            var selects = [
+                { id: "selectState", entityName: "State", valueField: "IdState", textField: "Name" },
+                { id: "selectStatee", entityName: "State", valueField: "IdState", textField: "Name" },                   
+            ];
+
+            // Iterar sobre cada select y cargarlo
+            selects.forEach(function (select) {
+                loadSelectById(select.id, select.entityName, select.valueField, select.textField)
+                    .then(function () {
+                        if (typeof select.load === "function") {
+                            select.load(); // Ejecutar la función de carga personalizada si está definida
+                        }
+                    })
+                    .catch(function (error) {
+                        console.error("Error al cargar el select " + select.id + ":", error);
+                    });
+            });
+        }
+        
+        //Carga el select de manera dinamica pasando id, entidad, valor id, valor descripcion
+        function loadSelectById(elementId, entityName, valueField, textField) {
+            return new Promise(function (resolve, reject) {
+                $.ajax({
+                    url: "@Url.Action("GetSelectListItems", "Common")",
+                    type: 'GET',
+                    data: {
+                        entityName: entityName,
+                        valueField: valueField,
+                        textField: textField
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        $('#' + elementId).empty();
+                        $('#' + elementId).append($('<option>', {
+                            value: '',
+                            text: '-- Seleccione un item --'
+                        }));
+                        $.each(response, function (index, item) {
+                            $('#' + elementId).append($('<option>', {
+                                value: item.value,
+                                text: item.text
+                            }));
+                        });
+                        resolve(); // Resuelve la promesa cuando la carga se completa exitosamente
+                    },
+                    error: function (error) {
+                        console.error('Error al obtener los elementos del DropDownList:', error);
+                        reject(error); // Rechaza la promesa si hay un error
+                    }
+                });
+            });
+        }
+        
         //VALIDACION DE FORMULARIOS
 
         $("#form-factibilidad").validate({
@@ -638,6 +975,35 @@
             $("#modalAgregarCliente").modal("show");
         });
 
+        $("#selectState").on('change', function () {
+            let selectedItem = $(this).val();
+            if (selectedItem > 0) {
+                loadMunicipalitySelectByState("selectMunicipality", selectedItem);
+            }
+        });
+
+        $("#selectStatee").on('change', function () {
+            let selectedItem = $(this).val();
+            if (selectedItem > 0) {
+                loadMunicipalitySelectByState("selectMunicipalitye", selectedItem);
+            }
+        });
+
+       $('#btnApprove').off('click').on('click', function () {
+            let comment = $('#modalComment').val();
+
+            approveFactibility(idFactibilitySelected, selectedTicket, comment);
+
+            $('#modalApproveReject').modal('hide');
+        });
+
+        $('#btnReject').off('click').on('click', function () {
+            let comment = $('#modalComment').val();
+
+            rejectFactibility(idFactibilitySelected, selectedTicket, comment);
+
+            $('#modalApproveReject').modal('hide');
+        });
 
         //FUNCIONES
 
@@ -655,6 +1021,11 @@
             $("#SitioConCoberturaParcial").val("");
             $("#SitioSinCobertura").val("");
             $("#selectTipoServicio").val(0);
+            $("#coordinate").val("");
+            $("#capex").val("");
+            $("#opex").val("");
+            $("#selectMunicipality").val("");
+            $("#selectState").val("");
         }
 
         function ResetModalEditar() {
@@ -671,6 +1042,11 @@
             $("#SitioConCoberturaParciale").val("");
             $("#SitioSinCoberturae").val("");
             $("#selectTipoServicioe").val(0);
+            $("#coordinatee").val("");
+            $("#capexe").val("");
+            $("#opexe").val("");
+            $("#selectMunicipalitye").val("");
+            $("#selectStatee").val("");
         }
 
         function agregarFactibilidad() {
@@ -696,6 +1072,11 @@
             var sitioConCoberturaParcial = $("#SitioConCoberturaParcial").val();
             var sitioSinCobertura = $("#SitioSinCobertura").val();
             var tipoServicio = $("#selectTipoServicio").val();
+            var coordinate = $("#coordinate").val();
+            var municipality = $("#selectMunicipality").val();
+            var state = $("#selectState").val();
+            var capex = $("#capex").val();
+            var opex = $("#opex").val();
 
             var parametros = JSON.stringify({ 
                 Estudio: estudio, 
@@ -708,7 +1089,12 @@
                 SitioConCobertura : sitioConCobertura,
                 SitioConCoberturaParcial: sitioConCoberturaParcial,
                 SitioSinCobertura: sitioSinCobertura,
-                IdTipoServicio: tipoServicio
+                IdTipoServicio: tipoServicio,
+                Coordinate: coordinate,
+                IdMunicipality: municipality, 
+                IdState: state,
+                Capex: capex,       
+                Opex: opex
             });
 
             $.ajax({
@@ -777,6 +1163,15 @@
                     $("#SitioConCoberturaParciale").val(result.sitioConCoberturaParcial);
                     $("#SitioSinCoberturae").val(result.sitioSinCobertura);
                     $("#selectTipoServicioe").val(result.idTipoServicio);
+                    $("#coordinatee").val(result.coordenada);
+                    $("#selectMunicipalitye").val(result.idMunicipio);
+                    loadMunicipalitySelectByStateAsync("selectMunicipalitye", result.idDepartamento)
+                            .then(function () {
+                                $("#selectMunicipalitye").val(result.idMunicipio);
+                            });
+                    $("#selectStatee").val(result.idDepartamento);
+                    $("#capexe").val(result.capex);
+                    $("#opexe").val(result.opex);
 
                     $("#modalEditarFactibilidad").modal("show")
 
@@ -820,6 +1215,11 @@
             var sitioConCoberturaParcial = $("#SitioConCoberturaParciale").val();
             var sitioSinCobertura = $("#SitioSinCoberturae").val();
             var tipoServicio = $("#selectTipoServicioe").val();
+            let coordinate = $("#coordinatee").val();
+            let municipality = $("#selectMunicipalitye").val();
+            let state = $("#selectStatee").val();
+            let capex = $("#capexe").val();
+            let opex = $("#opexe").val();
 
             var parametros = JSON.stringify({ 
                 IdFactibilidad: id, 
@@ -833,7 +1233,12 @@
                 SitioConCobertura : sitioConCobertura,
                 SitioConCoberturaParcial: sitioConCoberturaParcial,
                 SitioSinCobertura: sitioSinCobertura,
-                IdTipoServicio: tipoServicio
+                IdTipoServicio: tipoServicio,
+                Coordinate: coordinate,
+                IdMunicipality: municipality, 
+                IdState: state,
+                Capex: capex,       
+                Opex: opex
             });
 
             $.ajax({
@@ -1001,6 +1406,279 @@
                         text: "Error en la descarga" + errorThrown,
                         icon: "error"
                     })
+                }
+            });
+        }
+
+        /**
+         * Evento input en coordenadas
+         */
+        $('#coordinate').on('input', function () {
+            const coord = $(this).val().trim();
+            const regex = /^-?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*-?(1[0-7]\d(\.\d+)?|180(\.0+)?|(\d{1,2}(\.\d+)?))$/;
+
+            if (regex.test(coord)) {
+                $(this).removeClass('is-invalid').addClass('is-valid');
+            } else {
+                // Coordenada inválida
+                $(this).removeClass('is-valid').addClass('is-invalid');
+            }
+        });
+
+        /**
+         * Evento input en coordenadas
+         */
+        $('#coordinatee').on('input', function () {
+            const coord = $(this).val().trim();
+            const regex = /^-?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*-?(1[0-7]\d(\.\d+)?|180(\.0+)?|(\d{1,2}(\.\d+)?))$/;
+
+            if (regex.test(coord)) {
+                $(this).removeClass('is-invalid').addClass('is-valid');
+            } else {
+                // Coordenada inválida
+                $(this).removeClass('is-valid').addClass('is-invalid');
+            }
+        });
+
+        /**
+         * Evento blur coordenadas
+         */
+        $('#coordinate').on('blur', function () {
+            let coordinateText = $(this).val().trim();
+
+            let parts = coordinateText.split(',');
+
+            let regex = /^-?\d{1,2}(\.\d+)?,\s*-?\d{1,3}(\.\d+)?$/;
+
+            if (!regex.test(coordinateText)) {  // Cambié para validar el texto completo, no el array 'parts'
+                updateAndShowToast("Coordenadas inválidas", "Ahora", "Por favor ingrese coordenadas válidas como: 14.63,-90.5");
+                $(this).val('');  // Limpia pero NO pones focus otra vez
+                return;
+            }
+
+            let latitude = parseFloat(parts[0]);
+            let longitude = parseFloat(parts[1]);
+
+            getMunicipalityAndDepartmentByCoordinates(latitude, longitude);
+        });
+
+        /**
+         * Evento blur coordenadas
+         */
+        $('#coordinatee').on('blur', function () {
+            let coordinateText = $(this).val().trim();
+
+            let parts = coordinateText.split(',');
+
+            let regex = /^-?\d{1,2}(\.\d+)?,\s*-?\d{1,3}(\.\d+)?$/;
+
+            if (!regex.test(coordinateText)) {  // Cambié para validar el texto completo, no el array 'parts'
+                updateAndShowToast("Coordenadas inválidas", "Ahora", "Por favor ingrese coordenadas válidas como: 14.63,-90.5");
+                $(this).val('');  // Limpia pero NO pones focus otra vez
+                return;
+            }
+
+            let latitude = parseFloat(parts[0]);
+            let longitude = parseFloat(parts[1]);
+
+            getMunicipalityAndDepartmentByCoordinatesEdit(latitude, longitude);
+        });
+
+        function getMunicipalityAndDepartmentByCoordinates(latitude, longitude) {
+            $.ajax({
+                url: '/ServiceDesk/GetMunicipalityAndDepartmentByCoordinates',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    latitude: latitude,
+                    longitude: longitude
+                }),
+                success: function (response) {
+                    if (response.success) {
+                        loadMunicipalitySelectByStateAsync("selectMunicipality", response.idState)
+                            .then(function () {
+                                $("#selectState").val(response.idState);
+                                $("#selectMunicipality").val(response.idMunicipality);
+
+                                updateAndShowToast(
+                                    'Coordenadas encontradas',
+                                    new Date().toLocaleTimeString(),
+                                    `Municipio: ${response.municipality}`
+                                );
+                            });
+                    } else {
+                        updateAndShowToast(
+                            'Error de coordenadas',
+                            new Date().toLocaleTimeString(),
+                            response.message
+                        );
+
+                        $("#selectState").val("");
+                        $("#selectMunicipality").val("");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    updateAndShowToast(
+                        'Error del servidor',
+                        new Date().toLocaleTimeString(),
+                        'No se pudo obtener la ubicación: ' + error
+                    );
+
+                    $("#selectState").val("");
+                    $("#selectMunicipality").val("");
+                }
+            });
+        }
+
+        function getMunicipalityAndDepartmentByCoordinatesEdit(latitude, longitude) {
+            $.ajax({
+                url: '/ServiceDesk/GetMunicipalityAndDepartmentByCoordinates',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    latitude: latitude,
+                    longitude: longitude
+                }),
+                success: function (response) {
+                    if (response.success) {
+                        loadMunicipalitySelectByStateAsync("selectMunicipalitye", response.idState)
+                            .then(function () {
+                                $("#selectStatee").val(response.idState);
+                                $("#selectMunicipalitye").val(response.idMunicipality);
+
+                                updateAndShowToast(
+                                    'Coordenadas encontradas',
+                                    new Date().toLocaleTimeString(),
+                                    `Municipio: ${response.municipality}`
+                                );
+                            });
+                    } else {
+                        updateAndShowToast(
+                            'Error de coordenadas',
+                            new Date().toLocaleTimeString(),
+                            response.message
+                        );
+
+                        $("#selectStatee").val("");
+                        $("#selectMunicipalitye").val("");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    updateAndShowToast(
+                        'Error del servidor',
+                        new Date().toLocaleTimeString(),
+                        'No se pudo obtener la ubicación: ' + error
+                    );
+
+                    $("#selectStatee").val("");
+                    $("#selectMunicipalitye").val("");
+                }
+            });
+        }
+
+        /**
+         * Carga el select de municipios de forma asincrona
+         */
+        function loadMunicipalitySelectByStateAsync(elementId, stateId) {
+            return $.get("/Common/GetMunicipalitiesByStateId", { stateId: stateId })
+                .done(function (data) {
+                    $("#" + elementId).empty();
+                    $("#" + elementId).append("<option selected value=''>-- Seleccione un item --</option>");
+                    $.each(data, function (index, row) {
+                        $("#" + elementId).append("<option value='" + row.idMunicipality + "'>" + row.name + "</option>");
+                    });
+                })
+                .fail(function (error) {
+                    console.error("Error al cargar las municipalidades:", error);
+                });
+        }
+
+        function loadMunicipalitySelectByState(elementId, stateId) {
+            // Obtener las municipalidades por el ID del estado
+            $.get("@Url.Action("GetMunicipalitiesByStateId", "Common")", { stateId: stateId }, function (data) {
+                // Limpiar el select
+                $("#" + elementId).empty();
+
+                $("#" + elementId).append("<option selected value=''>-- Seleccione un item --</option>");
+                // Agregar las opciones de municipios
+                $.each(data, function (index, row) {
+                    $("#" + elementId).append("<option value='" + row.idMunicipality + "'>" + row.name + "</option>");
+                });
+            }).fail(function (error) {
+                console.error("Error al cargar las municipalidades:", error);
+            });
+        }
+
+        function updateAndShowToast(title, time, message) {
+            // Actualizar el contenido del toast
+            $('#toast-title').text(title);
+            $('#toast-time').text(time);
+            $('#toast-message').text(message);
+
+            // Mostrar el toast
+            let toastElement = $('#toast-ticket-detail')[0];
+            let myToast = new bootstrap.Toast(toastElement);
+
+            // Asignar zIndex al toast
+            $(toastElement).css('z-index', 1057);
+
+            myToast.show();
+        }
+
+        function validateFactibility(idFactibility, ticket) {
+            idFactibilitySelected = idFactibility; // se guarda globalmente
+            selectedTicket = ticket;  // se guarda globalmente
+            $('#modalTicket').text(ticket);
+            $('#modalApproveReject').modal('show');
+        }
+
+        function approveFactibility(id, ticket, comment) {
+            $.ajax({
+                url: "/Indicadores/ApproveRejectFeasibility",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    feasibilityId: id,
+                    ticket: ticket,
+                    approve: true,
+                    comment: comment
+                }),
+                success: function (response) {
+                    Swal.fire({
+                        title: response.tipo === "success" ? "Aprobación" : "Error",
+                        text: response?.mensaje ?? "Feasibility approved successfully",
+                        icon: response?.tipo ?? "warning"
+                    });
+
+                    $("#factibilidadesTable").DataTable().ajax.reload();
+                },
+                error: function () {
+                    Swal.fire("Error", "Could not approve this feasibility.", "error");
+                }
+            });
+        }
+
+        function rejectFactibility(id, ticket, comment) {
+            $.ajax({
+                url: "/Indicadores/ApproveRejectFeasibility",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    FeasibilityId: id,
+                    ticket: ticket,
+                    approve: false,
+                    comment: comment
+                }),
+                    success: function (response) {
+                    Swal.fire({
+                        title: response?.tipo === "success" ? "Rechazo" : "Error",
+                        text: response?.mensaje ?? "Unexpected response",
+                        icon: response?.tipo ?? "warning"
+                    });
+                    $("#factibilidadesTable").DataTable().ajax.reload();
+                },
+                error: function () {
+                    Swal.fire("Error", "Could not reject this feasibility.", "error");
                 }
             });
         }

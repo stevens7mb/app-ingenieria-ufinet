@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>app_ingenieria_ufinet</RootNamespace>
+    <HotReloadEnabled>true</HotReloadEnabled>
   </PropertyGroup>
 
   <ItemGroup>

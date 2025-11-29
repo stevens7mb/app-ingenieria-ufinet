@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/app-ingenieria-ufinet/bin/Debug/net6.0/app-ingenieria-ufinet.dll",
+            "program": "${workspaceFolder}/app-ingenieria-ufinet/bin/Debug/net8.0/app-ingenieria-ufinet.dll",
             "args": [],
             "cwd": "${workspaceFolder}/app-ingenieria-ufinet",
             "stopAtEntry": false,
@@ -24,12 +24,12 @@
             },
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"
-            }
+            },
         },
         {
             "name": ".NET Core Attach",
             "type": "coreclr",
-            "request": "attach"
-        }
+            "request": "attach",
+        },
     ]
 }

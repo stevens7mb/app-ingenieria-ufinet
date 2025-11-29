@@ -148,5 +148,13 @@ namespace app_ingenieria_ufinet.Controllers
 
             return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
         }
+
+        [HttpPost]
+        public JsonResult ApproveRejectFeasibility([FromBody] FeasibilityApprovalRequest request)
+        {
+            var result = _indicadorRepository.ApproveRejectFeasibility(request);
+
+            return Json(result);
+        }
     }
 }

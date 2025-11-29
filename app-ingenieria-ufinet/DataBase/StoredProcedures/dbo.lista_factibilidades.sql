@@ -32,12 +32,23 @@ BEGIN
 			SitioSinCobertura,
 			SitioConCobertura + SitioConCoberturaParcial + SitioSinCobertura AS SitiosAnalizados,
 			ing.Nombre AS Ingeniero,
-			ISNULL(ts.TipoServicio, '') AS 'TipoServicio'
+			ISNULL(ts.TipoServicio, '') AS 'TipoServicio',
+			Coordenada,
+			IdMunicipio,
+			m.Name AS Municipio,
+			IdDepartamento,
+			d.Name AS Departamento,
+			Capex,
+			Opex,
+			ef.Estado AS EstadoFactibilidad
 		FROM Factibilidad f
 		INNER JOIN Cliente c ON c.IdCliente = f.IdCliente 
 		INNER JOIN KAM k ON k.IdKAM = f.IdKAM 
 		INNER JOIN Provisioning ing ON ing.IdIngeniero = f.IdIngeniero 
 		LEFT JOIN TipoServicio ts ON ts.IdTipoServicio = f.idTipoServicio
+		LEFT JOIN Municipality m ON m.IdMunicipality = f.IdMunicipio
+		LEFT JOIN State d ON d.IdState = f.IdDepartamento
+		LEFT JOIN dbo.EstadoFactibilidad ef ON ef.IdEstado = f.IdEstado
 		WHERE f.Estado = -1
 	END
 	ELSE
@@ -65,12 +76,23 @@ BEGIN
 			SitioSinCobertura,
 			SitioConCobertura + SitioConCoberturaParcial + SitioSinCobertura AS SitiosAnalizados,
 			ing.Nombre AS Ingeniero,
-			ISNULL(ts.TipoServicio, '') AS 'TipoServicio'
+			ISNULL(ts.TipoServicio, '') AS 'TipoServicio',
+			Coordenada,
+			IdMunicipio,
+			m.Name AS Municipio,
+			IdDepartamento,
+			d.Name AS Departamento,
+			Capex,
+			Opex,
+			ef.Estado AS EstadoFactibilidad
 		FROM Factibilidad f
 		INNER JOIN Cliente c ON c.IdCliente = f.IdCliente 
 		INNER JOIN KAM k ON k.IdKAM = f.IdKAM 
 		INNER JOIN Provisioning ing ON ing.IdIngeniero = f.IdIngeniero 
 		LEFT JOIN TipoServicio ts ON ts.IdTipoServicio = f.idTipoServicio
+		LEFT JOIN Municipality m ON m.IdMunicipality = f.IdMunicipio
+		LEFT JOIN State d ON d.IdState = f.IdDepartamento
+		LEFT JOIN dbo.EstadoFactibilidad ef ON ef.IdEstado = f.IdEstado
 		WHERE f.Estado = -1
 		AND f.idSucursal = @sucursal			
 	END

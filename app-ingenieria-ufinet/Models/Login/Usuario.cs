@@ -8,6 +8,7 @@
         public string Nombre { get; set; }
         public string Email { get; set; }
         public int idSucursal { get; set; }
+        public string Sucursal { get; set; }
         public int Activo { get; set; }
     }
 }

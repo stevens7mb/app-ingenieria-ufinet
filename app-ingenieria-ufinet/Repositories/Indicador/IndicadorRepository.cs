@@ -98,6 +98,14 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
         /// </summary>
         /// <returns></returns>
         MemoryStream GenerateExcelFactibilities();
+
+        /// <summary>
+        /// Approve or reject a feasibility study
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        SPResponseGeneric ApproveRejectFeasibility(FeasibilityApprovalRequest request);
+
     }
 
     /// <summary>
@@ -252,7 +260,12 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
                 {"@sitio_con_cobertura_parcial", factiblidad.SitioConCoberturaParcial},
                 {"@sitio_sin_cobertura", factiblidad.SitioSinCobertura},
                 {"@usuario", usuario},
-                {"@tipo_servicio", factiblidad.IdTipoServicio}
+                {"@tipo_servicio", factiblidad.IdTipoServicio},
+                {"@coordenada", factiblidad.Coordinate},
+                {"@municipio", factiblidad.IdMunicipality},
+                {"@departamento", factiblidad.IdState},
+                {"@capex", factiblidad.Capex},
+                {"@opex", factiblidad.Opex}
             };
 
             var result = this._dbUtils.ExecuteStoredProc<SPResponseGeneric>("crear_factibilidad", procedureParams);
@@ -299,7 +312,12 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
                 {"@sitio_con_cobertura_parcial", factiblidad.SitioConCoberturaParcial},
                 {"@sitio_sin_cobertura", factiblidad.SitioSinCobertura},
                 {"@usuario", usuario},
-                {"@tipo_servicio", factiblidad.IdTipoServicio}
+                {"@tipo_servicio", factiblidad.IdTipoServicio},
+                {"@coordenada", factiblidad.Coordinate},
+                {"@municipio", factiblidad.IdMunicipality},
+                {"@departamento", factiblidad.IdState},
+                {"@capex", factiblidad.Capex},
+                {"@opex", factiblidad.Opex}
             };
 
             var result = this._dbUtils.ExecuteStoredProc<SPResponseGeneric>("editar_factibilidad", procedureParams);
@@ -474,6 +492,12 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
                 worksheet.Cell(1, 13).Value = "Sitios Analizados";
                 worksheet.Cell(1, 14).Value = "Ingeniero";
                 worksheet.Cell(1, 15).Value = "Tipo de Servicio";
+                worksheet.Cell(1, 16).Value = "Coordenadas";
+                worksheet.Cell(1, 17).Value = "Municipio";
+                worksheet.Cell(1, 18).Value = "Departamento";
+                worksheet.Cell(1, 19).Value = "Capex";
+                worksheet.Cell(1, 20).Value = "Opex";
+                worksheet.Cell(1, 21).Value = "Estado Factibilidad";
 
                 // Formato de celdas
                 worksheet.Row(1).Style.Font.Bold = true; // Negrita para la fila de encabezados
@@ -501,6 +525,12 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
                     worksheet.Cell(row, 13).Value = item.SitiosAnalizados;
                     worksheet.Cell(row, 14).Value = item.Ingeniero;
                     worksheet.Cell(row, 15).Value = item.TipoServicio;
+                    worksheet.Cell(row, 16).Value = item.Coordenada;
+                    worksheet.Cell(row, 17).Value = item.Municipio;
+                    worksheet.Cell(row, 18).Value = item.Departamento;
+                    worksheet.Cell(row, 19).Value = item.Capex;
+                    worksheet.Cell(row, 20).Value = item.Opex;
+                    worksheet.Cell(row, 21).Value = item.EstadoFactibilidad;
 
                     row++; 
                 }
@@ -513,5 +543,33 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
                 return stream;
             }
         }
+
+        /// <summary>
+        /// Approve or reject a feasibility study
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public SPResponseGeneric ApproveRejectFeasibility(FeasibilityApprovalRequest request)
+        {
+            var user = _userService.GetUser().Claims
+                            .FirstOrDefault(x => x.Type == "IdUsuario")?.Value ?? "";
+
+            var procedureParams = new Dictionary<string, object>()
+            {
+                {"@id_factibilidad", request.FeasibilityId},
+                {"@ticket", request.Ticket},
+                {"@aprueba", request.Approve},
+                {"@usuario", user},
+                {"@comentario", request.Comment}
+            };
+
+            var result = _dbUtils.ExecuteStoredProc<SPResponseGeneric>(
+                "factibilidad_aprobacion",
+                procedureParams
+            );
+
+            return result[0];
+        }
+
     }
 }

@@ -51,11 +51,12 @@ namespace app_ingenieria_ufinet.Controllers
                 Claim claimUserName = new Claim(ClaimTypes.Name, usuario.Nombre);
                 Claim claimIdUsuario = new Claim("IdUsuario", usuario.User.ToString());
                 Claim claimEmail = new Claim("EmailUsuario", usuario.Email == null ? "" : usuario.Email);
-
+                Claim sucursal = new("Sucursal", usuario.Sucursal.ToString());
 
                 identity.AddClaim(claimUserName);
                 identity.AddClaim(claimIdUsuario);
                 identity.AddClaim(claimEmail);
+                identity.AddClaim(sucursal);
 
                 //Logica de roles se obtienen con base a usuario
                 List<Roles> roles = this._loginRepository.LoginRoles(usuario.User);

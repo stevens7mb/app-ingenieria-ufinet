@@ -1,0 +1,8 @@
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'EstadoFactibilidad')
+BEGIN
+	CREATE TABLE dbo.EstadoFactibilidad (
+		IdEstado INT NOT NULL,
+	    Estado NVARCHAR(100) NOT NULL,
+		CONSTRAINT PK_EstadoFactibilidad PRIMARY KEY (IdEstado)
+	);
+END
