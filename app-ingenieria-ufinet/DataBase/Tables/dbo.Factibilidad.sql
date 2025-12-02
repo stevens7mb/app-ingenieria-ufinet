@@ -238,3 +238,15 @@ BEGIN
     ALTER TABLE dbo.Factibilidad 
     ADD FechaModificacion DATETIME NULL;
 END;
+
+------------------------------------------------------------
+-- Agregar columna EsSubcontratado
+------------------------------------------------------------
+IF NOT EXISTS (
+    SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS 
+    WHERE TABLE_NAME = 'Factibilidad' AND COLUMN_NAME = 'EsSubcontratado'
+)
+BEGIN
+    ALTER TABLE dbo.Factibilidad 
+    ADD EsSubcontratado BIT NULL DEFAULT 0;
+END;

@@ -19,5 +19,6 @@
         public int? IdState { get; set; }
         public decimal? Capex { get; set; }
         public decimal? Opex { get; set; }
+        public bool IsSubcontracted { get; set; }
     }
 }

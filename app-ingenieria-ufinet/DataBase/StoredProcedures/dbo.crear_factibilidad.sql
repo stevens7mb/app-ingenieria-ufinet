@@ -15,7 +15,8 @@
 	@municipio INT = NULL,	
 	@departamento INT = NULL,
 	@capex DECIMAL(18,2) = NULL,
-	@opex DECIMAL(18,2) = NULL
+	@opex DECIMAL(18,2) = NULL,
+	@es_subcontratado BIT = NULL
 ) AS
 BEGIN
 	BEGIN TRY
@@ -50,7 +51,8 @@ BEGIN
 			Opex,
 			UsuarioRegistro,
 			FechaRegistro,
-			IdEstado
+			IdEstado,
+			EsSubcontratado
 		)
 		VALUES(
 			@ticket, 
@@ -74,7 +76,8 @@ BEGIN
 			@opex,
 			@usuario,
 			GETDATE(),
-			1 --Creado
+			1,--Creado
+			@es_subcontratado
 		)
 
 		INSERT INTO dbo.FactibilidadHistorialEstado(

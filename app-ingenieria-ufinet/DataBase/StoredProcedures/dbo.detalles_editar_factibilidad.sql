@@ -21,7 +21,8 @@ BEGIN
 		IdMunicipio,
 		IdDepartamento,
 		Capex,
-		Opex
+		Opex,
+		EsSubcontratado
 	FROM Factibilidad
 	WHERE IdFactibilidad = @id_factibilidad
 END;

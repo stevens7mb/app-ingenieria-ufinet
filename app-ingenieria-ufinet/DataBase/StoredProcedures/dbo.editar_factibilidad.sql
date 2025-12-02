@@ -16,7 +16,8 @@
 	@municipio INT = NULL,	
 	@departamento INT = NULL,
 	@capex DECIMAL(18,2) = NULL,
-	@opex DECIMAL(18,2) = NULL
+	@opex DECIMAL(18,2) = NULL,
+	@es_subcontratado BIT = NULL
 ) AS
 BEGIN
 	BEGIN TRY
@@ -44,7 +45,8 @@ BEGIN
 			Capex = @capex,
 			Opex = @opex,
 			UsuarioModifica = @usuario,
-			FechaModificacion = GETDATE()
+			FechaModificacion = GETDATE(),
+			EsSubcontratado = @es_subcontratado
 		WHERE 
 			IdFactibilidad= @id_factibilidad AND Ticket = @ticket
 		

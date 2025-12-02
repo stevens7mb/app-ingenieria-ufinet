@@ -5,6 +5,8 @@
         public int IdFactibilidad { get; set; }
         public string Ticket { get; set; }
         public string Estudio { get; set; }
+        public string TipoServicio { get; set; }
+        public string Sucursal { get; set; }
         public string Cliente { get; set; }
         public string KAM { get; set; }
         public int BW { get; set; }
@@ -16,10 +18,13 @@
         public int SitioSinCobertura { get; set; }
         public int SitiosAnalizados { get; set; }
         public string Ingeniero { get; set; }
-        public string TipoServicio { get; set; }
         public decimal? Capex { get; set; }
         public decimal? Opex { get; set; }
         public string EstadoFactibilidad { get; set; }
+        public string Coordenada { get; set; }
+        public string Departamento { get; set; }
+        public string Municipio { get; set; }
+        public string EsSubcontratado { get; set; }
 
         public int TotalCount { get; set; }
         public int FilteredCount { get; set; }

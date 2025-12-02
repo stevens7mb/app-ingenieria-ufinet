@@ -165,6 +165,7 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
             {
                 var serviceTypeFilter = request.Columns?.FirstOrDefault(x => x.Data == "tipoServicio")?.Search.Value;
                 var clientFilter = request.Columns?.FirstOrDefault(x => x.Data == "cliente")?.Search.Value;
+                var branchFilter = request.Columns?.FirstOrDefault(x => x.Data == "sucursal")?.Search.Value;
 
                 var procedureParams = new Dictionary<string, object>()
                 {
@@ -175,15 +176,22 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
                     {"@SortDirection", req.SortDirection},
                     {"@usuario", username ?? ""},
                     {"@tipo_servicio_filter", serviceTypeFilter},
-                    {"@cliente_filter", clientFilter}
+                    {"@cliente_filter", clientFilter},
+                    {"@sucursal_filter", branchFilter}
                 };
 
                 var result = this._dbUtils.ExecuteStoredProc<FactibilidadPaginateModel>("lista_factibilidades_paginate", procedureParams);
 
                 var filterServiceTypeValues = _context.TipoServicios.Where(x => x.Estado == -1).ToList();
                 var filterClientsValues = _context.Clientes.Where(x => x.Estado == -1).ToList();
+                var filterBranchValues = _context.Sucursals
+                    .Select(s => new {
+                        s.IdSucursal,
+                        s.Descripcion
+                    })
+                    .ToList();
 
-                var filters = new List<object> { filterServiceTypeValues, filterClientsValues };
+                var filters = new List<object> { filterServiceTypeValues, filterClientsValues, filterBranchValues };
 
                 return new DataTableResponse<FactibilidadPaginateModel>()
                 {
@@ -265,7 +273,8 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
                 {"@municipio", factiblidad.IdMunicipality},
                 {"@departamento", factiblidad.IdState},
                 {"@capex", factiblidad.Capex},
-                {"@opex", factiblidad.Opex}
+                {"@opex", factiblidad.Opex},
+                {"@es_subcontratado", factiblidad.IsSubcontracted ? 1 : 0}
             };
 
             var result = this._dbUtils.ExecuteStoredProc<SPResponseGeneric>("crear_factibilidad", procedureParams);
@@ -317,7 +326,8 @@ namespace app_ingenieria_ufinet.Repositories.Indicador
                 {"@municipio", factiblidad.IdMunicipality},
                 {"@departamento", factiblidad.IdState},
                 {"@capex", factiblidad.Capex},
-                {"@opex", factiblidad.Opex}
+                {"@opex", factiblidad.Opex},
+                {"@es_subcontratado", factiblidad.IsSubcontracted ? 1 : 0}
             };
 
             var result = this._dbUtils.ExecuteStoredProc<SPResponseGeneric>("editar_factibilidad", procedureParams);

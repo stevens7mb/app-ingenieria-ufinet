@@ -56,11 +56,23 @@
                                         <th>
                                             @if (userRoles != null && userRoles.Contains("Admin"))
                                             {
+                                                <select class="form-control" id="branchFilter">
+                                                    <option value=""></option>
+                                                </select>
+                                            }
+                                        </th>
+                                        <th>
+                                            @if (userRoles != null && userRoles.Contains("Admin"))
+                                            {
                                                 <select class="form-control" id="clientFilter">
                                                     <option value=""></option>
                                                 </select>
                                             }
                                         </th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
                                         <th></th>
                                         <th></th>
                                         <th></th>
@@ -88,6 +100,7 @@
                                         }
                                         <th>Detalle</th>
                                         <th>Tipo de Servicio</th>
+                                        <th>Sucursal</th>
                                         <th>Cliente</th>
                                         <th>KAM</th>
                                         <th>BW(Mbps)</th>
@@ -102,7 +115,11 @@
                                         <th>CAPEX</th>
                                         <th>OPEX</th>
                                         <th>Estado Factibilidad</th>
-                                        <th>Acción</th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th class="not-exported">Acción</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -201,7 +218,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row mb-1">
                                 <div class="col-md-4">
                                     <label>Sitios Sin Cobertura:</label>
                                     <input type="number" id="SitioSinCobertura" name="SitioSinCobertura" class="form-control" placeholder="Sitios Sin Cobertura" />
@@ -213,59 +230,46 @@
                                         <option value="">Seleccione una opción</option>
                                     </select>
                                 </div>
+                                <div class="col-md-4">
+                                    <label class="d-block mb-1">Subcontratado:</label>
 
-                                @* Renderizar coordenadas solo si no es El Salvador *@
-                                @if (branch != "El Salvador")
-                                {
-                                    <div class="col-md-4">
-                                        <label>Coordenadas:</label>
-                                        <input type="text" id="coordinate" name="coordinate" class="form-control" placeholder="Ej: 14.63,-90.5" />
+                                    <div class="form-check form-switch d-flex align-items-center">
+                                        <input class="form-check-input" type="checkbox" id="chkSubcontratado" name="subcontratado">
+                                        <span class="ms-2">SÍ</span>
                                     </div>
-                                }
-
-                                @* Si es El Salvador, llenar la tercera columna con CAPEX para que no quede vacía *@
-                                @if (branch == "El Salvador")
-                                {
-                                    <div class="col-md-4">
-                                        <label>CAPEX:</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text">$</span>
-                                            <input type="number" id="capex" name="capex" class="form-control" placeholder="Ej: 150000" />
-                                        </div>
-                                    </div>
-                                }
+                                </div>
                             </div>
 
                             @* Segunda fila solo si no es El Salvador *@
                             @if (branch != "El Salvador")
                             {
-                                <div class="row">
+                                <div class="row mb-1">
+                                    <div class="col-md-4">
+                                        <label>Coordenadas:</label>
+                                        <input type="text" id="coordinate" name="coordinate" class="form-control" placeholder="Ej: 14.63,-90.5" />
+                                    </div>
                                     <div class="col-md-4">
                                         <label>Departamento:</label>
                                         <select id="selectState" name="selectState" class="form-control">
                                             <option value="">Seleccione una opción</option>
                                         </select>
                                     </div>
-
                                     <div class="col-md-4">
                                         <label>Municipio:</label>
                                         <select id="selectMunicipality" name="selectMunicipality" class="form-control">
                                             <option value="">Seleccione una opción</option>
                                         </select>
                                     </div>
-
-                                    <div class="col-md-4">
-                                        <label>CAPEX:</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text">$</span>
-                                            <input type="number" id="capex" name="capex" class="form-control" placeholder="Ej: 150000" />
-                                        </div>
-                                    </div>
                                 </div>
                             }
-
-                            @* OPEX siempre en fila nueva *@
-                            <div class="row">
+                            <div class="row mb-1">
+                                <div class="col-md-4">
+                                    <label>CAPEX:</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" id="capex" name="capex" class="form-control" placeholder="Ej: 150000" />
+                                    </div>
+                                </div>
                                 <div class="col-md-4">
                                     <label>OPEX:</label>
                                     <div class="input-group">
@@ -274,7 +278,6 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -310,9 +313,9 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
-                                    <label>@(branch == "Prueba" ? "Oferta" : "Ticket"):</label>
+                                    <label>@(branch == "Guatemala - Infinitum" ? "Oferta" : "Ticket"):</label>
                                     <div class="mb-1">
-                                        <input type="@(branch == "Prueba" ? "text" : "number")" id="Tickete" name="Tickete" placeholder="Ingrese @(branch == "Prueba" ? "Oferta" : "Ticket")" class="form-control">
+                                        <input type="@(branch == "Guatemala - Infinitum" ? "text" : "number")" id="Tickete" name="Tickete" placeholder="Ingrese @(branch == "Guatemala - Infinitum" ? "Oferta" : "Ticket")" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-8">
@@ -371,113 +374,70 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row mb-1">
                                 <div class="col-md-4">
                                     <label>Sitios Sin Cobertura:</label>
-                                    <div class="mb-1">
-                                        <input type="number" id="SitioSinCoberturae" name="SitioSinCoberturae" class="form-control" placeholder="Sitios Sin Cobertura" />
-                                    </div>
+                                    <input type="number" id="SitioSinCoberturae" name="SitioSinCoberturae" class="form-control" placeholder="Sitios Sin Cobertura" />
                                 </div>
 
                                 <div class="col-md-4">
                                     <label>Tipo de Servicio:</label>
-                                    <div class="mb-1">
-                                        <select id="selectTipoServicioe" name="selectTipoServicioe" class="form-control">
-                                            <option value="">Seleccione una opción</option>
-                                        </select>
+                                    <select id="selectTipoServicioe" name="selectTipoServicioe" class="form-control">
+                                        <option value="">Seleccione una opción</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="d-block mb-1">Subcontratado:</label>
+                                    <div class="form-check form-switch d-flex align-items-center">
+                                        <input class="form-check-input" type="checkbox" id="chkSubcontratadoe" name="subcontratadoe">
+                                        <span class="ms-2">SÍ</span>
                                     </div>
                                 </div>
-
-                                @* Coordenadas solo si no es El Salvador *@
-                                @if (branch != "El Salvador")
-                                {
-                                    <div class="col-md-4">
-                                        <label>Coordenadas:</label>
-                                        <div class="mb-1">
-                                            <input type="text"
-                                                id="coordinatee"
-                                                name="coordinatee"
-                                                class="form-control"
-                                                placeholder="Ej: 14.63,-90.5"
-                                                pattern="^-?\d{1,2}(\.\d+)?,\s*-?\d{1,3}(\.\d+)?$"
-                                                title="Ingrese coordenadas válidas en formato: latitud,longitud. Ej: 14.63,-90.5" />
-                                            <div class="invalid-feedback">
-                                                Por favor ingrese coordenadas válidas (latitud entre -90 y 90, longitud entre -180 y 180).
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-
-                                @* Si es El Salvador, llenar tercera columna con CAPEX para que no queden espacios *@
-                                @if (branch == "El Salvador")
-                                {
-                                    <div class="col-md-4">
-                                        <label>CAPEX:</label>
-                                        <div class="input-group mb-1">
-                                            <span class="input-group-text">$</span>
-                                            <input type="number"
-                                                id="capexe"
-                                                name="capexe"
-                                                class="form-control"
-                                                placeholder="Ej: 150000"
-                                                min="0"
-                                                step="0.01"
-                                                title="Ingrese un valor numérico para el CAPEX">
-                                            <div class="invalid-feedback">
-                                                Por favor ingrese un valor válido para el CAPEX.
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
                             </div>
 
                             @* Segunda fila solo si no es El Salvador *@
                             @if (branch != "El Salvador")
                             {
-                                <div class="row">
+                                <div class="row mb-1">
+                                    <div class="col-md-4">
+                                        <label>Coordenadas:</label>
+                                        <input type="text" id="coordinatee" name="coordinatee" class="form-control" placeholder="Ej: 14.63,-90.5" />
+                                    </div>
                                     <div class="col-md-4">
                                         <label>Departamento:</label>
-                                        <div class="mb-1">
-                                            <select id="selectStatee" name="selectStatee" class="form-control">
-                                                <option value="">Seleccione una opción</option>
-                                            </select>
-                                        </div>
+                                        <select id="selectStatee" name="selectStatee" class="form-control">
+                                            <option value="">Seleccione una opción</option>
+                                        </select>
                                     </div>
-
                                     <div class="col-md-4">
                                         <label>Municipio:</label>
-                                        <div class="mb-1">
-                                            <select id="selectMunicipalitye" name="selectMunicipalitye" class="form-control">
-                                                <option value="">Seleccione una opción</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <label>CAPEX:</label>
-                                        <div class="input-group mb-1">
-                                            <span class="input-group-text">$</span>
-                                            <input type="number"
-                                                id="capexe"
-                                                name="capexe"
-                                                class="form-control"
-                                                placeholder="Ej: 150000"
-                                                min="0"
-                                                step="0.01"
-                                                title="Ingrese un valor numérico para el CAPEX">
-                                            <div class="invalid-feedback">
-                                                Por favor ingrese un valor válido para el CAPEX.
-                                            </div>
-                                        </div>
+                                        <select id="selectMunicipalitye" name="selectMunicipalitye" class="form-control">
+                                            <option value="">Seleccione una opción</option>
+                                        </select>
                                     </div>
                                 </div>
                             }
-
-                            @* OPEX siempre en fila nueva *@
-                            <div class="row">
+                            <div class="row mb-1">
+                                <div class="col-md-4">
+                                    <label>CAPEX:</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number"
+                                            id="capexe"
+                                            name="capexe"
+                                            class="form-control"
+                                            placeholder="Ej: 150000"
+                                            min="0"
+                                            step="0.01"
+                                            title="Ingrese un valor numérico para el CAPEX">
+                                        <div class="invalid-feedback">
+                                            Por favor ingrese un valor válido para el CAPEX.
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="col-md-4">
                                     <label>OPEX:</label>
-                                    <div class="input-group mb-1">
+                                    <div class="input-group">
                                         <span class="input-group-text">$</span>
                                         <input type="number"
                                             id="opexe"
@@ -603,24 +563,25 @@
                 "ajax": {
                     "url": "@Url.Action("ListaFactibilidadesPaginate", "Indicadores")",
                     "type": "POST",
-                    "dataType": "json"
+                    "dataType": "json",
                 },
                 "order": [[0, "desc"]],
                 dom: 'lBfrtip',
-                "buttons": [
-                    {
-                        extend: 'excel',
+                buttons: [
+                    { 
+                        extend: 'excel', 
                         className: 'btn btn-success',
-                        action: function (e, dt, node, config) {
-                            exportExcel(); 
+                        exportOptions: {
+                            columns: ':not(.not-exported)' 
                         }
                     }
                 ],
                 columns: [
-                    { "data": "idFactibilidad", "visible": false },
+                    { "data": "idFactibilidad", title: "ID", "visible": false },
                     { "data": "ticket" },
                     { "data": "estudio" },
                     { "data": "tipoServicio" },
+                    { "data": "sucursal" },
                     { "data": "cliente" },
                     { "data": "kam" },
                     { "data": "bw", render: $.fn.dataTable.render.number( ',', '.', 0)},
@@ -653,6 +614,10 @@
                         }
                     },
                     { "data": "estadoFactibilidad" },
+                    { "data": "coordenada", title: "Coordenadas", "visible": false },
+                    { "data": "municipio", title: "Municipio", "visible": false },
+                    { "data": "departamento", title: "Departamento", "visible": false },
+                    { "data": "esSubcontratado", title: "Es Subcontratado", "visible": false },
                     {
                         'defaultContent': null,
                         'render': function (data, type, row) {
@@ -689,26 +654,26 @@
                 ],
                 rowCallback: function (row, data) {
                     if (data.estado === 'Activo') {
-                        $($(row).find("td")[8]).css("color", "green");
+                        $($(row).find("td")[9]).css("color", "green");
                     }
                     else {
-                        $($(row).find("td")[8]).css("color", "#E60026");
+                        $($(row).find("td")[9]).css("color", "#E60026");
                     }
                     //Colocar color a Sitios
                     //Sitios Con Cobertura
-                    $($(row).find("td")[9]).css("color", "#43F30B");
+                    $($(row).find("td")[10]).css("color", "#43F30B");
                     //Sitios Con Cobertura Parcial
-                    $($(row).find("td")[10]).css("color", "#F8E207");
+                    $($(row).find("td")[11]).css("color", "#F8E207");
                     //Sitios Sin Cobertura
-                    $($(row).find("td")[11]).css("color", "#F80719");
+                    $($(row).find("td")[12]).css("color", "#F80719");
                     //Sitios Totales
-                    $($(row).find("td")[12]).css("color", "#DE07F8");
+                    $($(row).find("td")[13]).css("color", "#DE07F8");
                     //Color a CAPEX y OPEX
-                    $($(row).find("td")[14]).css("color", "#43F30B");
                     $($(row).find("td")[15]).css("color", "#43F30B");
+                    $($(row).find("td")[16]).css("color", "#43F30B");
 
                     //Colocar Estilo a Estado de Factibilidad   
-                    let statusCol = 16;  // columna del estado
+                    let statusCol = 17;  // columna del estado
                     let statusClass = '';
                     let statusStyle = '';
 
@@ -764,6 +729,16 @@
                         $('#clientFilter').append('<option value="' + value.nombre + '">' + value.nombre + '</option>');
                     });
 
+                    // Crear el filtro desplegable para la columna "Sucursal"
+                    var branchFilterValues = jsonResponse.filtersValues[2];
+
+                    // Limpiar y llenar el filtro desplegable con valores únicos(sucursal)
+                    $('#branchFilter').empty();
+                    $('#branchFilter').append('<option value=""></option>');
+                    branchFilterValues.forEach(function (value) {
+                        $('#branchFilter').append('<option value="' + value.descripcion + '">' + value.descripcion + '</option>');
+                    });
+
                     // Agregar el evento de cambio al filtro desplegable
                     $('#serviceTypeFilter').on('change', function () {
                         var val = $.fn.dataTable.util.escapeRegex($(this).val());
@@ -771,9 +746,15 @@
                     });
 
                     // Agregar el evento de cambio al filtro desplegable
+                    $('#branchFilter').on('change', function () {
+                        let val = $.fn.dataTable.util.escapeRegex($(this).val());
+                        api.column(4).search(val ? val  : '', true, false).draw();
+                    });
+
+                    // Agregar el evento de cambio al filtro desplegable
                     $('#clientFilter').on('change', function () {
                         var val = $.fn.dataTable.util.escapeRegex($(this).val());
-                        api.column(4).search(val ? val : '', true, false).draw();
+                        api.column(5).search(val ? val : '', true, false).draw();
                     });
                 }
 
@@ -1026,6 +1007,7 @@
             $("#opex").val("");
             $("#selectMunicipality").val("");
             $("#selectState").val("");
+            $("#chkSubcontratado").prop("checked", false);
         }
 
         function ResetModalEditar() {
@@ -1047,6 +1029,7 @@
             $("#opexe").val("");
             $("#selectMunicipalitye").val("");
             $("#selectStatee").val("");
+            $("#chkSubcontratadoe").prop("checked", false);
         }
 
         function agregarFactibilidad() {
@@ -1072,11 +1055,12 @@
             var sitioConCoberturaParcial = $("#SitioConCoberturaParcial").val();
             var sitioSinCobertura = $("#SitioSinCobertura").val();
             var tipoServicio = $("#selectTipoServicio").val();
-            var coordinate = $("#coordinate").val();
-            var municipality = $("#selectMunicipality").val();
-            var state = $("#selectState").val();
-            var capex = $("#capex").val();
-            var opex = $("#opex").val();
+            let coordinate = $("#coordinate").val();
+            let municipality = $("#selectMunicipality").val();
+            let state = $("#selectState").val();
+            let capex = $("#capex").val();
+            let opex = $("#opex").val();
+            let subcontratado = $("#chkSubcontratado").is(":checked");
 
             var parametros = JSON.stringify({ 
                 Estudio: estudio, 
@@ -1094,7 +1078,8 @@
                 IdMunicipality: municipality, 
                 IdState: state,
                 Capex: capex,       
-                Opex: opex
+                Opex: opex,
+                IsSubcontracted: subcontratado
             });
 
             $.ajax({
@@ -1172,6 +1157,7 @@
                     $("#selectStatee").val(result.idDepartamento);
                     $("#capexe").val(result.capex);
                     $("#opexe").val(result.opex);
+                    $("#chkSubcontratadoe").prop("checked", result.isSubcontracted);
 
                     $("#modalEditarFactibilidad").modal("show")
 
@@ -1220,6 +1206,7 @@
             let state = $("#selectStatee").val();
             let capex = $("#capexe").val();
             let opex = $("#opexe").val();
+            let subcontratado = $("#chkSubcontratadoe").is(":checked");
 
             var parametros = JSON.stringify({ 
                 IdFactibilidad: id, 
@@ -1238,7 +1225,8 @@
                 IdMunicipality: municipality, 
                 IdState: state,
                 Capex: capex,       
-                Opex: opex
+                Opex: opex,
+                IsSubcontracted: subcontratado
             });
 
             $.ajax({
